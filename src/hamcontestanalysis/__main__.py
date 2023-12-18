@@ -1,12 +1,4 @@
-"""Command-line interface."""
-import click
+"""HamContestAnalysis package CLI entrypoint."""
+from hamcontestanalysis.cli import app
 
-
-@click.command()
-@click.version_option()
-def main() -> None:
-    """hca."""
-
-
-if __name__ == "__main__":
-    main(prog_name="hamcontestanalysis")  # pragma: no cover
+app(prog_name="hamcontestanalysis")

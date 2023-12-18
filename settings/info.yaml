@@ -1,0 +1,4 @@
+default:
+  info:
+    environment: "@jinja {{this.env_for_dynaconf}}"
+    force_environment: "@jinja {{this.force_env_for_dynaconf}}"

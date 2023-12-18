@@ -8,3 +8,11 @@
 /docs/_build/
 /src/*.egg-info/
 __pycache__/
+*.pyc
+.idea/
+hamcontestanalysis.egg-info/
+.python-version
+.env
+.vscode/
+*.html
+.DS_Store

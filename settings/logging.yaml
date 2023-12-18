@@ -1,0 +1,25 @@
+default:
+  logging:
+    version: 1
+    incremental: false  ## Always false to create formatters/handlers/loggers
+    formatters:
+      base:
+        format: "[%(name)s] %(levelname)s - %(message)s"
+    handlers:
+      base:
+        class: logging.StreamHandler
+        formatter: base
+    loggers:
+      pycontestanalyzer:
+        handlers: [base]
+        level: INFO
+        propagate: false
+
+# Incremental empty configuration to avoid removing Pytest caplog handlers
+testing:
+  logging:
+    version: 1
+    incremental: true
+    formatters: {}
+    handlers: {}
+    loggers: {}
