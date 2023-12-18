@@ -1,0 +1,16 @@
+{
+  "_checkout": "2022.6.3",
+  "_output_dir": "/Users/roger.caminal/working_area/test_cookiecutter",
+  "_repo_dir": "/Users/roger.caminal/.cookiecutters/cookiecutter-hypermodern-python",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Roger Caminal Armadans",
+  "copyright_year": "2023",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "roger.caminal@gmail.com",
+  "friendly_name": "hca",
+  "github_user": "rogercaminal",
+  "license": "MIT",
+  "package_name": "hamcontestanalysis",
+  "project_name": "hamcontestanalysis",
+  "version": "0.0.0"
+}
