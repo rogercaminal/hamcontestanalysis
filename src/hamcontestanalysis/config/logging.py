@@ -1,5 +1,6 @@
 """PyContestAnalyzer Logging settings class definition."""
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 from hamcontestanalysis.config.base import BaseSettings
 

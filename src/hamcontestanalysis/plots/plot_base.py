@@ -1,7 +1,9 @@
 """PyContestAnalyzer plot base class."""
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 
-from pandas import DataFrame, concat
+from pandas import DataFrame
+from pandas import concat
 from plotly.graph_objects import Figure
 
 from hamcontestanalysis.data.processed_contest_source import ProcessedContestDataSource

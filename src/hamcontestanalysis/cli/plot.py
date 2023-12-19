@@ -1,7 +1,8 @@
 """PyContestAnalyzer Plot CLI definition."""
 from logging import getLogger
 
-from typer import Option, Typer
+from typer import Option
+from typer import Typer
 
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
@@ -17,6 +18,7 @@ from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
 from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
 from hamcontestanalysis.plots.rbn.plot_snr_band_continent import PlotSnrBandContinent
+
 
 app = Typer(name="plot", add_completion=False)
 logger = getLogger(__name__)

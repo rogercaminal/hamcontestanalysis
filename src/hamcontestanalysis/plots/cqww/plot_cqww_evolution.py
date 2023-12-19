@@ -3,10 +3,14 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from pandas import Grouper, concat, to_datetime, to_timedelta
+from pandas import Grouper
+from pandas import concat
+from pandas import to_datetime
+from pandas import to_timedelta
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots.plot_base import PlotBase
+
 
 AVAILABLE_FEATURES = {
     "valid_qsos": ["cum_valid_qsos", "Valid QSOs", "last"],

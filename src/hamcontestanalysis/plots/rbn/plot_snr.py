@@ -3,7 +3,10 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from pandas import Grouper, concat, to_datetime, to_timedelta
+from pandas import Grouper
+from pandas import concat
+from pandas import to_datetime
+from pandas import to_timedelta
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
@@ -54,9 +57,7 @@ class PlotSnr(PlotReverseBeaconBase):
         _data = concat(_data)
 
         # Dummy datetime to compare
-        _data = _data.pipe(
-            func=hour_of_contest,
-        ).assign(
+        _data = _data.pipe(func=hour_of_contest,).assign(
             dummy_datetime=lambda x: to_datetime("2000-01-01")
             + to_timedelta(x["hour"], "H"),
             callsign_year=lambda x: x["dx"] + "(" + x["year"].astype(str) + ")",

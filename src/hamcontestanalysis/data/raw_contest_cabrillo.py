@@ -3,7 +3,10 @@ import re
 from collections import defaultdict
 from io import StringIO
 from os import PathLike
-from typing import Any, ClassVar, Optional, Union
+from typing import Any
+from typing import ClassVar
+from typing import Optional
+from typing import Union
 from urllib.request import urlopen
 
 from pandas import DataFrame

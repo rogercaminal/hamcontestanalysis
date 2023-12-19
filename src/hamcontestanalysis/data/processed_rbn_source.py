@@ -1,6 +1,10 @@
 """Contest cabrillo data source module."""
-from os import PathLike, path
-from typing import Any, ClassVar, Mapping, Union
+from os import PathLike
+from os import path
+from typing import Any
+from typing import ClassVar
+from typing import Mapping
+from typing import Union
 
 from pandas import DataFrame
 

@@ -2,9 +2,17 @@
 import os
 from abc import ABC
 from os import PathLike
-from typing import Any, Callable, ClassVar, List, Mapping, Optional, Union
+from typing import Any
+from typing import Callable
+from typing import ClassVar
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Union
 
-from pandas import DataFrame, read_csv, read_parquet
+from pandas import DataFrame
+from pandas import read_csv
+from pandas import read_parquet
 
 from hamcontestanalysis.data.data_source import DataSource
 

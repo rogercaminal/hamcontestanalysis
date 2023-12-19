@@ -2,15 +2,16 @@
 import dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-from dash import dcc, html
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
 
 # from hamcontestanalysis.modules.dashboard.layout import get_layout
-from hamcontestanalysis.modules.download.main import (
-    exists,
-    exists_rbn,
-    main as _main_download,
-)
+from hamcontestanalysis.modules.download.main import exists
+from hamcontestanalysis.modules.download.main import exists_rbn
+from hamcontestanalysis.modules.download.main import main as _main_download
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
@@ -18,8 +19,8 @@ from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
 from hamcontestanalysis.plots.cqww.plot_cqww_evolution import (
     AVAILABLE_FEATURES as AVAILABLE_FEATURES_CQWW,
-    PlotCqWwEvolution,
 )
+from hamcontestanalysis.plots.cqww.plot_cqww_evolution import PlotCqWwEvolution
 from hamcontestanalysis.plots.cqww.plot_minutes_from_previous_call import (
     PlotMinutesPreviousCall,
 )
@@ -29,6 +30,7 @@ from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpot
 from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
 from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.utils.downloads.logs import get_all_options
+
 
 YEAR_MIN = 2020
 
@@ -81,6 +83,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
         ),
         style={"width": "25%", "display": "inline-block"},
     )
+
     @app.callback(
         Output("callsigns_years", "options"),
         [Input("contest", "value"), Input("mode", "value")],
@@ -95,7 +98,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             for y, c in data[["year", "callsign"]].to_numpy()
         ]
         return options
-    
+
     submit_button = html.Div(
         html.Button(
             id="submit-button",
@@ -104,7 +107,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             style={"fontsize": 24},
         )
     )
-    
+
     # Download step
     @app.callback(
         Output("signal", "data"),
@@ -125,7 +128,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
                         contest=contest, years=[year], callsigns=[callsign], mode=mode
                     )
         return n_clicks
-    
+
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
         [
@@ -148,6 +151,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             html.Div(dcc.Graph(id="qsos_hour", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("qsos_hour", "figure"),
         [
@@ -184,6 +188,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
 
     # Graph frequency
     graph_frequency = html.Div(dcc.Graph(id="frequency", figure=go.Figure()))
+
     @app.callback(
         Output("frequency", "figure"),
         [Input("signal", "data")],
@@ -233,6 +238,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             html.Div(dcc.Graph(id="qso_rate", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("qso_rate", "figure"),
         [
@@ -277,13 +283,12 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
     graph_qso_direction = html.Div(
         [
             html.Div(
-                dcc.RangeSlider(
-                    0, 48, id="range_hour_qso_direction", value=[0, 48]
-                )
+                dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
             ),
             html.Div(dcc.Graph(id="qso_direction", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("qso_direction", "figure"),
         [
@@ -343,6 +348,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             html.Div(dcc.Graph(id="band_conditions", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("band_conditions", "figure"),
         [
@@ -417,6 +423,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             html.Div(dcc.Graph(id="rbn_stats", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("rbn_stats", "figure"),
         [
@@ -466,7 +473,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
                 time_bin_size=time_bin_size,
                 rx_continents=rx_continents,
             ).plot()
-    
+
     # Graph contest_evolution_feature
     graph_contest_evolution_feature = html.Div(
         [
@@ -489,11 +496,10 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
                     inline=True,
                 ),
             ),
-            html.Div(
-                dcc.Graph(id="contest_evolution_feature", figure=go.Figure())
-            ),
+            html.Div(dcc.Graph(id="contest_evolution_feature", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("contest_evolution_feature", "figure"),
         [
@@ -543,6 +549,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             html.Div(dcc.Graph(id="minutes_previous_call", figure=go.Figure())),
         ]
     )
+
     @app.callback(
         Output("minutes_previous_call", "figure"),
         [
@@ -575,7 +582,7 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
             ).plot()
         else:
             raise ValueError("Contest not known")
-    
+
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [

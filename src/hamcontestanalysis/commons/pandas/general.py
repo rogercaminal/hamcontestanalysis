@@ -6,17 +6,17 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from pyhamtools import Callinfo, LookupLib
-from pyhamtools.locator import (
-    calculate_distance,
-    calculate_distance_longpath,
-    calculate_heading,
-    calculate_heading_longpath,
-    calculate_sunrise_sunset,
-    latlong_to_locator,
-)
+from pyhamtools import Callinfo
+from pyhamtools import LookupLib
+from pyhamtools.locator import calculate_distance
+from pyhamtools.locator import calculate_distance_longpath
+from pyhamtools.locator import calculate_heading
+from pyhamtools.locator import calculate_heading_longpath
+from pyhamtools.locator import calculate_sunrise_sunset
+from pyhamtools.locator import latlong_to_locator
 
 from hamcontestanalysis.utils import BANDMAP
+
 
 logger = getLogger(__name__)
 call_info = Callinfo(LookupLib(lookuptype="countryfile"))

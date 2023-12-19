@@ -1,9 +1,11 @@
 """PyContestAnalyzer Download CLI definition."""
 from logging import getLogger
 
-from typer import Option, Typer
+from typer import Option
+from typer import Typer
 
 from hamcontestanalysis.modules.download.main import main as _main
+
 
 app = Typer(name="download", add_completion=False)
 logger = getLogger(__name__)

@@ -3,7 +3,8 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from pandas import to_datetime, to_timedelta
+from pandas import to_datetime
+from pandas import to_timedelta
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import BANDMAP

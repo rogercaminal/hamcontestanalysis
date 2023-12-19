@@ -4,11 +4,10 @@ import logging
 from pandas import DataFrame
 
 from hamcontestanalysis.commons.pandas.cqww import add_qso_points
-from hamcontestanalysis.commons.pandas.general import (
-    add_dxcc_info,
-    compute_band,
-    hour_of_contest,
-)
+from hamcontestanalysis.commons.pandas.general import add_dxcc_info
+from hamcontestanalysis.commons.pandas.general import compute_band
+from hamcontestanalysis.commons.pandas.general import hour_of_contest
+
 
 logger = logging.getLogger(__name__)
 

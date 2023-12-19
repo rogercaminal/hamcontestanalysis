@@ -1,6 +1,7 @@
 """PyContestAnalyzer CQWW contest storage data sink module."""
 from os import PathLike
-from typing import ClassVar, Union
+from typing import ClassVar
+from typing import Union
 
 from hamcontestanalysis.data.storage_sink import StorageDataSink
 

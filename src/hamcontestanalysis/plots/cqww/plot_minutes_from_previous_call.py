@@ -7,6 +7,7 @@ from pandas import concat
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
+
 CONTEST_MINUTES = 48 * 60
 
 

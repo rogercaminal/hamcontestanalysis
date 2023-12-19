@@ -2,7 +2,8 @@
 from abc import ABC
 from typing import Tuple
 
-from pydantic import BaseSettings as _BaseSettings, Extra
+from pydantic import BaseSettings as _BaseSettings
+from pydantic import Extra
 from pydantic.env_settings import SettingsSourceCallable
 
 

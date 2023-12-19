@@ -2,13 +2,14 @@
 import dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-from dash import dcc, html
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
 
-from hamcontestanalysis.modules.download.main import (
-    download_rbn_data,
-    exists_rbn,
-)
+from hamcontestanalysis.modules.download.main import download_rbn_data
+from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.plots.rbn.plot_snr_band_continent import PlotSnrBandContinent
 from hamcontestanalysis.utils import CONTINENTS
 

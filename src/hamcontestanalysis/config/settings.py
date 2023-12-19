@@ -1,5 +1,6 @@
 """Settings class definition."""
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 from pydantic import root_validator
 

@@ -6,9 +6,13 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.offline as pyo
-from pandas import DataFrame, Grouper, date_range, merge
+from pandas import DataFrame
+from pandas import Grouper
+from pandas import date_range
+from pandas import merge
 
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
+
 
 logger = getLogger(__name__)
 
@@ -49,7 +53,9 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         self.closed_list_spotters = True
 
     def _clean_dataset(self):
-        _df = self.data.copy()
+        _df = self.data.copy().assign(
+            datetime_floor=lambda x: x["datetime"].dt.floor(freq="60min")
+        )
 
         # Extra filter if needed
         if self.filter_str:
@@ -67,23 +73,15 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         # whole contest.
         if self.closed_list_spotters:
             logger.info("Define closed list of RX spotters")
-            df_temp = df_grp.groupby(["dx"], as_index=False).agg(
-                unique_callsign=("callsign", "unique")
+            common_callsigns = (
+                df_grp.groupby("callsign", as_index=False)
+                .agg(unique_callsign=("dx", "unique"))
+                .assign(length=lambda x: x["unique_callsign"].apply(lambda y: len(y)))
+                .query(f"length == {len(self.callsigns)}")
+                .loc[:, "callsign"]
+                .unique()
+                .tolist()
             )
-            common_callsigns = set()
-            for i, call in enumerate(self.callsigns):
-                if i == 0:
-                    common_callsigns = set(
-                        df_temp.query(f"dx == '{call}'")["unique_callsign"]
-                        .to_numpy()[0]
-                        .tolist()
-                    )
-                else:
-                    common_callsigns &= set(
-                        df_temp.query(f"dx == '{call}'")["unique_callsign"]
-                        .to_numpy()[0]
-                        .tolist()
-                    )
             df_grp = df_grp.query(f"callsign.isin({list(common_callsigns)})")
 
         # Consider only those RX spotters that have announced a DX per band >= n times
@@ -93,14 +91,12 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
                 "Filtering out RX stations with less than "
                 f"{self.min_rx_spots_per_hour} spots per hour and band"
             )
-            df_grp = (
-                df_grp.groupby(
-                    [Grouper(key="datetime", freq="60Min"), "dx", "callsign", "band"],
-                    as_index=False,
-                )
-                .apply(lambda x: x.assign(counts_rx=x["callsign"].count()))
-                .query(f"counts_rx >= {self.min_rx_spots_per_hour}")
-            )
+            df_temp = df_grp.groupby(
+                ["datetime_floor", "dx", "callsign", "band"], as_index=False
+            ).agg(counts_rx=("callsign", "count"))
+            df_grp = df_grp.merge(
+                df_temp, how="left", on=["datetime_floor", "dx", "callsign", "band"]
+            ).query(f"counts_rx >= {self.min_rx_spots_per_hour}")
 
         # Average same RX in same band, callsign, and time slot
         df_grp = df_grp.groupby(

@@ -4,7 +4,9 @@ import os
 import re
 from urllib.request import urlopen
 
-from pandas import DataFrame, concat, read_parquet
+from pandas import DataFrame
+from pandas import concat
+from pandas import read_parquet
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.cqww.storage_source import RawCQWWCabrilloDataSource

@@ -1,7 +1,7 @@
 default:
   logging:
     version: 1
-    incremental: false  ## Always false to create formatters/handlers/loggers
+    incremental: false ## Always false to create formatters/handlers/loggers
     formatters:
       base:
         format: "[%(name)s] %(levelname)s - %(message)s"
@@ -10,7 +10,7 @@ default:
         class: logging.StreamHandler
         formatter: base
     loggers:
-      pycontestanalyzer:
+      hamcontestanalysis:
         handlers: [base]
         level: INFO
         propagate: false

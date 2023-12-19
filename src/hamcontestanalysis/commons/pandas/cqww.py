@@ -4,7 +4,9 @@ from logging import getLogger
 
 import numpy as np
 import pandas as pd
-from pyhamtools import Callinfo, LookupLib
+from pyhamtools import Callinfo
+from pyhamtools import LookupLib
+
 
 logger = getLogger(__name__)
 call_info = Callinfo(LookupLib(lookuptype="countryfile"))

@@ -1,10 +1,12 @@
 """PyContestAnalyzer Dashboard CLI definition."""
 from logging import getLogger
 
-from typer import Option, Typer
+from typer import Option
+from typer import Typer
 
 from hamcontestanalysis.modules.dashboard.contest_analysis import main as _main_contest
 from hamcontestanalysis.modules.dashboard.snr_analysis import main as _main_snr
+
 
 app = Typer(name="dashboard", add_completion=False)
 logger = getLogger(__name__)

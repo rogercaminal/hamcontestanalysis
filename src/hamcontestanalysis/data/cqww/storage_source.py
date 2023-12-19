@@ -1,8 +1,11 @@
 """CQ WW Contest cabrillo data source module."""
 from os import PathLike
-from typing import ClassVar, Optional, Union
+from typing import ClassVar
+from typing import Optional
+from typing import Union
 
-from pandas import DataFrame, to_datetime
+from pandas import DataFrame
+from pandas import to_datetime
 
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 

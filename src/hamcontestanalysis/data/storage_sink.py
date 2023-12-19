@@ -2,7 +2,13 @@
 import os
 from abc import ABC
 from os import PathLike
-from typing import Any, Callable, ClassVar, List, Mapping, Optional, Union
+from typing import Any
+from typing import Callable
+from typing import ClassVar
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Union
 
 from pandas import DataFrame
 
