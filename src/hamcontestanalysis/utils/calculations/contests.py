@@ -1,7 +1,10 @@
 """Calculation util functions related to contests"""
 
-from datetime import date, timedelta
-from pandas import DataFrame, to_datetime
+from datetime import date
+from datetime import timedelta
+
+from pandas import DataFrame
+from pandas import to_datetime
 
 
 def get_weekends_info(year: int) -> DataFrame:
@@ -11,7 +14,7 @@ def get_weekends_info(year: int) -> DataFrame:
         year (int): Year
 
     Returns:
-        DataFrame: Dataframe with the dates of the saturdays and sundays of the 
+        DataFrame: Dataframe with the dates of the saturdays and sundays of the
         weekends, as well as information on weekend number of the month, and whether
         it is a full weekend
     """
