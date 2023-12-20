@@ -1,6 +1,5 @@
 """CQ WW Contest cabrillo data source module."""
 from datetime import date
-from datetime import timedelta
 from io import BytesIO
 from os import PathLike
 from typing import ClassVar

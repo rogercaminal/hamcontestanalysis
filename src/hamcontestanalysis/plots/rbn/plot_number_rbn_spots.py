@@ -45,7 +45,7 @@ class PlotNumberRbnSpots(PlotReverseBeaconBase):
         """Create plot.
 
         Args:
-            save (bool, optional): _description_. Defaults to False.
+            save (bool): Save file in html. Defaults to False.
 
         Returns:
             None | Figure: _description_

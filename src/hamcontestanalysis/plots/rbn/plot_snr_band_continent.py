@@ -188,7 +188,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         """Create plot.
 
         Args:
-            save (bool, optional): _description_. Defaults to False.
+            save (bool): Save file in html. Defaults to False.
 
         Returns:
             None | Figure: _description_
@@ -211,23 +211,28 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
             category_orders={"rx_continent": self.rx_continents},
             range_y=[0.0, _data["db"].max() * 1.05],
             markers=True,
+            template="plotly_white",
         )
 
         fig.update_layout(hovermode="x unified", plot_bgcolor="white")
-        fig.update_xaxes(
-            mirror=True,
-            ticks="outside",
-            showline=True,
-            linecolor="black",
-            gridcolor="lightgrey",
+        fig.update_traces(
+            marker_size=4,
+            line=dict(width=0.5)
         )
-        fig.update_yaxes(
-            mirror=True,
-            ticks="outside",
-            showline=True,
-            linecolor="black",
-            gridcolor="lightgrey",
-        )
+        # fig.update_xaxes(
+        #     mirror=True,
+        #     ticks="outside",
+        #     showline=True,
+        #     linecolor="black",
+        #     gridcolor="lightgrey",
+        # )
+        # fig.update_yaxes(
+        #     mirror=True,
+        #     ticks="outside",
+        #     showline=True,
+        #     linecolor="black",
+        #     gridcolor="lightgrey",
+        # )
 
         if not save:
             return fig

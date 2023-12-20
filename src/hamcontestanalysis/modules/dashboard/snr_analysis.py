@@ -50,7 +50,7 @@ def main(debug: bool = False) -> None:
             id="year",
             placeholder="Enter year of the contest...",
             type="number",
-            value="",
+            value="2023",
         ),
         style={"width": "25%", "display": "inline-block"},
     )
@@ -60,7 +60,7 @@ def main(debug: bool = False) -> None:
             id="callsigns",
             placeholder="Enter a comma-separated list of calls...",
             type="text",
-            value="",
+            value="EF6T,CR6K",
         ),
         style={"width": "25%", "display": "inline-block"},
     )
@@ -120,7 +120,7 @@ def main(debug: bool = False) -> None:
     graph_snr = html.Div(
         dcc.Graph(
             id="snr_plot",
-            figure=go.Figure(),
+            figure=go.Figure(layout=dict(template="plotly_white")),
             responsive=True,
             style={"flex": 1, "min-width": 700},
         ),
@@ -156,6 +156,7 @@ def main(debug: bool = False) -> None:
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
+            html.Div([html.H1('SNR analysis')]),
             dcc.Store(id="signal"),
             radio_contest,
             input_year,
