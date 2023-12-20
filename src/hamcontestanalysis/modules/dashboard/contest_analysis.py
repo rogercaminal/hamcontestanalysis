@@ -8,7 +8,6 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
 
-# from hamcontestanalysis.modules.dashboard.layout import get_layout
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.modules.download.main import main as _main_download
