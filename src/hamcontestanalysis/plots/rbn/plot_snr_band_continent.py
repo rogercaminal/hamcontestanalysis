@@ -215,10 +215,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         )
 
         fig.update_layout(hovermode="x unified", plot_bgcolor="white")
-        fig.update_traces(
-            marker_size=4,
-            line=dict(width=0.5)
-        )
+        fig.update_traces(marker_size=4, line=dict(width=0.5))
         # fig.update_xaxes(
         #     mirror=True,
         #     ticks="outside",

@@ -156,7 +156,7 @@ def main(debug: bool = False) -> None:
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
-            html.Div([html.H1('SNR analysis')]),
+            html.Div([html.H1("SNR analysis")]),
             dcc.Store(id="signal"),
             radio_contest,
             input_year,
