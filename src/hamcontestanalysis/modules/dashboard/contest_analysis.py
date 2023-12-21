@@ -34,14 +34,17 @@ from hamcontestanalysis.utils.downloads.logs import get_all_options
 YEAR_MIN = 2020
 
 
-def main(debug: bool = False) -> None:  # noqa: PLR0915
+def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
     """Main dashboard entrypoint.
 
     This method generates the dashboard to be displayed with the analysis of each
     contest.
 
     Args:
-        debug: boolean with the debug option of dash
+        debug (bool, optional): boolean with the debug option of dash. Defaults to
+            False.
+        host (str, optional): host for the dashboard. Defaults to "localhost".
+        port (int, optional): port to display the dashboard. Defaults to 8050.
     """
     app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -602,4 +605,4 @@ def main(debug: bool = False) -> None:  # noqa: PLR0915
     )
 
     # Run the dashboard
-    app.run(debug=debug, host="0.0.0.0", port=8050)
+    app.run(debug=debug, host=host, port=port)

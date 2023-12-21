@@ -1,4 +1,4 @@
-"""Calculation util functions related to contests"""
+"""Calculation util functions related to contests."""
 
 from datetime import date
 from datetime import timedelta
@@ -8,7 +8,7 @@ from pandas import to_datetime
 
 
 def get_weekends_info(year: int) -> DataFrame:
-    """Return the dates for the weekends of the different weeks in a year
+    """Return the dates for the weekends of the different weeks in a year.
 
     Args:
         year (int): Year

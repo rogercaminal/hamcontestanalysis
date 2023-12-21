@@ -15,20 +15,34 @@ logger = getLogger(__name__)
 @app.command()
 def contest_analysis(
     debug: bool = Option(False, "--debug", help="Debug the dashboard"),
+    host: str = Option("localhost", "--host", help="Host to run the dashboard"),
+    port: int = Option(8050, "--port", help="Port to run the dashboard"),
 ) -> None:
     """Dashboard main command line interface."""
-    logger.info("Starting dashboard with the following commands:" "Debug = %s", debug)
+    logger.info(
+        "Starting dashboard with the following commands: Debug = %s, "
+        "host = %s, port = %s",
+        debug,
+        host,
+        port,
+    )
 
-    _main_contest(debug=debug)
+    _main_contest(debug=debug, host=host, port=port)
 
 
 @app.command()
 def snr_analysis(
     debug: bool = Option(False, "--debug", help="Debug the dashboard"),
+    host: str = Option("localhost", "--host", help="Host to run the dashboard"),
+    port: int = Option(8050, "--port", help="Port to run the dashboard"),
 ) -> None:
     """Dashboard main command line interface for RBN analysis."""
     logger.info(
-        "Starting SNR dashboard with the following commands:" "Debug = %s", debug
+        "Starting SNR dashboard with the following commands: Debug = %s, "
+        "host = %s, port = %s",
+        debug,
+        host,
+        port,
     )
 
-    _main_snr(debug=debug)
+    _main_snr(debug=debug, host=host, port=port)

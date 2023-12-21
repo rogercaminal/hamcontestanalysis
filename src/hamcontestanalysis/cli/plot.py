@@ -86,18 +86,18 @@ def qsos_hour(
     mode: str = Option(
         ...,
         "--mode",
-        help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+        help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
     callsigns_years: list[str] = Option(
         ...,
         "--callsigns_years",
         help=(
-            "callsign,year to be considered. Can be specified multiple times for "
+            "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
         ),
     ),
 ):
-    """QSO's per hour plot."""
+    """Qso's per hour plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
     plot = PlotQsosHour(contest=contest, mode=mode, callsigns_years=callsigns_years)
     plot.plot(save=True)
@@ -109,13 +109,13 @@ def rate(
     mode: str = Option(
         ...,
         "--mode",
-        help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+        help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
     callsigns_years: list[str] = Option(
         ...,
         "--callsigns_years",
         help=(
-            "callsign,year to be considered. Can be specified multiple times for "
+            "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
         ),
     ),
@@ -137,13 +137,13 @@ def rolling_rate(
     mode: str = Option(
         ...,
         "--mode",
-        help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+        help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
     callsigns_years: list[str] = Option(
         ...,
         "--callsigns_years",
         help=(
-            "callsign,year to be considered. Can be specified multiple times for "
+            "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
         ),
     ),

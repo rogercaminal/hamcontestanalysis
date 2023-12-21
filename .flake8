@@ -4,6 +4,11 @@ ignore = E203,E501,RST201,RST203,RST301,W503,D104
 max-line-length = 80
 max-complexity = 10
 docstring-convention = google
-per-file-ignores = tests/*:S101
 rst-roles = class,const,func,meth,mod,ref
 rst-directives = deprecated
+per-file-ignores = tests/*:S101,
+    src/hamcontestanalysis/cli/*:B008,
+    src/hamcontestanalysis/data/raw_contest_cabrillo.py:S310,
+    src/hamcontestanalysis/data/rbn/storage_source.py:S310,
+    src/hamcontestanalysis/modules/dashboard/contest_analysis.py:C901,
+    src/hamcontestanalysis/utils/downloads/logs.py:S310
