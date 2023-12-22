@@ -1,4 +1,4 @@
-"""Test PyContestAnalyzer CLI app definition."""
+"""Test HamContestAnalysis CLI app definition."""
 from pytest import FixtureRequest
 from pytest import LogCaptureFixture
 from pytest import fixture

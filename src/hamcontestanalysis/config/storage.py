@@ -1,4 +1,4 @@
-"""Storage settings for PyContestAnalyzer."""
+"""Storage settings for HamContestAnalysis."""
 
 from hamcontestanalysis.config.settings import BaseSettings
 
@@ -21,7 +21,7 @@ class StorageSettings(BaseSettings):
 
     @property
     def paths(self):
-        """Render PyContestAnalyzer paths from settings.
+        """Render HamContestAnalysis paths from settings.
 
         This method renders the paths for types in 'optimisation', 'performance' and
         'temporary' by interpolating:

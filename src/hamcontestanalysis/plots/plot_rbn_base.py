@@ -1,4 +1,4 @@
-"""PyContestAnalyzer plot base class."""
+"""HamContestAnalysis plot base class."""
 from abc import ABC
 from abc import abstractmethod
 

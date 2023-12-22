@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Command Line Interface application definition."""
+"""HamContestAnalysis Command Line Interface application definition."""
 from typer import Typer
 
 from hamcontestanalysis.cli.dashboard import app as app_dashboard

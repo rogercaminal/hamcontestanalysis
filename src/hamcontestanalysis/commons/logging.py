@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Logging utilities module."""
+"""HamContestAnalysis Logging utilities module."""
 from logging.config import dictConfig
 
 from hamcontestanalysis.config import get_settings

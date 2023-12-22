@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Command Line Interface package entrypoint."""
+"""HamContestAnalysis Command Line Interface package entrypoint."""
 from hamcontestanalysis.cli.main import app
 
 
