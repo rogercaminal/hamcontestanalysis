@@ -6,7 +6,7 @@ max-complexity = 10
 docstring-convention = google
 rst-roles = class,const,func,meth,mod,ref
 rst-directives = deprecated
-per-file-ignores = tests/*:S101,
+per-file-ignores = tests/*:D101,D103,D106,S101
     src/hamcontestanalysis/cli/*:B008,
     src/hamcontestanalysis/data/raw_contest_cabrillo.py:S310,
     src/hamcontestanalysis/data/rbn/storage_source.py:S310,
