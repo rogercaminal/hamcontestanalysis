@@ -1,8 +1,12 @@
 """HamContestAnalysis contest dates settings class definition."""
 
+from datetime import date
+from typing import List
+
 from pandas import to_datetime
-from hamcontestanalysis.utils.calculations.contests import get_weekends_info
+
 from hamcontestanalysis.config.base import BaseSettings
+from hamcontestanalysis.utils.calculations.contests import get_weekends_info
 
 
 class ContestInfo(BaseSettings):
@@ -11,7 +15,15 @@ class ContestInfo(BaseSettings):
     month: int
     week: int
 
-    def get_dates(self, year: int):
+    def get_dates(self, year: int) -> List[date]:
+        """Get the dates of a contest given a year.
+
+        Args:
+            year (int): Year of the contest
+
+        Returns:
+            List[date]: Dates of the contest
+        """
         # Get weekend information
         weeks_dataframe = get_weekends_info(year=year)
         # Select weekend
@@ -30,11 +42,12 @@ class ContestInfo(BaseSettings):
             .to_pydatetime()
             .tolist()
         )
-        return dates    
+        return dates
 
 
 class ContestSettings(BaseSettings):
     """Contest dates Settings model."""
+
     cqww: ContestInfo
     cqwpx: ContestInfo
     iaru: ContestInfo

@@ -3,6 +3,7 @@ from datetime import date
 from io import BytesIO
 from os import PathLike
 from typing import ClassVar
+from typing import List
 from typing import Optional
 from typing import Union
 from urllib.request import urlopen
@@ -15,8 +16,8 @@ from pandas import to_datetime
 from pyhamtools import Callinfo
 from pyhamtools import LookupLib
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.storage_source import StorageDataSource
-from hamcontestanalysis.utils.calculations.contests import get_dates_contest
 
 
 call_info = Callinfo(LookupLib(lookuptype="countryfile"))
@@ -45,7 +46,7 @@ class ReverseBeaconRawDataSource(StorageDataSource):
         year: int,
         mode: str,
         contest: str | None = None,
-        dates: list[date] | None = None,
+        dates: List[date] | None = None,
     ):
         """Raw contest cabrillo data source constructor.
 
@@ -56,11 +57,14 @@ class ReverseBeaconRawDataSource(StorageDataSource):
             dates: if contest is None, dates to consider for custom downloads
         """
         super().__init__(prefix=self.prefix)
+        _settings = get_settings()
         self.contest = contest
         self.mode = mode
         self.year = year
-        self.dates: list[date] = (
-            dates if contest is None else get_dates_contest(contest=contest, year=year)
+        self.dates: List[date] = (
+            dates
+            if contest is None
+            else getattr(_settings.contest, contest).get_dates(year)
         )
 
     def load(self) -> DataFrame:
