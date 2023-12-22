@@ -8,10 +8,12 @@ from dynaconf import Dynaconf
 from hamcontestanalysis.config.settings import Settings
 
 
-ROOT_PATH = Path(__file__).absolute().parent.parent.parent.parent
+FILE_PATH = Path(__file__).absolute()
+INDEX = FILE_PATH.parts.index("hamcontestanalysis")
+ROOT_PATH = Path(*FILE_PATH.absolute().parts[: INDEX + 1])
+
 SETTINGS_DIR = ROOT_PATH / "settings"
 SETTINGS_FILES = [
-    SETTINGS_DIR / "download.yaml",
     SETTINGS_DIR / "info.yaml",
     SETTINGS_DIR / "logging.yaml",
     SETTINGS_DIR / "storage.yaml",
