@@ -1,6 +1,6 @@
 """HamContestAnalysis contest dates settings class definition."""
 
-from datetime import date
+from datetime import datetime
 from typing import List
 
 from pandas import to_datetime
@@ -15,14 +15,14 @@ class ContestInfo(BaseSettings):
     month: int
     week: int
 
-    def get_dates(self, year: int) -> List[date]:
+    def get_dates(self, year: int) -> List[datetime]:
         """Get the dates of a contest given a year.
 
         Args:
             year (int): Year of the contest
 
         Returns:
-            List[date]: Dates of the contest
+            List[datetime]: Dates of the contest
         """
         # Get weekend information
         weeks_dataframe = get_weekends_info(year=year)
