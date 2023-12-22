@@ -8,7 +8,7 @@ from pydantic.env_settings import SettingsSourceCallable
 
 
 class BaseSettings(_BaseSettings, ABC):
-    """PyContestAnalyzer Base Settings class.
+    """HamContestAnalysis Base Settings class.
 
     This abstract class defines the base settings configuration used in the
     application's settings classes. Mainly, it defines an immutable Pydantic

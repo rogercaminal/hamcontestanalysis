@@ -14,6 +14,7 @@ ROOT_PATH = Path(*FILE_PATH.absolute().parts[: INDEX + 1])
 
 SETTINGS_DIR = ROOT_PATH / "settings"
 SETTINGS_FILES = [
+    SETTINGS_DIR / "contest.yaml",
     SETTINGS_DIR / "info.yaml",
     SETTINGS_DIR / "logging.yaml",
     SETTINGS_DIR / "storage.yaml",

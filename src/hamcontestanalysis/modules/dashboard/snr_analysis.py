@@ -1,4 +1,4 @@
-"""PyContestAnalyzer dashboard."""
+"""HamContestAnalysis dashboard."""
 import dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
@@ -53,7 +53,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             id="year",
             placeholder="Enter year of the contest...",
             type="number",
-            value="2023",
+            value=2023,
         ),
         style={"width": "25%", "display": "inline-block"},
     )

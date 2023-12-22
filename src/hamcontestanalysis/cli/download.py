@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Download CLI definition."""
+"""HamContestAnalysis Download CLI definition."""
 from logging import getLogger
 
 from typer import Option

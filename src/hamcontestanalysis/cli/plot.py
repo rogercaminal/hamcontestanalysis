@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Plot CLI definition."""
+"""HamContestAnalysis Plot CLI definition."""
 from logging import getLogger
 
 from typer import Option

@@ -1,4 +1,4 @@
-"""PyContestAnalyzer data manipulation module."""
+"""HamContestAnalysis data manipulation module."""
 import logging
 
 from pandas import DataFrame

@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Logging settings class definition."""
+"""HamContestAnalysis Logging settings class definition."""
 from typing import Any
 from typing import Dict
 

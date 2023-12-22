@@ -1,4 +1,4 @@
-"""PyContestAnalyzer Storage Data Source class definition."""
+"""HamContestAnalysis Storage Data Source class definition."""
 import os
 from abc import ABC
 from os import PathLike
