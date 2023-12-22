@@ -1,9 +1,11 @@
 """Test Base Settings class."""
 from datetime import datetime
-from pydantic.error_wrappers import ValidationError
-import pytest
 
-from hamcontestanalysis.config.contest import ContestInfo, ContestSettings
+import pytest
+from pydantic.error_wrappers import ValidationError
+
+from hamcontestanalysis.config.contest import ContestInfo
+from hamcontestanalysis.config.contest import ContestSettings
 
 
 def test_contest_info_attributes():
@@ -27,7 +29,7 @@ def test_contest_settings_attributes():
     settings = ContestSettings(
         cqww=ContestInfo(month=1, week=2),
         cqwpx=ContestInfo(month=1, week=2),
-        iaru=ContestInfo(month=1, week=2)
+        iaru=ContestInfo(month=1, week=2),
     )
     assert isinstance(settings.cqww, ContestInfo)
     assert isinstance(settings.cqwpx, ContestInfo)
@@ -36,9 +38,10 @@ def test_contest_settings_attributes():
         assert settings.week == 2
     with pytest.raises(ValidationError):
         ContestSettings(
-            cqww=None, 
-            cqwpx=ContestInfo(month=1, week=2), 
-            iaru=ContestInfo(month=1, week=2))
+            cqww=None,
+            cqwpx=ContestInfo(month=1, week=2),
+            iaru=ContestInfo(month=1, week=2),
+        )
     with pytest.raises(ValidationError):
         ContestSettings(cqww=1)
     with pytest.raises(TypeError):

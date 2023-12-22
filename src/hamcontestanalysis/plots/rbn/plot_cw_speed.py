@@ -54,7 +54,9 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         _data = concat(_data)
 
         # Dummy datetime to compare
-        _data = _data.pipe(func=hour_of_contest,).assign(
+        _data = _data.pipe(
+            func=hour_of_contest,
+        ).assign(
             dummy_datetime=lambda x: to_datetime("2000-01-01")
             + to_timedelta(x["hour"], "H"),
             callsign_year=lambda x: x["dx"] + "(" + x["year"].astype(str) + ")",
