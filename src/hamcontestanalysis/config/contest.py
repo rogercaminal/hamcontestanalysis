@@ -9,7 +9,7 @@ from hamcontestanalysis.config.base import BaseSettings
 from hamcontestanalysis.utils.calculations.contests import get_weekends_info
 
 
-class ContestInfo(BaseSettings):
+class ContestDates(BaseSettings):
     """Contest information model."""
 
     month: int
@@ -45,9 +45,48 @@ class ContestInfo(BaseSettings):
         return dates
 
 
+class ContestModes(BaseSettings):
+    """Dates for each contest mode."""
+
+    cw: ContestDates | None
+    ssb: ContestDates | None
+    mixed: ContestDates | None
+
+    @property
+    def modes(self):
+        """Property returning available modes."""
+        active_modes = []
+        for mode, dates in self.__dict__.items():
+            if dates is not None:
+                active_modes.append(mode)
+        return sorted(active_modes)
+
+
+class ContestAttributes(BaseSettings):
+    """Meta data attributes for each contest."""
+
+    name: str
+
+
+class ContestData(BaseSettings):
+    """Aggregate all data for each contest."""
+
+    attributes: ContestAttributes
+    modes: ContestModes
+
+
 class ContestSettings(BaseSettings):
     """Contest dates Settings model."""
 
-    cqww: ContestInfo
-    cqwpx: ContestInfo
-    iaru: ContestInfo
+    cqww: ContestData | None
+    cqwpx: ContestData | None
+    iaru: ContestData | None
+
+    @property
+    def contests(self):
+        """Return available contests or contests correctly set in yaml."""
+        active_contests = []
+        for contest, dates in self.__dict__.items():
+            if dates is not None:
+                active_contests.append(contest)
+        return sorted(active_contests)

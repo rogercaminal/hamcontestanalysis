@@ -8,6 +8,7 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import download_contest_data
 from hamcontestanalysis.modules.download.main import download_rbn_data
 from hamcontestanalysis.modules.download.main import exists
@@ -35,6 +36,7 @@ from hamcontestanalysis.utils.downloads.logs import get_all_options
 YEAR_MIN = 2020
 DATA_CONTEST = None
 DATA_RBN = None
+settings = get_settings()
 
 
 def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
