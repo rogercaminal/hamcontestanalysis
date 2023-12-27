@@ -58,7 +58,13 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         [
             dcc.RadioItems(
                 id="contest",
-                options = [{"label": getattr(settings.contest, contest).attributes.name, "value": contest.lower()} for contest in settings.contest.contests],
+                options=[
+                    {
+                        "label": getattr(settings.contest, contest).attributes.name,
+                        "value": contest.lower(),
+                    }
+                    for contest in settings.contest.contests
+                ],
                 value=None,
             )
         ],
@@ -94,10 +100,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         if not contest:
             return []
         modes = getattr(settings.contest, contest.lower()).modes.modes
-        options = [
-            {"label": m.upper(), "value": m.lower()}
-            for m in modes
-        ]
+        options = [{"label": m.upper(), "value": m.lower()} for m in modes]
         return options
 
     @app.callback(
@@ -126,9 +129,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Download step
     @app.callback(
         Output("signal", "data"),
-        [
-            Input("submit-button", "n_clicks")
-        ],
+        [Input("submit-button", "n_clicks")],
         [
             State("contest", "value"),
             State("mode", "value"),
@@ -168,7 +169,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         global DATA_RBN
         DATA_RBN = data_rbn
 
-        return (n_clicks > 0)
+        return n_clicks > 0
 
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
