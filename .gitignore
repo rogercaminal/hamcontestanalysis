@@ -16,4 +16,3 @@ hamcontestanalysis.egg-info/
 .vscode/
 *.html
 .DS_Store
-poetry.lock
