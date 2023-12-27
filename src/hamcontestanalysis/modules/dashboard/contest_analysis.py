@@ -58,10 +58,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         [
             dcc.RadioItems(
                 id="contest",
-                options=[
-                    {"label": "CQ WW DX", "value": "cqww"},
-                ],
-                value="cqww",
+                options = [{"label": getattr(settings.contest, contest).attributes.name, "value": contest.lower()} for contest in settings.contest.contests],
+                value=None,
             )
         ],
         style={"width": "25%", "display": "inline-block"},
@@ -71,11 +69,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         [
             dcc.RadioItems(
                 id="mode",
-                options=[
-                    {"label": "CW", "value": "cw"},
-                    {"label": "SSB", "value": "ssb"},
-                ],
-                value="cw",
+                options=[],
+                value=None,
             )
         ],
         style={"width": "25%", "display": "inline-block"},
@@ -92,6 +87,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     )
 
     @app.callback(
+        Output("mode", "options"),
+        [Input("contest", "value")],
+    )
+    def load_available_modes(contest):
+        if not contest:
+            return []
+        modes = getattr(settings.contest, contest.lower()).modes.modes
+        options = [
+            {"label": m.upper(), "value": m.lower()}
+            for m in modes
+        ]
+        return options
+
+    @app.callback(
         Output("callsigns_years", "options"),
         [Input("contest", "value"), Input("mode", "value")],
     )
@@ -99,7 +108,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         if not contest or not mode:
             return []
         data = get_all_options(contest=contest.lower()).query(f"(mode == '{mode}')")
-        print(data)
         options = [
             {"label": f"{y} - {c}", "value": f"{c},{y}"}
             for y, c in data[["year", "callsign"]].to_numpy()
@@ -118,7 +126,9 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Download step
     @app.callback(
         Output("signal", "data"),
-        [Input("submit-button", "n_clicks")],
+        [
+            Input("submit-button", "n_clicks")
+        ],
         [
             State("contest", "value"),
             State("mode", "value"),
@@ -126,21 +136,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         ],
     )
     def run_download(n_clicks, contest, mode, callsigns_years):
-        if n_clicks > 0:
-            # Contest data
-            callsign_years_tuple_list = []
-            for callsign_year in callsigns_years:
-                callsign = callsign_year.split(",")[0]
-                year = int(callsign_year.split(",")[1])
-                callsign_years_tuple_list.append(tuple([callsign, year]))
-                if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
-                    download_contest_data(
-                        contest=contest, years=[year], callsigns=[callsign], mode=mode
-                    )
-                if mode.lower() == "cw" and not exists_rbn(
-                    contest=contest, year=year, mode=mode
-                ):
-                    download_rbn_data(contest=contest, years=[year], mode=mode)
+        # Contest data
+        callsign_years_tuple_list = []
+        for callsign_year in callsigns_years:
+            callsign = callsign_year.split(",")[0]
+            year = int(callsign_year.split(",")[1])
+            callsign_years_tuple_list.append(tuple([callsign, year]))
+            if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
+                download_contest_data(
+                    contest=contest, years=[year], callsigns=[callsign], mode=mode
+                )
+            if mode.lower() == "cw" and not exists_rbn(
+                contest=contest, year=year, mode=mode
+            ):
+                download_rbn_data(contest=contest, years=[year], mode=mode)
         data_contest = PlotRate(
             contest=contest, mode=mode, callsigns_years=callsign_years_tuple_list
         ).data
@@ -159,7 +168,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         global DATA_RBN
         DATA_RBN = data_rbn
 
-        return True
+        return (n_clicks > 0)
 
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
