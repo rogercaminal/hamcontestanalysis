@@ -8,10 +8,14 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import download_rbn_data
 from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.plots.rbn.plot_snr_band_continent import PlotSnrBandContinent
 from hamcontestanalysis.utils import CONTINENTS
+
+
+settings = get_settings()
 
 
 def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
@@ -38,11 +42,13 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             dcc.RadioItems(
                 id="contest",
                 options=[
-                    {"label": "CQ WW DX", "value": "cqww"},
-                    {"label": "CQ WPX", "value": "cqwpx"},
-                    {"label": "IARU", "value": "iaru"},
+                    {
+                        "label": getattr(settings.contest, contest).attributes.name,
+                        "value": contest.lower(),
+                    }
+                    for contest in settings.contest.contests
                 ],
-                value="cqww",
+                value=None,
             )
         ],
         style={"width": "25%", "display": "inline-block"},

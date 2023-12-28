@@ -9,9 +9,7 @@ from hamcontestanalysis.config.settings import Settings
 
 
 FILE_PATH = Path(__file__).absolute()
-INDEX = FILE_PATH.parts.index("hamcontestanalysis")
-ROOT_PATH = Path(*FILE_PATH.absolute().parts[: INDEX + 1])
-
+ROOT_PATH = FILE_PATH.parent.parent
 SETTINGS_DIR = ROOT_PATH / "settings"
 SETTINGS_FILES = [
     SETTINGS_DIR / "contest.yaml",

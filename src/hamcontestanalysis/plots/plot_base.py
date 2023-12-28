@@ -22,7 +22,21 @@ class PlotBase(ABC):
         self.contest = contest
         self.mode = mode
         self.callsigns_years = callsigns_years
-        self.data = self._get_inputs()
+        self._data = None
+
+    @property
+    def data(self):
+        """Property of attribute data."""
+        if not isinstance(self._data, DataFrame):
+            self._data = self._get_inputs()
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        """Setter for the data attribute."""
+        if not isinstance(value, DataFrame):
+            raise TypeError("data must be a Pandas DataFrame")
+        self._data = value
 
     def _get_inputs(self) -> dict[str, DataFrame]:
         """Get downloaded inputs needed for the plot."""

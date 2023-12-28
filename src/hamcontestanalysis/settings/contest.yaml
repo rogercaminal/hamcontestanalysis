@@ -1,0 +1,35 @@
+default:
+  contest:
+    cqww:
+      attributes:
+        name: "CQ WW DX"
+      modes:
+        cw:
+          month: 11
+          week: -1
+        ssb:
+          month: 10
+          week: -1
+    cqwpx:
+      attributes:
+        name: "CQ WPX"
+      modes:
+        cw:
+          month: 5
+          week: -1
+        ssb:
+          month: 3
+          week: -1
+    iaru:
+      attributes:
+        name: "IARU HF"
+      modes:
+        cw:
+          month: 7
+          week: 2
+        ssb:
+          month: 7
+          week: 2
+        mixed:
+          month: 7
+          week: 2

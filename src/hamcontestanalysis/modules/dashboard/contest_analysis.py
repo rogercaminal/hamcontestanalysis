@@ -8,9 +8,11 @@ from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
 
+from hamcontestanalysis.config import get_settings
+from hamcontestanalysis.modules.download.main import download_contest_data
+from hamcontestanalysis.modules.download.main import download_rbn_data
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.modules.download.main import exists_rbn
-from hamcontestanalysis.modules.download.main import main as _main_download
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
@@ -32,6 +34,9 @@ from hamcontestanalysis.utils.downloads.logs import get_all_options
 
 
 YEAR_MIN = 2020
+DATA_CONTEST = None
+DATA_RBN = None
+settings = get_settings()
 
 
 def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
@@ -54,9 +59,13 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             dcc.RadioItems(
                 id="contest",
                 options=[
-                    {"label": "CQ WW DX", "value": "cqww"},
+                    {
+                        "label": getattr(settings.contest, contest).attributes.name,
+                        "value": contest.lower(),
+                    }
+                    for contest in settings.contest.contests
                 ],
-                value="cqww",
+                value=None,
             )
         ],
         style={"width": "25%", "display": "inline-block"},
@@ -66,10 +75,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         [
             dcc.RadioItems(
                 id="mode",
-                options=[
-                    {"label": "CW", "value": "cw"},
-                    {"label": "SSB", "value": "ssb"},
-                ],
+                options=[],
                 value=None,
             )
         ],
@@ -87,6 +93,17 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     )
 
     @app.callback(
+        Output("mode", "options"),
+        [Input("contest", "value")],
+    )
+    def load_available_modes(contest):
+        if not contest:
+            return []
+        modes = getattr(settings.contest, contest.lower()).modes.modes
+        options = [{"label": m.upper(), "value": m.lower()} for m in modes]
+        return options
+
+    @app.callback(
         Output("callsigns_years", "options"),
         [Input("contest", "value"), Input("mode", "value")],
     )
@@ -94,7 +111,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         if not contest or not mode:
             return []
         data = get_all_options(contest=contest.lower()).query(f"(mode == '{mode}')")
-        print(data)
         options = [
             {"label": f"{y} - {c}", "value": f"{c},{y}"}
             for y, c in data[["year", "callsign"]].to_numpy()
@@ -121,15 +137,39 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         ],
     )
     def run_download(n_clicks, contest, mode, callsigns_years):
-        if n_clicks > 0:
-            for callsign_year in callsigns_years:
-                callsign = callsign_year.split(",")[0]
-                year = int(callsign_year.split(",")[1])
-                if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
-                    _main_download(
-                        contest=contest, years=[year], callsigns=[callsign], mode=mode
-                    )
-        return n_clicks
+        # Contest data
+        callsign_years_tuple_list = []
+        for callsign_year in callsigns_years:
+            callsign = callsign_year.split(",")[0]
+            year = int(callsign_year.split(",")[1])
+            callsign_years_tuple_list.append(tuple([callsign, year]))
+            if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
+                download_contest_data(
+                    contest=contest, years=[year], callsigns=[callsign], mode=mode
+                )
+            if mode.lower() == "cw" and not exists_rbn(
+                contest=contest, year=year, mode=mode
+            ):
+                download_rbn_data(contest=contest, years=[year], mode=mode)
+        data_contest = PlotRate(
+            contest=contest, mode=mode, callsigns_years=callsign_years_tuple_list
+        ).data
+        data_rbn = None
+        if mode == "cw":
+            data_rbn = PlotCwSpeed(
+                contest=contest,
+                mode=mode,
+                callsigns_years=callsign_years_tuple_list,
+                time_bin_size=10,
+            ).data
+
+        global DATA_CONTEST
+        DATA_CONTEST = data_contest
+
+        global DATA_RBN
+        DATA_RBN = data_rbn
+
+        return n_clicks > 0
 
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
@@ -179,14 +219,15 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        return PlotQsosHour(
+        plot = PlotQsosHour(
             contest=contest,
             mode=mode,
             callsigns_years=f_callsigns_years,
             continents=continents,
             time_bin_size=time_bin_size,
-        ).plot()
-        return go.Figure()
+        )
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph frequency
     graph_frequency = html.Div(dcc.Graph(id="frequency", figure=go.Figure()))
@@ -210,10 +251,11 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        return PlotFrequency(
+        plot = PlotFrequency(
             contest=contest, mode=mode, callsigns_years=f_callsigns_years
-        ).plot()
-        return go.Figure()
+        )
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph qso rate
     graph_qso_rate = html.Div(
@@ -265,21 +307,23 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
         if plot_type == "hour":
-            return PlotRate(
+            plot = PlotRate(
                 contest=contest,
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin,
-            ).plot()
+            )
         elif plot_type == "rolling":
-            return PlotRollingRate(
+            plot = PlotRollingRate(
                 contest=contest,
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin,
-            ).plot()
+            )
         else:
             raise ValueError("plot_type must be either 'hour' or 'rolling'")
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph qso direction
     graph_qso_direction = html.Div(
@@ -313,12 +357,14 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        return PlotQsoDirection(
+        plot = PlotQsoDirection(
             contest=contest,
             mode=mode,
             callsigns_years=f_callsigns_years,
             contest_hours=contest_hours,
-        ).plot()
+        )
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph band conditions
     graph_band_conditions = html.Div(
@@ -382,14 +428,16 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             years.append(year)
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        return PlotBandConditions(
+        plot = PlotBandConditions(
             contest=contest,
             mode=mode,
             years=years,
             time_bin_size=time_bin_size,
             reference=reference,
             continents=continents,
-        ).plot()
+        )
+        plot.data = DATA_RBN
+        return plot.plot()
 
     # Graph RBN stats
     graph_rbn_stats = html.Div(
@@ -453,28 +501,32 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
         if feature == "speed":
-            return PlotCwSpeed(
+            plot = PlotCwSpeed(
                 contest=contest,
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin_size,
-            ).plot()
+            )
         elif feature == "snr":
-            return PlotSnr(
+            plot = PlotSnr(
                 contest=contest,
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin_size,
                 rx_continents=rx_continents,
-            ).plot()
+            )
         elif feature == "counts":
-            return PlotNumberRbnSpots(
+            plot = PlotNumberRbnSpots(
                 contest=contest,
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin_size,
                 rx_continents=rx_continents,
-            ).plot()
+            )
+        else:
+            raise ValueError("Plot does not exist")
+        plot.data = DATA_RBN
+        return plot.plot()
 
     # Graph contest_evolution_feature
     graph_contest_evolution_feature = html.Div(
@@ -528,14 +580,16 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
         if contest == "cqww":
-            return PlotCqWwEvolution(
+            plot = PlotCqWwEvolution(
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 feature=feature,
                 time_bin_size=time_bin_size,
-            ).plot()
+            )
         else:
             raise ValueError("Contest not known")
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph minutes previous call
     graph_minutes_previous_call = html.Div(
@@ -577,13 +631,15 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
         if contest == "cqww":
-            return PlotMinutesPreviousCall(
+            plot = PlotMinutesPreviousCall(
                 mode=mode,
                 callsigns_years=f_callsigns_years,
                 time_bin_size=time_bin_size,
-            ).plot()
+            )
         else:
             raise ValueError("Contest not known")
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
