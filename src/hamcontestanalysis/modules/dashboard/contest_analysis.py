@@ -14,6 +14,7 @@ from hamcontestanalysis.modules.download.main import download_rbn_data
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
+from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
@@ -170,6 +171,64 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         DATA_RBN = data_rbn
 
         return n_clicks > 0
+
+    # Graph Contest log
+    graph_contest_log = html.Div(
+        [
+            html.Div(
+                dcc.Checklist(
+                    id="cl_contest_log_continent",
+                    options=CONTINENTS,
+                    value=CONTINENTS,
+                    inline=True,
+                )
+            ),
+            html.Div(
+                dcc.RadioItems(
+                    id="rb_contest_log_time_bin",
+                    options=[1, 5, 10],
+                    value=1,
+                    inline=True,
+                )
+            ),
+            html.Div(dcc.Graph(id="contest_log_heatmap", figure=go.Figure())),
+        ]
+    )
+
+    @app.callback(
+        Output("contest_log_heatmap", "figure"),
+        [
+            Input("signal", "data"),
+            Input("cl_contest_log_continent", "value"),
+            Input("rb_contest_log_time_bin", "value"),
+        ],
+        [
+            State("contest", "value"),
+            State("mode", "value"),
+            State("callsigns_years", "value"),
+        ],
+    )
+    def plot_contest_log_heatmap(
+        signal, continents, time_bin_size, contest, mode, callsigns_years
+    ):
+        f_callsigns_years = []
+        if not signal:
+            raise dash.exceptions.PreventUpdate
+        for callsign_year in callsigns_years:
+            callsign = callsign_year.split(",")[0]
+            year = int(callsign_year.split(",")[1])
+            f_callsigns_years.append((callsign, year))
+            if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
+                raise dash.exceptions.PreventUpdate
+        plot = PlotLogHeatmap(
+            contest=contest,
+            mode=mode,
+            callsigns_years=f_callsigns_years,
+            continents=continents,
+            time_bin_size=time_bin_size,
+        )
+        plot.data = DATA_CONTEST
+        return plot.plot()
 
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
@@ -649,6 +708,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             radio_mode,
             dropdown_year_call,
             submit_button,
+            graph_contest_log,
             graph_qsos_hour,
             graph_frequency,
             graph_qso_rate,

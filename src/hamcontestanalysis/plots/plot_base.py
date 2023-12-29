@@ -17,7 +17,7 @@ class PlotBase(ABC):
     way to create a plotly object, implemented by each plot subclass.
     """
 
-    def __init__(self, contest: str, mode: str, callsigns_years: list[tuple]):
+    def __init__(self, contest: str, mode: str, callsigns_years: list[tuple[str, int]]):
         """Init method of the base class."""
         self.contest = contest
         self.mode = mode
@@ -38,7 +38,7 @@ class PlotBase(ABC):
             raise TypeError("data must be a Pandas DataFrame")
         self._data = value
 
-    def _get_inputs(self) -> dict[str, DataFrame]:
+    def _get_inputs(self) -> DataFrame:
         """Get downloaded inputs needed for the plot."""
         data = []
         for callsign, year in self.callsigns_years:
@@ -64,5 +64,5 @@ class PlotBase(ABC):
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            None | Figure: Figure containing the plot
         """

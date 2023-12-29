@@ -1,1 +1,2 @@
 recursive-include src/hamcontestanalysis/settings *
+recursive-include src/hamcontestanalysis/modules/dashboard/assets *

@@ -18,7 +18,7 @@ class PlotQsosHour(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: list[tuple[str, int]],
         continents: list[str] | None = None,
         time_bin_size: int = 60,
     ):
@@ -27,7 +27,7 @@ class PlotQsosHour(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple]): Callsign and year of the contest
+            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
             continents (list[str] | None): List of continents to filter out. Defaults
                 to None.
             time_bin_size (int): size of the time bin in minutes. Defaults to 60.

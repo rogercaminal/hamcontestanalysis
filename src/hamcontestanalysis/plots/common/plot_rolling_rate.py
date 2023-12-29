@@ -16,7 +16,7 @@ class PlotRollingRate(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: list[tuple[str, int]],
         time_bin_size: int = 1,
         target: str = "qsos",
     ):
@@ -25,7 +25,7 @@ class PlotRollingRate(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple]): Callsign and year of the contest
+            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
             target (str, optional): Target to be plotted. Defaults to qsos.
         """
