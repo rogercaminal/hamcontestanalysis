@@ -5,6 +5,7 @@ from typer import Option
 from typer import Typer
 
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
+from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
@@ -44,6 +45,45 @@ def frequency(
     """Frequency plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
     plot = PlotFrequency(contest=contest, mode=mode, callsigns_years=callsigns_years)
+    plot.plot(save=True)
+
+
+@app.command()
+def log_heatmap(
+    contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
+    mode: str = Option(
+        ...,
+        "--mode",
+        help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+    ),
+    callsigns_years: list[str] = Option(
+        ...,
+        "--callsigns_years",
+        help=(
+            "callsign,year to be considered. Can be specified multiple times for "
+            "multiple callsigns and year pairs."
+        ),
+    ),
+    time_bin_size: int = Option(
+        1,
+        "--time_bin_size",
+        help=("Size of the time bins, default: 15"),
+    ),
+    continents: list[str] = Option(
+        ["EU", "NA", "AS", "SA", "OC"],
+        "--continents",
+        help=("Continents to plot"),
+    ),
+):
+    """Contest log heatmap plot plot."""
+    callsigns_years = [pair.split(",") for pair in callsigns_years]
+    plot = PlotLogHeatmap(
+        contest=contest,
+        mode=mode,
+        callsigns_years=callsigns_years,
+        time_bin_size=time_bin_size,
+        continents=continents,
+    )
     plot.plot(save=True)
 
 

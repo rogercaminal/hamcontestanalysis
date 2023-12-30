@@ -64,7 +64,9 @@ class ReverseBeaconRawDataSource(StorageDataSource):
         self.dates: List[date] = (
             dates
             if contest is None
-            else getattr(_settings.contest, contest).get_dates(year)
+            else getattr(
+                getattr(_settings.contest, contest).modes, self.mode
+            ).get_dates(year)
         )
 
     def load(self) -> DataFrame:

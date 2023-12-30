@@ -16,7 +16,7 @@ class PlotQsoDirection(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: list[tuple[str, int]],
         contest_hours: list[float],
     ):
         """Init method of the PlotRate class.
@@ -24,7 +24,7 @@ class PlotQsoDirection(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple]): Callsign and year of the contest
+            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
             contest_hours (list[tuple]): Contest hours to consider.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
