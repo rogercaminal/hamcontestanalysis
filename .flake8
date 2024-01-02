@@ -11,4 +11,4 @@ per-file-ignores = tests/*:D101,D103,D106,S101
     src/hamcontestanalysis/data/raw_contest_cabrillo.py:S310,
     src/hamcontestanalysis/data/rbn/storage_source.py:S310,
     src/hamcontestanalysis/modules/dashboard/contest_analysis.py:C901,
-    src/hamcontestanalysis/utils/downloads/logs.py:S310
+    src/hamcontestanalysis/data/storage_source.py:S310

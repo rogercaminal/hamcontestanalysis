@@ -10,7 +10,7 @@ from pandas import to_datetime
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 
 
-class RawCQWWCabrilloDataSource(RawContestCabrilloDataSource):
+class CabrilloDataSource(RawContestCabrilloDataSource):
     """CQ WW Contest cabrillo data source definition."""
 
     path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
@@ -28,6 +28,7 @@ class RawCQWWCabrilloDataSource(RawContestCabrilloDataSource):
         "zone": "int",
         "radio": "int",
     }
+    contest: str = "cqww"
 
     def __init__(
         self,
@@ -62,3 +63,22 @@ class RawCQWWCabrilloDataSource(RawContestCabrilloDataSource):
             .drop(columns=["date", "time"])
         )
         return data
+
+    @classmethod
+    def get_all_options(cls, force: bool = False) -> DataFrame:
+        """Retrieve all contest/year/mode/callsigns from the website.
+
+        To do that, it uses _get_available_callsigns and
+            _get_available_year_modes functions above to get all potential
+            options from the contest website.
+
+        Args:
+            contest (str): contest to consider
+            force (bool): force the reconstruction of the parquet file with the
+                information. Defaults to False.
+
+        Returns:
+            DataFrame: Dataframe with information about the available contest,
+                mode and year
+        """
+        return super().get_all_options(contest="cqww", force=force)

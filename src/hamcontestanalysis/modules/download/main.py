@@ -1,9 +1,9 @@
 """Download the data from the server."""
+import importlib
 import logging
 import os
 
 from hamcontestanalysis.config import get_settings
-from hamcontestanalysis.data.cqww.storage_source import RawCQWWCabrilloDataSource
 from hamcontestanalysis.data.raw_contest_sink import RawCabrilloDataSink
 from hamcontestanalysis.data.raw_contest_sink import RawCabrilloMetaDataSink
 from hamcontestanalysis.data.raw_rbn_sink import RawReverseBeaconDataSink
@@ -71,7 +71,10 @@ def download_contest_data(
             ):
                 logger.info(f"  - {contest} - {mode} - {year} - {callsign}")
                 # Get data
-                contest_data = RawCQWWCabrilloDataSource(
+                data_source_class = importlib.import_module(
+                    f"hamcontestanalysis.data.{contest.lower()}.storage_source"
+                ).CabrilloDataSource
+                contest_data = data_source_class(
                     callsign=callsign, year=year, mode=mode
                 ).load()
 

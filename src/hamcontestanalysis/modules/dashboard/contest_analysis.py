@@ -1,4 +1,6 @@
 """HamContestAnalysis dashboard."""
+import importlib
+
 import dash
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
@@ -7,6 +9,7 @@ from dash import html
 from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
+from pandas import concat
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import download_contest_data
@@ -30,8 +33,8 @@ from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
 from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
+from hamcontestanalysis.tables.table_contest_log import TableContestLogCQWW
 from hamcontestanalysis.utils import CONTINENTS
-from hamcontestanalysis.utils.downloads.logs import get_all_options
 
 
 YEAR_MIN = 2020
@@ -111,7 +114,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     def load_available_calls_years(contest, mode):
         if not contest or not mode:
             return []
-        data = get_all_options(contest=contest.lower()).query(f"(mode == '{mode}')")
+
+        data_source_class = importlib.import_module(
+            f"hamcontestanalysis.data.{contest.lower()}.storage_source"
+        ).CabrilloDataSource
+        data = data_source_class.get_all_options().query(f"(mode == '{mode}')")
+
         options = [
             {"label": f"{y} - {c}", "value": f"{c},{y}"}
             for y, c in data[["year", "callsign"]].to_numpy()
@@ -700,6 +708,42 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         plot.data = DATA_CONTEST
         return plot.plot()
 
+    # Table
+    table_contest_log = html.Div(html.Div(id="table_contest_log"))
+
+    @app.callback(
+        Output("table_contest_log", "children"),
+        [
+            Input("signal", "data"),
+        ],
+        [
+            State("contest", "value"),
+            State("mode", "value"),
+            State("callsigns_years", "value"),
+        ],
+    )
+    def show_table_contest_data(signal, contest, mode, callsigns_years):
+        f_callsigns_years = []
+        if not signal:
+            raise dash.exceptions.PreventUpdate
+        for callsign_year in callsigns_years:
+            callsign = callsign_year.split(",")[0]
+            year = int(callsign_year.split(",")[1])
+            f_callsigns_years.append((callsign, year))
+            if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
+                raise dash.exceptions.PreventUpdate
+        if contest == "cqww":
+            table = TableContestLogCQWW()
+        else:
+            raise ValueError("Contest not known")
+        _data = []
+        for callsign, year in f_callsigns_years:
+            _data.append(
+                DATA_CONTEST.query(f"(mycall == '{callsign}') & (year == {year})")
+            )
+        table.data = concat(_data).reset_index(drop=True)
+        return table.show(page_size=25)
+
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
@@ -708,6 +752,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             radio_mode,
             dropdown_year_call,
             submit_button,
+            table_contest_log,
             graph_contest_log,
             graph_qsos_hour,
             graph_frequency,

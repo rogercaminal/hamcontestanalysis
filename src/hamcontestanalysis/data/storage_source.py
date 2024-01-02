@@ -9,6 +9,7 @@ from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Union
+from urllib.request import urlopen
 
 from pandas import DataFrame
 from pandas import read_csv
@@ -109,3 +110,9 @@ class StorageDataSource(DataSource, ABC):
             )
         read_method = self.read_method_by_file_format[file_format]
         return read_method(path, **kwargs)
+
+    @staticmethod
+    def _download_raw_data(website_address):
+        with urlopen(website_address) as response:
+            html = response.read().decode("unicode_escape")
+        return html
