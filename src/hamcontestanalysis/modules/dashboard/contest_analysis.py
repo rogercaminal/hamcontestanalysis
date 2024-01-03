@@ -33,7 +33,7 @@ from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
 from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
-from hamcontestanalysis.tables.table_contest_log import TableContestLogCQWW
+from hamcontestanalysis.tables.cqww.table_contest_log import TableContestLog
 from hamcontestanalysis.utils import CONTINENTS
 
 
@@ -146,7 +146,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         ],
     )
     def run_download(n_clicks, contest, mode, callsigns_years):
-        # Contest data
+        if not callsigns_years:
+            raise dash.exceptions.PreventUpdate
         callsign_years_tuple_list = []
         for callsign_year in callsigns_years:
             callsign = callsign_year.split(",")[0]
@@ -199,12 +200,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 )
             ),
-            html.Div(dcc.Graph(id="contest_log_heatmap", figure=go.Figure())),
+            html.Div(html.Div(id="contest_log_heatmap")),
         ]
     )
 
     @app.callback(
-        Output("contest_log_heatmap", "figure"),
+        Output("contest_log_heatmap", "children"),
         [
             Input("signal", "data"),
             Input("cl_contest_log_continent", "value"),
@@ -235,8 +236,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             continents=continents,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
@@ -257,12 +258,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 )
             ),
-            html.Div(dcc.Graph(id="qsos_hour", figure=go.Figure())),
+            html.Div(html.Div(id="qsos_hour")),
         ]
     )
 
     @app.callback(
-        Output("qsos_hour", "figure"),
+        Output("qsos_hour", "children"),
         [
             Input("signal", "data"),
             Input("cl_qsos_hour_continent", "value"),
@@ -293,14 +294,14 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             continents=continents,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph frequency
-    graph_frequency = html.Div(dcc.Graph(id="frequency", figure=go.Figure()))
+    graph_frequency = html.Div(html.Div(id="frequency"))
 
     @app.callback(
-        Output("frequency", "figure"),
+        Output("frequency", "children"),
         [Input("signal", "data")],
         [
             State("contest", "value"),
@@ -321,8 +322,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         plot = PlotFrequency(
             contest=contest, mode=mode, callsigns_years=f_callsigns_years
         )
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph qso rate
     graph_qso_rate = html.Div(
@@ -346,12 +347,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 )
             ),
-            html.Div(dcc.Graph(id="qso_rate", figure=go.Figure())),
+            html.Div(html.Div(id="qso_rate")),
         ]
     )
 
     @app.callback(
-        Output("qso_rate", "figure"),
+        Output("qso_rate", "children"),
         [
             Input("signal", "data"),
             Input("rb_qso_rate_type", "value"),
@@ -389,8 +390,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             )
         else:
             raise ValueError("plot_type must be either 'hour' or 'rolling'")
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph qso direction
     graph_qso_direction = html.Div(
@@ -398,12 +399,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             html.Div(
                 dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
             ),
-            html.Div(dcc.Graph(id="qso_direction", figure=go.Figure())),
+            html.Div(html.Div(id="qso_direction")),
         ]
     )
 
     @app.callback(
-        Output("qso_direction", "figure"),
+        Output("qso_direction", "children"),
         [
             Input("signal", "data"),
             Input("range_hour_qso_direction", "value"),
@@ -430,8 +431,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             callsigns_years=f_callsigns_years,
             contest_hours=contest_hours,
         )
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph band conditions
     graph_band_conditions = html.Div(
@@ -460,12 +461,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 ),
             ),
-            html.Div(dcc.Graph(id="band_conditions", figure=go.Figure())),
+            html.Div(html.Div(id="band_conditions")),
         ]
     )
 
     @app.callback(
-        Output("band_conditions", "figure"),
+        Output("band_conditions", "children"),
         [
             Input("signal", "data"),
             Input("rb_band_conditions_time_bin", "value"),
@@ -504,7 +505,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             continents=continents,
         )
         plot.data = DATA_RBN
-        return plot.plot()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph RBN stats
     graph_rbn_stats = html.Div(
@@ -537,12 +538,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 ),
             ),
-            html.Div(dcc.Graph(id="rbn_stats", figure=go.Figure())),
+            html.Div(html.Div(id="rbn_stats")),
         ]
     )
 
     @app.callback(
-        Output("rbn_stats", "figure"),
+        Output("rbn_stats", "children"),
         [
             Input("signal", "data"),
             Input("rb_rbn_feature", "value"),
@@ -593,7 +594,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         else:
             raise ValueError("Plot does not exist")
         plot.data = DATA_RBN
-        return plot.plot()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph contest_evolution_feature
     graph_contest_evolution_feature = html.Div(
@@ -617,7 +618,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 ),
             ),
-            html.Div(dcc.Graph(id="contest_evolution_feature", figure=go.Figure())),
+            html.Div(html.Div(id="contest_evolution_feature")),
         ]
     )
 
@@ -655,8 +656,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             )
         else:
             raise ValueError("Contest not known")
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Graph minutes previous call
     graph_minutes_previous_call = html.Div(
@@ -669,12 +670,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     inline=True,
                 ),
             ),
-            html.Div(dcc.Graph(id="minutes_previous_call", figure=go.Figure())),
+            html.Div(html.Div(id="minutes_previous_call")),
         ]
     )
 
     @app.callback(
-        Output("minutes_previous_call", "figure"),
+        Output("minutes_previous_call", "children"),
         [
             Input("signal", "data"),
             Input("rb_previous_call_time_bin", "value"),
@@ -705,8 +706,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             )
         else:
             raise ValueError("Contest not known")
-        plot.data = DATA_CONTEST
-        return plot.plot()
+        plot.data = DATA_CONTEST.copy()
+        return dcc.Graph(figure=plot.plot())
 
     # Table
     table_contest_log = html.Div(html.Div(id="table_contest_log"))
@@ -724,7 +725,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     )
     def show_table_contest_data(signal, contest, mode, callsigns_years):
         f_callsigns_years = []
-        if not signal:
+        if not signal or not callsigns_years:
             raise dash.exceptions.PreventUpdate
         for callsign_year in callsigns_years:
             callsign = callsign_year.split(",")[0]
@@ -732,14 +733,15 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        if contest == "cqww":
-            table = TableContestLogCQWW()
-        else:
-            raise ValueError("Contest not known")
+
+        table = importlib.import_module(
+            f"hamcontestanalysis.tables.{contest.lower()}.table_contest_log"
+        ).TableContestLog()
+
         _data = []
         for callsign, year in f_callsigns_years:
             _data.append(
-                DATA_CONTEST.query(f"(mycall == '{callsign}') & (year == {year})")
+                DATA_CONTEST.query(f"(mycall == '{callsign}') & (year == {year})").copy()
             )
         table.data = concat(_data).reset_index(drop=True)
         return table.show(page_size=25)
