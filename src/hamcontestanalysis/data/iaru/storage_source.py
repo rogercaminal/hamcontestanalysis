@@ -5,8 +5,6 @@ from typing import Optional
 from typing import Union
 
 from pandas import DataFrame
-from os.path import join, exists
-from pandas import concat, read_parquet
 from pandas import to_datetime
 
 from hamcontestanalysis.config import get_settings
@@ -16,7 +14,9 @@ from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataS
 class CabrilloDataSource(RawContestCabrilloDataSource):
     """IARU HF Contest cabrillo data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = "https://contests.arrl.org/showpubliclog.php?q={q}"
+    path: ClassVar[
+        Union[str, PathLike]
+    ] = "https://contests.arrl.org/showpubliclog.php?q={q}"
     prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid=4"
     dtypes: ClassVar[dict[str, str]] = {
         "frequency": "int",
@@ -59,8 +59,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         self.path = self.path.format(q=hash_q)
         super().__init__(callsign=callsign, year=year, mode=mode)
         # TODO: fix the main class as in this case the prefix is not really so.
-        self.path = self.path.split(self.prefix+"/")[1]
-        
+        self.path = self.path.split(self.prefix + "/")[1]
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
@@ -75,7 +74,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             .drop(columns=["date", "time"])
         )
         return data
-    
+
     @classmethod
     def get_all_options(cls, force: bool = False) -> DataFrame:
         """Retrieve all contest/year/mode/callsigns from the website.
@@ -95,9 +94,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         """
         settings = get_settings()
         return (
-            super().get_all_options_arrl(contest="iaru", force=force)
+            super()
+            .get_all_options_arrl(contest="iaru", force=force)
             .assign(mode=settings.contest.iaru.modes.modes[0])
         )
-
-
-

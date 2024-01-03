@@ -3,7 +3,6 @@ import importlib
 
 import dash
 import dash_bootstrap_components as dbc
-import plotly.graph_objects as go
 from dash import dcc
 from dash import html
 from dash.dependencies import Input
@@ -33,7 +32,6 @@ from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
 from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
-from hamcontestanalysis.tables.cqww.table_contest_log import TableContestLog
 from hamcontestanalysis.utils import CONTINENTS
 
 
@@ -741,7 +739,9 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         _data = []
         for callsign, year in f_callsigns_years:
             _data.append(
-                DATA_CONTEST.query(f"(mycall == '{callsign}') & (year == {year})").copy()
+                DATA_CONTEST.query(
+                    f"(mycall == '{callsign}') & (year == {year})"
+                ).copy()
             )
         table.data = concat(_data).reset_index(drop=True)
         return table.show(page_size=25)
