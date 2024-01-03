@@ -13,11 +13,10 @@ class TableContestLog(TableBase):
             {"name": "Band", "id": "band", "type": "numeric"},
             {"name": "Mode", "id": "mode", "type": "text"},
             {"name": "Call", "id": "call", "type": "text"},
-            {"name": "CQ Zone", "id": "cqz", "type": "numeric"},
+            {"name": "Exchange", "id": "exchange", "type": "text"},
             {"name": "DXCC", "id": "country", "type": "text"},
             {"name": "My Call", "id": "mycall", "type": "text"},
             {"name": "Year", "id": "year", "type": "numeric"},
-            # year
             # QSOS in that minute, in those 30 min, in those 60 min
             # Prefix
             # ITU zone

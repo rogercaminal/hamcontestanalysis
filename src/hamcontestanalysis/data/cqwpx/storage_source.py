@@ -47,17 +47,23 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
+        self.path = self.path.format(
+            callsign=callsign.lower(), year=year, mode=mode.lower()
+        )
         super().__init__(callsign=callsign, year=year, mode=mode)
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
         data.columns = list(self.dtypes.keys())
-        data = data.assign(
-            datetime=lambda x: to_datetime(
-                x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
-            ),
-            # band=lambda x: x.apply()
-        ).drop(columns=["date", "time"])
+        data = (
+            data.astype(self.dtypes)
+            .assign(
+                datetime=lambda x: to_datetime(
+                    x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
+                ),
+            )
+            .drop(columns=["date", "time"])
+        )
         return data
 
     @classmethod

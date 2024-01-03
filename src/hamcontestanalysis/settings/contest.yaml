@@ -24,12 +24,6 @@ default:
       attributes:
         name: "IARU HF"
       modes:
-        cw:
-          month: 7
-          week: 2
-        ssb:
-          month: 7
-          week: 2
         mixed:
           month: 7
           week: 2

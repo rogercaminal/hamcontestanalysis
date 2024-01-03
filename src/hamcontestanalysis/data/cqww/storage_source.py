@@ -48,6 +48,9 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
+        self.path = self.path.format(
+            callsign=callsign.lower(), year=year, mode=mode.lower()
+        )
         super().__init__(callsign=callsign, year=year, mode=mode)
 
     def process_result(self, data: DataFrame) -> DataFrame:

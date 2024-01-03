@@ -52,9 +52,6 @@ class RawContestCabrilloDataSource(StorageDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
-        self.path = self.path.format(
-            callsign=callsign.lower(), year=year, mode=mode.lower()
-        )
         super().__init__(prefix=self.prefix)
         self.callsign = callsign
         self.year = year

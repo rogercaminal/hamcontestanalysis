@@ -16,8 +16,7 @@ from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataS
 class CabrilloDataSource(RawContestCabrilloDataSource):
     """IARU HF Contest cabrillo data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
-    # https://contests.arrl.org/showpubliclog.php?q=IH3hhwmKEBCPH0y08M1azQ
+    path: ClassVar[Union[str, PathLike]] = "https://contests.arrl.org/showpubliclog.php?q={q}"
     prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid=4"
     dtypes: ClassVar[dict[str, str]] = {
         "frequency": "int",
@@ -26,10 +25,10 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         "time": "str",
         "mycall": "str",
         "myrst": "int",
-        "myserial": "int",
+        "myexchange": "str",
         "call": "str",
         "rst": "int",
-        "serial": "int",
+        "exchange": "str",
         "radio": "int",
     }
 
@@ -51,17 +50,30 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
+        hash_q = (
+            self.get_all_options()
+            .query(f"(callsign=='{callsign}') & (year == {year})")
+            .loc[:, "q"]
+            .values[0]
+        )
+        self.path = self.path.format(q=hash_q)
         super().__init__(callsign=callsign, year=year, mode=mode)
+        # TODO: fix the main class as in this case the prefix is not really so.
+        self.path = self.path.split(self.prefix+"/")[1]
+        
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
         data.columns = list(self.dtypes.keys())
-        data = data.assign(
-            datetime=lambda x: to_datetime(
-                x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
-            ),
-            # band=lambda x: x.apply()
-        ).drop(columns=["date", "time"])
+        data = (
+            data.astype(self.dtypes)
+            .assign(
+                datetime=lambda x: to_datetime(
+                    x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
+                ),
+            )
+            .drop(columns=["date", "time"])
+        )
         return data
     
     @classmethod
@@ -81,7 +93,11 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             DataFrame: Dataframe with information about the available contest,
                 mode and year
         """
-        return super().get_all_options_arrl(contest="iaru", force=force)
+        settings = get_settings()
+        return (
+            super().get_all_options_arrl(contest="iaru", force=force)
+            .assign(mode=settings.contest.iaru.modes.modes[0])
+        )
 
 
 
