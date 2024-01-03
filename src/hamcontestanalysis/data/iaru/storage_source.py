@@ -1,20 +1,24 @@
-"""CQ WW Contest cabrillo data source module."""
+"""IARU HF Contest cabrillo data source module."""
 from os import PathLike
 from typing import ClassVar
 from typing import Optional
 from typing import Union
 
 from pandas import DataFrame
+from os.path import join, exists
+from pandas import concat, read_parquet
 from pandas import to_datetime
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 
 
 class CabrilloDataSource(RawContestCabrilloDataSource):
-    """CQ WW Contest cabrillo data source definition."""
+    """IARU HF Contest cabrillo data source definition."""
 
     path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
-    prefix: Optional[str] = "http://www.cqww.com/publiclogs/"
+    # https://contests.arrl.org/showpubliclog.php?q=IH3hhwmKEBCPH0y08M1azQ
+    prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid=4"
     dtypes: ClassVar[dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
@@ -22,13 +26,12 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         "time": "str",
         "mycall": "str",
         "myrst": "int",
-        "myzone": "int",
+        "myserial": "int",
         "call": "str",
         "rst": "int",
-        "zone": "int",
+        "serial": "int",
         "radio": "int",
     }
-    contest: str = "cqww"
 
     def __init__(
         self,
@@ -53,17 +56,14 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
         data.columns = list(self.dtypes.keys())
-        data = (
-            data.astype(self.dtypes)
-            .assign(
-                datetime=lambda x: to_datetime(
-                    x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
-                ),
-            )
-            .drop(columns=["date", "time"])
-        )
+        data = data.assign(
+            datetime=lambda x: to_datetime(
+                x["date"] + " " + x["time"], format="%Y-%m-%d %H%M"
+            ),
+            # band=lambda x: x.apply()
+        ).drop(columns=["date", "time"])
         return data
-
+    
     @classmethod
     def get_all_options(cls, force: bool = False) -> DataFrame:
         """Retrieve all contest/year/mode/callsigns from the website.
@@ -81,4 +81,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             DataFrame: Dataframe with information about the available contest,
                 mode and year
         """
-        return super().get_all_options_cq(contest="cqww", force=force)
+        return super().get_all_options_arrl(contest="iaru", force=force)
+
+
+

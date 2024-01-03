@@ -4,7 +4,9 @@ from hamcontestanalysis.tables.table_base import TableBase
 
 class TableContestLogCQWW(TableBase):
     """Table containing the contest log."""
+
     def __init__(self):
+        """Init method."""
         columns = [
             {"name": "Date time", "id": "datetime", "type": "datetime"},
             {"name": "Frequency", "id": "frequency", "type": "numeric"},
@@ -21,12 +23,20 @@ class TableContestLogCQWW(TableBase):
             # Continent
             # Copied exchange
         ]
-        filter_action = 'native'
+        filter_action = "native"
         sort_action = "native"
-        style_table={'height': "300px", 'overflowY': 'auto'}
-        style_data={
-            'width': '150px', 'minWidth': '150px', 'maxWidth': '150px',
-            'overflow': 'hidden',
-            'textOverflow': 'ellipsis',
+        style_table = {"height": "300px", "overflowY": "auto"}
+        style_data = {
+            "width": "150px",
+            "minWidth": "150px",
+            "maxWidth": "150px",
+            "overflow": "hidden",
+            "textOverflow": "ellipsis",
         }
-        super().__init__(columns=columns, style_table=style_table, style_data=style_data, filter_action=filter_action, sort_action=sort_action)
+        super().__init__(
+            columns=columns,
+            style_table=style_table,
+            style_data=style_data,
+            filter_action=filter_action,
+            sort_action=sort_action,
+        )

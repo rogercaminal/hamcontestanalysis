@@ -1,4 +1,4 @@
-"""CQ WW Contest cabrillo data source module."""
+"""CQ WPX Contest cabrillo data source module."""
 from os import PathLike
 from typing import ClassVar
 from typing import Optional
@@ -10,7 +10,7 @@ from pandas import to_datetime
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 
 
-class RawCQWPXCabrilloDataSource(RawContestCabrilloDataSource):
+class CabrilloDataSource(RawContestCabrilloDataSource):
     """CQ WPX Contest cabrillo data source definition."""
 
     path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
@@ -59,3 +59,22 @@ class RawCQWPXCabrilloDataSource(RawContestCabrilloDataSource):
             # band=lambda x: x.apply()
         ).drop(columns=["date", "time"])
         return data
+
+    @classmethod
+    def get_all_options(cls, force: bool = False) -> DataFrame:
+        """Retrieve all contest/year/mode/callsigns from the website.
+
+        To do that, it uses _get_available_callsigns and
+            _get_available_year_modes functions above to get all potential
+            options from the contest website.
+
+        Args:
+            contest (str): contest to consider
+            force (bool): force the reconstruction of the parquet file with the
+                information. Defaults to False.
+
+        Returns:
+            DataFrame: Dataframe with information about the available contest,
+                mode and year
+        """
+        return super().get_all_options_cq(contest="cqwpx", force=force)
