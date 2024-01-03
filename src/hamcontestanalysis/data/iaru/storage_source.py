@@ -1,4 +1,4 @@
-"""CQ WPX Contest cabrillo data source module."""
+"""IARU HF Contest cabrillo data source module."""
 from os import PathLike
 from typing import ClassVar
 from typing import Optional
@@ -7,14 +7,17 @@ from typing import Union
 from pandas import DataFrame
 from pandas import to_datetime
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 
 
 class CabrilloDataSource(RawContestCabrilloDataSource):
-    """CQ WPX Contest cabrillo data source definition."""
+    """IARU HF Contest cabrillo data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
-    prefix: Optional[str] = "http://www.cqwpx.com/publiclogs/"
+    path: ClassVar[
+        Union[str, PathLike]
+    ] = "https://contests.arrl.org/showpubliclog.php?q={q}"
+    prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid=4"
     dtypes: ClassVar[dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
@@ -22,10 +25,10 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         "time": "str",
         "mycall": "str",
         "myrst": "int",
-        "myserial": "int",
+        "myexchange": "str",
         "call": "str",
         "rst": "int",
-        "serial": "int",
+        "exchange": "str",
         "radio": "int",
     }
 
@@ -47,10 +50,16 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
-        self.path = self.path.format(
-            callsign=callsign.lower(), year=year, mode=mode.lower()
+        hash_q = (
+            self.get_all_options()
+            .query(f"(callsign=='{callsign}') & (year == {year})")
+            .loc[:, "q"]
+            .values[0]
         )
+        self.path = self.path.format(q=hash_q)
         super().__init__(callsign=callsign, year=year, mode=mode)
+        # TODO: fix the main class as in this case the prefix is not really so.
+        self.path = self.path.split(self.prefix + "/")[1]
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
@@ -83,4 +92,9 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             DataFrame: Dataframe with information about the available contest,
                 mode and year
         """
-        return super().get_all_options_cq(contest="cqwpx", force=force)
+        settings = get_settings()
+        return (
+            super()
+            .get_all_options_arrl(contest="iaru", force=force)
+            .assign(mode=settings.contest.iaru.modes.modes[0])
+        )

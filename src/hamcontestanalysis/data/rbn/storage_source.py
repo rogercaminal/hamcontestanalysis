@@ -110,7 +110,7 @@ class ReverseBeaconRawDataSource(StorageDataSource):
         data = (
             data.loc[:, self.dtypes.keys()]
             .dropna(subset=["dx"])
-            .query("band.str.contains('m')")
+            .query("(band.str.contains('m') & ~(band.str.contains('cm')))")
             .assign(
                 band=lambda x: x["band"].str.replace("m", "").astype(int),
                 datetime=lambda x: to_datetime(x["date"]),

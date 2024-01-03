@@ -117,7 +117,6 @@ class PlotLogHeatmap(PlotBase):
             table = pivot_table(
                 _df, values="qsos", index=["contest_hour"], columns=["contest_minute"]
             )
-            # import pdb; pdb.set_trace()
             table_calls = pivot_table(
                 _df,
                 values="calls",
@@ -141,6 +140,9 @@ class PlotLogHeatmap(PlotBase):
                         tickvals=arange(0, z_max + 1, 1),
                         ticks="outside",
                     ),
+                    zauto=False,
+                    zmin=0,
+                    zmax=z_max,
                 ),
                 row=irow + 1,
                 col=1,

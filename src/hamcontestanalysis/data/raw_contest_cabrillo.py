@@ -3,14 +3,21 @@ import re
 from collections import defaultdict
 from io import StringIO
 from os import PathLike
+from os.path import exists
+from os.path import join
 from typing import Any
 from typing import ClassVar
+from typing import List
 from typing import Optional
+from typing import Tuple
 from typing import Union
 from urllib.request import urlopen
 
 from pandas import DataFrame
+from pandas import concat
+from pandas import read_parquet
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.storage_source import StorageDataSource
 
 
@@ -25,6 +32,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
     path: ClassVar[Union[str, PathLike]]
     prefix: Optional[str]
     website_address_template: str
+    contest: str
 
     def __init__(
         self,
@@ -44,9 +52,6 @@ class RawContestCabrilloDataSource(StorageDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
-        self.path = self.path.format(
-            callsign=callsign.lower(), year=year, mode=mode.lower()
-        )
         super().__init__(prefix=self.prefix)
         self.callsign = callsign
         self.year = year
@@ -91,3 +96,155 @@ class RawContestCabrilloDataSource(StorageDataSource):
                 continue
             _df.attrs[k] = v
         return _df
+
+    @classmethod
+    def _get_available_callsigns(cls, year: int, mode: str | None = None) -> list[str]:
+        """Retrieve list of available callsigns in a contest, year and mode.
+
+        Valid only for CQ WW and CQ WPX.
+
+        Args:
+            year (int): Year of the contest
+            mode (str): Mode of the contest. Defaults to None.
+
+        Raises:
+            NotImplementedError: If contest is not available.
+
+        Returns:
+            list[str]: List of callsigns available
+        """
+        mode_adapted = mode.lower().replace("ssb", "ph")
+        website_address = f"{cls.prefix}{year}{mode_adapted}"
+        html = cls._download_raw_data(website_address=website_address)
+        # raw_list = re.findall(r"href='(.+)\.log'", html)
+        raw_list = re.findall(r">([A-Z0-9\/]+)<", html)
+        return [call.upper().replace("-", "/") for call in raw_list]
+
+    @classmethod
+    def _get_available_year_modes(cls) -> dict[str, int]:
+        """Retrieve available year and modes from the contest website.
+
+        Valid only for CQ WW and CQ WPX.
+
+        Raises:
+            NotImplementedError: If contest not implemented
+
+        Returns:
+            dict[str, int]: Dictionary of contest and years available.
+        """
+        website_address = f"{cls.prefix}"
+        html = cls._download_raw_data(website_address=website_address)
+        raw_list = re.findall(r"href=\"(\w+)/\"", html)
+        return [(item[4:].replace("ph", "ssb"), item[:4]) for item in raw_list]
+
+    @classmethod
+    def _get_available_years(cls) -> dict[int, int]:
+        """Retrieve available year and modes from the contest website.
+
+        Valid only for ARRL contests.
+
+        Raises:
+            NotImplementedError: If contest not implemented
+
+        Returns:
+            dict[int, int]: Dictionary of years and corresponding website iid.
+        """
+        website_address = f"{cls.prefix}"
+        html = cls._download_raw_data(website_address=website_address)
+        raw_list = re.findall(
+            r"<a href=\"publiclogs.php\?eid=([0-9]+)&iid=([0-9]+)\">([0-9]+)<", html
+        )
+        return [(int(group[2]), int(group[1])) for group in raw_list]
+
+    @classmethod
+    def _get_available_callsigns_and_links(
+        cls, iid: int | None = None
+    ) -> List[Tuple[str, str]]:
+        """Retrieve list of available callsigns the IARU HF and year.
+
+        Valid only for ARRL contests.
+
+        Args:
+            iid (int): ID corresponding to contest in the website. Defaults
+                to None.
+
+        Raises:
+            NotImplementedError: If contest is not available.
+
+        Returns:
+            List[Tuple[str, str]]: List of tuples with callsigns and links available.
+        """
+        website_address = f"{cls.prefix}&iid={iid}"
+        html = cls._download_raw_data(website_address=website_address)
+        raw_list = re.findall(
+            r"<a href\=\"showpubliclog.php\?q\=(\w+)\" target\=\"_new\">([A-Z0-9\/]+)<",
+            html,
+        )
+        return [(call, link) for link, call in raw_list]
+
+    @classmethod
+    def get_all_options_cq(cls, contest: str, force: bool = False) -> DataFrame:
+        """Retrieve all contest/year/mode/callsigns from the website.
+
+        To do that, it uses _get_available_callsigns and _get_available_year_modes
+        functions above to get all potential options from the contest website.
+
+        Args:
+            contest (str): contest to consider
+            force (bool): force the reconstruction of the parquet file with the
+                information. Defaults to False.
+
+        Returns:
+            DataFrame: Dataframe with information about the available contest,
+                mode and year
+        """
+        settings = get_settings()
+        options_path = join(
+            settings.storage.prefix, f"contest={contest}", "available_callsigns.parquet"
+        )
+        if not exists(options_path) or force:
+            df_mode_year = DataFrame(
+                cls._get_available_year_modes(), columns=["mode", "year"]
+            )
+            data = []
+            for mode, year in df_mode_year.to_numpy():
+                _df = DataFrame(
+                    cls._get_available_callsigns(mode=mode, year=year),
+                    columns=["callsign"],
+                ).assign(contest=contest, mode=mode, year=year)
+                data.append(_df)
+            data = concat(data).reset_index(drop=True).to_parquet(options_path)
+        return read_parquet(options_path)
+
+    @classmethod
+    def get_all_options_arrl(cls, contest: str, force: bool = False) -> DataFrame:
+        """Retrieve all contest/year/callsigns from the website.
+
+        To do that, it uses _get_available_callsigns_and_links and
+        _get_available_years functions above to get all potential options
+        from the contest website.
+
+        Args:
+            contest (str): contest to consider
+            force (bool): force the reconstruction of the parquet file with the
+                information. Defaults to False.
+
+        Returns:
+            DataFrame: Dataframe with information about the available contest,
+                mode and year
+        """
+        settings = get_settings()
+        options_path = join(
+            settings.storage.prefix, f"contest={contest}", "available_callsigns.parquet"
+        )
+        if not exists(options_path) or force:
+            df_year = DataFrame(cls._get_available_years(), columns=["year", "iid"])
+            data = []
+            for year, iid in df_year.to_numpy():
+                _df = DataFrame(
+                    cls._get_available_callsigns_and_links(iid=iid),
+                    columns=["callsign", "q"],
+                ).assign(contest=contest, year=year)
+                data.append(_df)
+            data = concat(data).reset_index(drop=True).to_parquet(options_path)
+        return read_parquet(options_path)
