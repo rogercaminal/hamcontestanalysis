@@ -2,7 +2,7 @@
 from hamcontestanalysis.tables.table_base import TableBase
 
 
-class TableContestLogCQWW(TableBase):
+class TableContestLog(TableBase):
     """Table containing the contest log."""
 
     def __init__(self):
