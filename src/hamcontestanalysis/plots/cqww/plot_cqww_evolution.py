@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from pandas import Grouper
 from pandas import concat
@@ -42,7 +44,7 @@ class PlotCqWwEvolution(PlotBase):
     def __init__(
         self,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: List[Tuple[str, int]],
         feature: str,
         time_bin_size: int = 1,
     ):
@@ -51,8 +53,7 @@ class PlotCqWwEvolution(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
         """

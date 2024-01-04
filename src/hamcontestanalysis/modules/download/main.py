@@ -2,6 +2,7 @@
 import importlib
 import logging
 import os
+from typing import List
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_sink import RawCabrilloDataSink
@@ -50,13 +51,13 @@ def exists_rbn(contest: str, year: int, mode: str) -> bool:
 
 
 def download_contest_data(
-    callsigns: list[str], years: list[int], contest: str, mode: str, force: bool = False
+    callsigns: List[str], years: List[int], contest: str, mode: str, force: bool = False
 ):
     """Download contest data from contest website.
 
     Args:
-        callsigns (list[str]): List of callsigns to consider, in capital letters
-        years (list[int]): List of years to consider
+        callsigns (List[str]): List of callsigns to consider, in capital letters
+        years (List[int]): List of years to consider
         contest (str): Name of the contest
         mode (str): Mode of the contest
         force (bool, optional): Force download even if it exists. Defaults to False.
@@ -103,12 +104,12 @@ def download_contest_data(
                 )
 
 
-def download_rbn_data(contest: str, years: list[int], mode: str = "cw"):
+def download_rbn_data(contest: str, years: List[int], mode: str = "cw"):
     """Download RBN data.
 
     Args:
         contest (str): Name of the contest
-        years (list[int]): Years of the contests
+        years (List[int]): Years of the contests
         mode (str): Mode of the contest. Defaults to "cw".
     """
     logger.info("Downloading RBN for the contest")
@@ -131,7 +132,7 @@ def download_rbn_data(contest: str, years: list[int], mode: str = "cw"):
 
 
 def main(
-    contest: str, years: list[int], callsigns: list[str], mode: str, force: bool = False
+    contest: str, years: List[int], callsigns: List[str], mode: str, force: bool = False
 ) -> None:
     """Main download & data engineering entrypoint.
 
@@ -142,8 +143,8 @@ def main(
 
     Args:
         contest (str): string with the name of the contest (case insensitive).
-        years (list[int]): list of integers with the years to consider.
-        callsigns (list[str]): list of (case insensitive) strings containing the
+        years (List[int]): List of integers with the years to consider.
+        callsigns (List[str]): List of (case insensitive) strings containing the
             callsigns to consider.
         mode (str): mode of the contest.
         force (bool, optional): force download even if it exists. Defaults to False.

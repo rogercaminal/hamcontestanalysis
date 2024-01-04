@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from pandas import to_datetime
 from pandas import to_timedelta
@@ -18,7 +20,7 @@ class PlotRollingRate(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int = 1,
         target: str = "qsos",
     ):
@@ -27,7 +29,7 @@ class PlotRollingRate(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
             target (str, optional): Target to be plotted. Defaults to qsos.
         """

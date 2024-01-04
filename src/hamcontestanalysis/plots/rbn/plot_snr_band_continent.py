@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 from logging import getLogger
+from typing import List
 from typing import Optional
 
 import numpy as np
@@ -25,23 +26,22 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         self,
         contest: str,
         mode: str,
-        bands: list[int],
-        callsigns: list[str],
+        bands: List[int],
+        callsigns: List[str],
         year: int,
         time_bin_size: int,
-        rx_continents: list[str],
+        rx_continents: List[str],
     ):
         """Init method of the PlotBandConditions class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            bands (list[int]): Bands to plot
-            years (list[int]): Years of the contest
-            callsigns (list[str]): List of callsigns
+            bands (List[int]): Bands to plot
+            callsigns (List[str]): List of callsigns
             year (int): Year of the contest
             time_bin_size (int): Time bin size in minutes
-            rx_continents (list[str]): Continents of the RX stations
+            rx_continents (List[str]): Continents of the RX stations
         """
         super().__init__(contest=contest, mode=mode, years=[year])
         self.callsigns = [c.upper() for c in callsigns]

@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 import numpy as np
 from pandas import DataFrame
@@ -20,8 +22,8 @@ class PlotQsosHour(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
-        continents: Optional[list[str]] = None,
+        callsigns_years: List[Tuple[str, int]],
+        continents: Optional[List[str]] = None,
         time_bin_size: int = 60,
     ):
         """Init method of the PlotQsosHour class.
@@ -29,13 +31,13 @@ class PlotQsosHour(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
-            continents (Optional[list[str]]): List of continents to filter out. Defaults
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
+            continents (Optional[List[str]]): List of continents to filter out. Defaults
                 to None.
             time_bin_size (int): size of the time bin in minutes. Defaults to 60.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
-        self.continents: list[str] = continents or CONTINENTS
+        self.continents: List[str] = continents or CONTINENTS
         self.time_bin_size = time_bin_size
 
     def plot(self, save: bool = False) -> Optional[Figure]:

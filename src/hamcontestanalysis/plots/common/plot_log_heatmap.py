@@ -2,6 +2,7 @@
 
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from numpy import arange
 from numpy import floor
@@ -27,7 +28,7 @@ class PlotLogHeatmap(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int = 1,
         continents: Optional[List[str]] = None,
     ):
@@ -36,14 +37,14 @@ class PlotLogHeatmap(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
             continents (Optional[List[str]], optional): Continents to consider. Defaults
                 to None.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
         self.time_bin = time_bin_size
-        self.continents: list[str] = continents or CONTINENTS
+        self.continents: List[str] = continents or CONTINENTS
 
     def _prepare_dataframe(self) -> DataFrame:
         """Prepare dataframe for plotting."""

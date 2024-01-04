@@ -6,6 +6,7 @@ from typing import Optional
 from pandas import DataFrame
 from pandas import concat
 from plotly.graph_objects import Figure
+from typing import List
 
 from hamcontestanalysis.data.processed_rbn_source import (
     ProcessedReverseBeaconDataSource,
@@ -20,7 +21,7 @@ class PlotReverseBeaconBase(ABC):
     way to create a plotly object, implemented by each plot subclass.
     """
 
-    def __init__(self, contest: str, mode: str, years: list[int]):
+    def __init__(self, contest: str, mode: str, years: List[int]):
         """Init method of the base class."""
         self.contest = contest
         self.mode = mode

@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from pandas import Grouper
 from pandas import concat
@@ -22,7 +24,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int,
     ):
         """Init method of the PlotBandConditions class.
@@ -30,8 +32,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             time_bin_size (int): Time bin size in minutes.
         """
         super().__init__(

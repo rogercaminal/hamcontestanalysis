@@ -100,7 +100,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
     @classmethod
     def _get_available_callsigns(
         cls, year: int, mode: Optional[str] = None
-    ) -> list[str]:
+    ) -> List[str]:
         """Retrieve list of available callsigns in a contest, year and mode.
 
         Valid only for CQ WW and CQ WPX.
@@ -113,7 +113,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             NotImplementedError: If contest is not available.
 
         Returns:
-            list[str]: List of callsigns available
+            List[str]: List of callsigns available
         """
         mode_adapted = mode.lower().replace("ssb", "ph")
         website_address = f"{cls.prefix}{year}{mode_adapted}"

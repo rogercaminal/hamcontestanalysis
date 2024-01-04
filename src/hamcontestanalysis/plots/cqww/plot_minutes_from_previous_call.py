@@ -1,6 +1,8 @@
 """Plot minutes until next call."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from pandas import concat
 from plotly.express import histogram
@@ -16,14 +18,13 @@ CONTEST_MINUTES = 48 * 60
 class PlotMinutesPreviousCall(PlotBase):
     """Plot Minutes from previous call histogram."""
 
-    def __init__(self, mode: str, callsigns_years: list[tuple], time_bin_size: int = 5):
+    def __init__(self, mode: str, callsigns_years: List[Tuple[str, int]], time_bin_size: int = 5):
         """Init method of the PlotCqWwScore class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
         """

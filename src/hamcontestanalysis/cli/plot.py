@@ -3,6 +3,7 @@ from logging import getLogger
 
 from typer import Option
 from typer import Typer
+from typing import List
 
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
@@ -33,7 +34,7 @@ def frequency(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -56,7 +57,7 @@ def log_heatmap(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -69,7 +70,7 @@ def log_heatmap(
         "--time_bin_size",
         help=("Size of the time bins, default: 15"),
     ),
-    continents: list[str] = Option(
+    continents: List[str] = Option(
         ["EU", "NA", "AS", "SA", "OC"],
         "--continents",
         help=("Continents to plot"),
@@ -95,7 +96,7 @@ def qso_direction(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -103,7 +104,7 @@ def qso_direction(
             "multiple callsigns and year pairs."
         ),
     ),
-    contest_hours: list[float] = Option(
+    contest_hours: List[float] = Option(
         [0, 23],
         "--contest_hours",
         help=("Range of contest hours to consider. Defaults to [0, 23]"),
@@ -128,7 +129,7 @@ def qsos_hour(
         "--mode",
         help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -151,7 +152,7 @@ def rate(
         "--mode",
         help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -179,7 +180,7 @@ def rolling_rate(
         "--mode",
         help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -206,7 +207,7 @@ def cqww_evolution(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -235,7 +236,7 @@ def cqww_minutes_from_previous_call(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -265,7 +266,7 @@ def band_conditions(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -283,7 +284,7 @@ def band_conditions(
         "--reference",
         help=("Reference continent"),
     ),
-    continents: list[str] = Option(
+    continents: List[str] = Option(
         ["EU", "NA", "AS", "SA", "OC"],
         "--continents",
         help=("Continents to plot"),
@@ -310,7 +311,7 @@ def cw_speed(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -343,7 +344,7 @@ def number_rbn_spots(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -356,7 +357,7 @@ def number_rbn_spots(
         "--time_bin_size",
         help=("Size of the time bins, default: 60"),
     ),
-    rx_continents: list[str] = Option(
+    rx_continents: List[str] = Option(
         ["EU", "NA", "AS", "SA", "OC"],
         "--rx_continents",
         help=("Continents to consider for RX"),
@@ -382,7 +383,7 @@ def snr(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns_years: list[str] = Option(
+    callsigns_years: List[str] = Option(
         ...,
         "--callsigns_years",
         help=(
@@ -395,7 +396,7 @@ def snr(
         "--time_bin_size",
         help=("Size of the time bins, default: 60"),
     ),
-    rx_continents: list[str] = Option(
+    rx_continents: List[str] = Option(
         ["EU", "NA", "AS", "SA", "OC"],
         "--rx_continents",
         help=("Continents to consider for RX"),
@@ -421,7 +422,7 @@ def snr_band_continent(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns: list[str] = Option(
+    callsigns: List[str] = Option(
         ...,
         "--callsigns",
         help=(
@@ -429,7 +430,7 @@ def snr_band_continent(
             "multiple callsigns."
         ),
     ),
-    bands: list[str] = Option(
+    bands: List[str] = Option(
         [10, 15, 20, 40, 80, 160],
         "--bands",
         help=("Bands to consider"),
@@ -444,7 +445,7 @@ def snr_band_continent(
         "--time_bin_size",
         help=("Size of the time bins, default: 60"),
     ),
-    rx_continents: list[str] = Option(
+    rx_continents: List[str] = Option(
         ["EU", "NA", "AS", "SA", "OC"],
         "--rx_continents",
         help=("Continents to consider for RX"),

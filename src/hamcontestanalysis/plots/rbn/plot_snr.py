@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from pandas import Grouper
 from pandas import concat
@@ -22,19 +24,18 @@ class PlotSnr(PlotReverseBeaconBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int,
-        rx_continents: list[str],
+        rx_continents: List[str],
     ):
         """Init method of the PlotBandConditions class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             time_bin_size (int): Time bin size in minutes
-            rx_continents (list[str]): Continents of the RX stations
+            rx_continents (List[str]): Continents of the RX stations
         """
         super().__init__(
             contest=contest, mode=mode, years=[y for (_, y) in callsigns_years]

@@ -1,6 +1,8 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
+from typing import Tuple
 
 from numpy import arange
 from pandas import cut
@@ -18,16 +20,16 @@ class PlotQsoDirection(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
-        contest_hours: list[float],
+        callsigns_years: List[Tuple[str, int]],
+        contest_hours: List[float],
     ):
         """Init method of the PlotRate class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
-            contest_hours (list[tuple]): Contest hours to consider.
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
+            contest_hours (List[tuple]): Contest hours to consider.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
         self.contest_hours = contest_hours

@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+from typing import List
 from typing import Optional
 
 from numpy import where
@@ -20,20 +21,20 @@ class PlotBandConditions(PlotReverseBeaconBase):
         self,
         contest: str,
         mode: str,
-        years: list[int],
+        years: List[int],
         time_bin_size: int,
         reference: str,
-        continents: list[str],
+        continents: List[str],
     ):
         """Init method of the PlotBandConditions class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
+            years (List[int]): Years of the contest
             time_bin_size (int, optional): Time bin size in minutes.
             reference (str): Reference continent
-            continents (list[str]): Continents to display
+            continents (List[str]): Continents to display
         """
         super().__init__(contest=contest, mode=mode, years=years)
         self.time_bin_size = time_bin_size
