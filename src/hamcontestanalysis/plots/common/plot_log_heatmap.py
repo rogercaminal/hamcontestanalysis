@@ -65,17 +65,17 @@ class PlotLogHeatmap(PlotBase):
             )
             .agg(qsos=("callsign_year", "count"), calls=("call", "unique"))
             .assign(
-                contest_minute=lambda x: x["datetime"].dt.minute.astype(int),
+                contest_minute=lambda x: x["datetime"].dt.minute.astype(int64),
             )
         )
 
         # Template for missing values
         df_minutes = DataFrame(
             arange(0, 60, self.time_bin), columns=["contest_minute"]
-        ).astype({"contest_minute": int})
+        ).astype({"contest_minute": int64})
         df_hours = DataFrame(
             arange(0, 48, self.time_bin), columns=["contest_hour"]
-        ).astype({"contest_hour": int})
+        ).astype({"contest_hour": int64})
         df_call_year = DataFrame(
             grp["callsign_year"].unique(), columns=["callsign_year"]
         )
@@ -93,7 +93,7 @@ class PlotLogHeatmap(PlotBase):
                 qsos=lambda x: where(x["qsos"].isnull(), 0, x["qsos"]),
                 calls=lambda x: where(x["calls"].isnull(), "[]", x["calls"]),
             )
-            .astype({"qsos": int})
+            .astype({"qsos": int64})
         )
         return grp
 
