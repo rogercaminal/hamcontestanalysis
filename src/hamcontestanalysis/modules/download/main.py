@@ -80,7 +80,7 @@ def download_contest_data(
                 ).load()
 
                 # Feature engineering
-                contest_data = data_manipulation(data=contest_data)
+                contest_data = data_manipulation(data=contest_data, contest=contest)
 
                 # Store data
                 prefix_raw_storage_data = settings.storage.paths.raw_data.format(

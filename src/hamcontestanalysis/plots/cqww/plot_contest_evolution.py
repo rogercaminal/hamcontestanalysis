@@ -1,4 +1,4 @@
-"""Plot QSO rate."""
+"""Plot CQ WW contest evolution."""
 
 from typing import List
 from typing import Optional
@@ -20,8 +20,6 @@ AVAILABLE_FEATURES = {
     "valid_qsos": ["cum_valid_qsos", "Valid QSOs", "last"],
     "qso_points": ["cum_qso_points", "QSO points", "last"],
     "multipliers": ["cum_mult", "Multipliers", "last"],
-    "dxcc": ["cum_dxcc", "DXCC multipliers", "last"],
-    "zones": ["cum_zone", "Zone multipliers", "last"],
     "score": ["cum_contest_score", "Contest score", "last"],
     "points_per_qso": ["cum_points_per_qso", "Cumulative points per QSO", "mean"],
     "diff_contest_score": [
@@ -38,7 +36,7 @@ AVAILABLE_FEATURES = {
 }
 
 
-class PlotCqWwEvolution(PlotBase):
+class PlotContestEvolution(PlotBase):
     """Plot CQ WW evolution."""
 
     def __init__(

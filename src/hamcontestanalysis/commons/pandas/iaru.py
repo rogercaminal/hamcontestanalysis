@@ -1,4 +1,4 @@
-"""CQ WW contest processing."""
+"""IARU HF contest processing."""
 
 from logging import getLogger
 
@@ -13,7 +13,7 @@ call_info = Callinfo(LookupLib(lookuptype="countryfile"))
 
 
 def compute_contest_score(data: DataFrame) -> DataFrame:
-    """Adds the QSO points in the CQ WW contest.
+    """Adds the QSO points in the IARU HF contest.
 
     Args:
         data (DataFrame): Data frame with the DXCC info in it
@@ -21,7 +21,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
     Returns:
         DataFrame: Data frame with QSO points included
     """
-    logger.info("Process CQ WW contest")
+    logger.info("Process IARU HF contest")
     data = (
         data.join(
             data.drop_duplicates(subset=["band", "call"], keep="first")[
@@ -29,14 +29,9 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             ].rename("datetime_first_occurrence")
         )
         .join(
-            data.drop_duplicates(subset=["band", "country"], keep="first")[
+            data.drop_duplicates(subset=["band", "exchange"], keep="first")[
                 "datetime"
-            ].rename("dxcc_first_occurrence")
-        )
-        .join(
-            data.drop_duplicates(subset=["band", "zone"], keep="first")[
-                "datetime"
-            ].rename("zone_first_occurrence")
+            ].rename("multiplier_first_occurrence")
         )
         .assign(
             is_valid=lambda x: x["datetime"] == x["datetime_first_occurrence"],
@@ -49,21 +44,21 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             potential_qso_points=lambda x: (
                 np.where(
                     x["mycontinent"] != x["continent"],
-                    3,
+                    5,
                     np.where(
-                        x["mycontinent"] == "NA",
-                        2,
-                        np.where(x["country"] != x["mycountry"], 1, 0),
+                        (x["myexchange"] != x["exchange"])
+                        & (x["country"] == x["mycountry"]),
+                        1,
+                        np.where(x["myexchange"] != x["exchange"], 3, 1),
                     ),
                 )
             ),
             qso_points=lambda x: x["is_valid"] * x["potential_qso_points"],
-            is_dxcc=lambda x: (x["datetime"] == x["dxcc_first_occurrence"]).astype(int),
-            is_zone=lambda x: (x["datetime"] == x["zone_first_occurrence"]).astype(int),
-            n_mult=lambda x: x["is_dxcc"] + x["is_zone"],
+            is_mult=lambda x: (
+                x["datetime"] == x["multiplier_first_occurrence"]
+            ).astype(int),
+            n_mult=lambda x: x["is_mult"],
             cum_qso_points=lambda x: x["qso_points"].cumsum(),
-            cum_dxcc=lambda x: x["is_dxcc"].cumsum(),
-            cum_zone=lambda x: x["is_zone"].cumsum(),
             cum_mult=lambda x: x["n_mult"].cumsum(),
             cum_contest_score=lambda x: x["cum_qso_points"] * x["cum_mult"],
             cum_valid_qsos=lambda x: x["is_valid"].cumsum(),
@@ -75,8 +70,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
         .drop(
             columns=[
                 "datetime_first_occurrence",
-                "dxcc_first_occurrence",
-                "zone_first_occurrence",
+                "multiplier_first_occurrence",
                 "potential_qso_points",
             ]
         )

@@ -17,16 +17,15 @@ from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
+from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
+    PlotMinutesPreviousCall,
+)
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.plots.cqww.plot_cqww_evolution import (
+from hamcontestanalysis.plots.cqww.plot_contest_evolution import (
     AVAILABLE_FEATURES as AVAILABLE_FEATURES_CQWW,
-)
-from hamcontestanalysis.plots.cqww.plot_cqww_evolution import PlotCqWwEvolution
-from hamcontestanalysis.plots.cqww.plot_minutes_from_previous_call import (
-    PlotMinutesPreviousCall,
 )
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
@@ -58,7 +57,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Buttons
     radio_contest = html.Div(
         [
-            dcc.RadioItems(
+            dcc.Dropdown(
                 id="contest",
                 options=[
                     {
@@ -68,6 +67,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     for contest in settings.contest.contests
                 ],
                 value=None,
+                multi=False,
+                placeholder="Choose a contest...",
             )
         ],
         style={"width": "25%", "display": "inline-block"},
@@ -75,10 +76,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
 
     radio_mode = html.Div(
         [
-            dcc.RadioItems(
+            dcc.Dropdown(
                 id="mode",
                 options=[],
                 value=None,
+                multi=False,
+                placeholder="Choose a mode...",
             )
         ],
         style={"width": "25%", "display": "inline-block"},
@@ -90,6 +93,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             options=[],
             multi=True,
             value=None,
+            placeholder="Choose year - callsign pairs...",
         ),
         style={"width": "25%", "display": "inline-block"},
     )
@@ -621,7 +625,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     )
 
     @app.callback(
-        Output("contest_evolution_feature", "figure"),
+        Output("contest_evolution_feature", "children"),
         [
             Input("signal", "data"),
             Input("rb_contest_evolution_feature", "value"),
@@ -645,15 +649,15 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        if contest == "cqww":
-            plot = PlotCqWwEvolution(
-                mode=mode,
-                callsigns_years=f_callsigns_years,
-                feature=feature,
-                time_bin_size=time_bin_size,
-            )
-        else:
-            raise ValueError("Contest not known")
+        plot_contest_evolution_class = importlib.import_module(
+            f"hamcontestanalysis.plots.{contest}.plot_contest_evolution"
+        ).PlotContestEvolution
+        plot = plot_contest_evolution_class(
+            mode=mode,
+            callsigns_years=f_callsigns_years,
+            feature=feature,
+            time_bin_size=time_bin_size,
+        )
         plot.data = DATA_CONTEST.copy()
         return dcc.Graph(figure=plot.plot())
 
@@ -696,14 +700,11 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             f_callsigns_years.append((callsign, year))
             if not exists_rbn(year=year, contest=contest, mode=mode):
                 raise dash.exceptions.PreventUpdate
-        if contest == "cqww":
-            plot = PlotMinutesPreviousCall(
-                mode=mode,
-                callsigns_years=f_callsigns_years,
-                time_bin_size=time_bin_size,
-            )
-        else:
-            raise ValueError("Contest not known")
+        plot = PlotMinutesPreviousCall(
+            mode=mode,
+            callsigns_years=f_callsigns_years,
+            time_bin_size=time_bin_size,
+        )
         plot.data = DATA_CONTEST.copy()
         return dcc.Graph(figure=plot.plot())
 
