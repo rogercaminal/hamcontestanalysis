@@ -36,6 +36,14 @@ def main(
             "callsigns."
         ),
     ),
+    force: bool = Option(
+        False,
+        "--force",
+        help=(
+            "Force the download even if the parquet file exists locally. Defaults "
+            "to False."
+        ),
+    ),
 ) -> None:
     """Download main command line interface."""
     logger.info(
@@ -47,4 +55,4 @@ def main(
         callsigns,
     )
 
-    _main(contest=contest, years=years, callsigns=callsigns, mode=mode)
+    _main(contest=contest, years=years, callsigns=callsigns, mode=mode, force=force)

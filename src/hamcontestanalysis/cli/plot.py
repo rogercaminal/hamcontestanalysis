@@ -7,14 +7,14 @@ from typer import Typer
 
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
+from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
+    PlotMinutesPreviousCall,
+)
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.plots.cqww.plot_cqww_evolution import PlotCqWwEvolution
-from hamcontestanalysis.plots.cqww.plot_minutes_from_previous_call import (
-    PlotMinutesPreviousCall,
-)
+from hamcontestanalysis.plots.cqww.plot_contest_evolution import PlotContestEvolution
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
@@ -223,7 +223,7 @@ def cqww_evolution(
 ):
     """CQ WW feature evolution plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
-    plot = PlotCqWwEvolution(
+    plot = PlotContestEvolution(
         mode=mode, callsigns_years=callsigns_years, feature=feature
     )
     plot.plot(save=True)
