@@ -1,12 +1,16 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 from pandas import Grouper
 from pandas import concat
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import scatter
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots.plot_base import PlotBase
@@ -40,7 +44,7 @@ class PlotCqWwEvolution(PlotBase):
     def __init__(
         self,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: List[Tuple[str, int]],
         feature: str,
         time_bin_size: int = 1,
     ):
@@ -49,8 +53,7 @@ class PlotCqWwEvolution(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
         """
@@ -60,14 +63,14 @@ class PlotCqWwEvolution(PlotBase):
         if self.feature not in AVAILABLE_FEATURES.keys():
             raise ValueError("Feature to plot not known!")
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # Filter callsigns and years
         _data = []
@@ -104,7 +107,7 @@ class PlotCqWwEvolution(PlotBase):
             )
         )
 
-        fig = px.scatter(
+        fig = scatter(
             _data,
             x="dummy_datetime",
             y=AVAILABLE_FEATURES[self.feature][0],
@@ -127,6 +130,6 @@ class PlotCqWwEvolution(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(
+        po_plot(
             fig, filename=f"cqww_evolution_{AVAILABLE_FEATURES[self.feature][0]}.html"
         )

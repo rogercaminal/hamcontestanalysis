@@ -1,10 +1,12 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import Optional
+
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import scatter
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import BANDMAP
@@ -13,21 +15,21 @@ from hamcontestanalysis.utils import BANDMAP
 class PlotFrequency(PlotBase):
     """Plot QSOs Hour."""
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         _data = self.data.assign(
             callsign_year=lambda x: x["mycall"] + "(" + x["year"].astype(str) + ")",
             dummy_datetime=lambda x: to_datetime("2000-01-01")
             + to_timedelta(x["hour"], "H"),
         )
-        fig = px.scatter(
+        fig = scatter(
             _data,
             x="dummy_datetime",
             y="frequency",
@@ -48,4 +50,4 @@ class PlotFrequency(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="frequency.html")
+        po_plot(fig, filename="frequency.html")

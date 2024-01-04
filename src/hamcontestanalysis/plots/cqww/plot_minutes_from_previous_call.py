@@ -1,9 +1,13 @@
 """Plot minutes until next call."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 from pandas import concat
+from plotly.express import histogram
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
@@ -14,28 +18,29 @@ CONTEST_MINUTES = 48 * 60
 class PlotMinutesPreviousCall(PlotBase):
     """Plot Minutes from previous call histogram."""
 
-    def __init__(self, mode: str, callsigns_years: list[tuple], time_bin_size: int = 5):
+    def __init__(
+        self, mode: str, callsigns_years: List[Tuple[str, int]], time_bin_size: int = 5
+    ):
         """Init method of the PlotCqWwScore class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
         """
         super().__init__(contest="cqww", mode=mode, callsigns_years=callsigns_years)
         self.nbins = CONTEST_MINUTES // time_bin_size
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # Filter callsigns and years
         _data = []
@@ -51,7 +56,7 @@ class PlotMinutesPreviousCall(PlotBase):
         )
 
         _data_filtered = _data.query("~(minutes_from_previous_call.isnull())")
-        fig = px.histogram(
+        fig = histogram(
             _data_filtered,
             x="minutes_from_previous_call",
             color="band_transition_from_previous_call",
@@ -74,4 +79,4 @@ class PlotMinutesPreviousCall(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="cqww_minutes_from_previous_call.html")
+        po_plot(fig, filename="cqww_minutes_from_previous_call.html")

@@ -1,6 +1,9 @@
 """HamContestAnalysis plot base class."""
 from abc import ABC
 from abc import abstractmethod
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 from pandas import DataFrame
 from pandas import concat
@@ -17,7 +20,7 @@ class PlotBase(ABC):
     way to create a plotly object, implemented by each plot subclass.
     """
 
-    def __init__(self, contest: str, mode: str, callsigns_years: list[tuple[str, int]]):
+    def __init__(self, contest: str, mode: str, callsigns_years: List[Tuple[str, int]]):
         """Init method of the base class."""
         self.contest = contest
         self.mode = mode
@@ -57,12 +60,12 @@ class PlotBase(ABC):
         return concat(data, sort=False).reset_index(drop=True)
 
     @abstractmethod
-    def plot(self, save: bool = False) -> None | Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: Figure containing the plot
+            Optional[Figure]: Figure containing the plot
         """

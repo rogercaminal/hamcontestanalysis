@@ -1,5 +1,6 @@
 """HamContestAnalysis Download CLI definition."""
 from logging import getLogger
+from typing import List
 
 from typer import Option
 from typer import Typer
@@ -14,7 +15,7 @@ logger = getLogger(__name__)
 @app.command()
 def main(
     contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
-    years: list[int] = Option(
+    years: List[int] = Option(
         ...,
         "--years",
         help=(
@@ -27,7 +28,7 @@ def main(
         "--mode",
         help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
     ),
-    callsigns: list[str] = Option(
+    callsigns: List[str] = Option(
         ...,
         "--callsigns",
         help=(

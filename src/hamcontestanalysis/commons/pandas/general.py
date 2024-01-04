@@ -3,6 +3,7 @@
 from datetime import timedelta
 from logging import getLogger
 from typing import Any
+from typing import Dict
 
 import numpy as np
 import pandas as pd
@@ -62,7 +63,7 @@ def add_dxcc_info(data: pd.DataFrame) -> pd.DataFrame:
         **call_info.get_lat_long(data["mycall"].to_numpy()[0])
     )
 
-    def _get_all_dxcc_info_handle_exceptions(x: pd.DataFrame) -> dict[str, Any]:
+    def _get_all_dxcc_info_handle_exceptions(x: pd.DataFrame) -> Dict[str, Any]:
         try:
             return call_info.get_all(x["call"])
         except KeyError:

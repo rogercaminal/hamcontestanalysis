@@ -1,10 +1,14 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 from numpy import arange
 from pandas import cut
+from plotly.express import line_polar
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
@@ -16,28 +20,28 @@ class PlotQsoDirection(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
-        contest_hours: list[float],
+        callsigns_years: List[Tuple[str, int]],
+        contest_hours: List[float],
     ):
         """Init method of the PlotRate class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
-            contest_hours (list[tuple]): Contest hours to consider.
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
+            contest_hours (List[tuple]): Contest hours to consider.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
         self.contest_hours = contest_hours
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         bin_width = 10
         grp = (
@@ -58,7 +62,7 @@ class PlotQsoDirection(PlotBase):
             .assign(heading_first=lambda x: x["heading"].apply(lambda y: y.left))
         )
 
-        fig = px.line_polar(
+        fig = line_polar(
             grp,
             r="qsos",
             theta="heading_first",
@@ -76,4 +80,4 @@ class PlotQsoDirection(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="rate.html")
+        po_plot(fig, filename="rate.html")

@@ -7,6 +7,7 @@ from os.path import exists
 from os.path import join
 from typing import Any
 from typing import ClassVar
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -98,20 +99,22 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return _df
 
     @classmethod
-    def _get_available_callsigns(cls, year: int, mode: str | None = None) -> list[str]:
+    def _get_available_callsigns(
+        cls, year: int, mode: Optional[str] = None
+    ) -> List[str]:
         """Retrieve list of available callsigns in a contest, year and mode.
 
         Valid only for CQ WW and CQ WPX.
 
         Args:
             year (int): Year of the contest
-            mode (str): Mode of the contest. Defaults to None.
+            mode (Optional[str]): Mode of the contest. Defaults to None.
 
         Raises:
             NotImplementedError: If contest is not available.
 
         Returns:
-            list[str]: List of callsigns available
+            List[str]: List of callsigns available
         """
         mode_adapted = mode.lower().replace("ssb", "ph")
         website_address = f"{cls.prefix}{year}{mode_adapted}"
@@ -121,7 +124,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [call.upper().replace("-", "/") for call in raw_list]
 
     @classmethod
-    def _get_available_year_modes(cls) -> dict[str, int]:
+    def _get_available_year_modes(cls) -> Dict[str, int]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for CQ WW and CQ WPX.
@@ -130,7 +133,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             NotImplementedError: If contest not implemented
 
         Returns:
-            dict[str, int]: Dictionary of contest and years available.
+            Dict[str, int]: Dictionary of contest and years available.
         """
         website_address = f"{cls.prefix}"
         html = cls._download_raw_data(website_address=website_address)
@@ -138,7 +141,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(item[4:].replace("ph", "ssb"), item[:4]) for item in raw_list]
 
     @classmethod
-    def _get_available_years(cls) -> dict[int, int]:
+    def _get_available_years(cls) -> Dict[int, int]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for ARRL contests.
@@ -147,7 +150,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             NotImplementedError: If contest not implemented
 
         Returns:
-            dict[int, int]: Dictionary of years and corresponding website iid.
+            Dict[int, int]: Dictionary of years and corresponding website iid.
         """
         website_address = f"{cls.prefix}"
         html = cls._download_raw_data(website_address=website_address)
@@ -157,16 +160,13 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(int(group[2]), int(group[1])) for group in raw_list]
 
     @classmethod
-    def _get_available_callsigns_and_links(
-        cls, iid: int | None = None
-    ) -> List[Tuple[str, str]]:
+    def _get_available_callsigns_and_links(cls, iid: int) -> List[Tuple[str, str]]:
         """Retrieve list of available callsigns the IARU HF and year.
 
         Valid only for ARRL contests.
 
         Args:
-            iid (int): ID corresponding to contest in the website. Defaults
-                to None.
+            iid (int): ID corresponding to contest in the website.
 
         Raises:
             NotImplementedError: If contest is not available.

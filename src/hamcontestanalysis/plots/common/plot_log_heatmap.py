@@ -1,16 +1,20 @@
 """Plot QSO rate."""
 
 from typing import List
+from typing import Optional
+from typing import Tuple
 
-import plotly.graph_objects as go
-import plotly.offline as pyo
 from numpy import arange
 from numpy import floor
+from numpy import int64
 from numpy import vectorize
 from numpy import where
 from pandas import DataFrame
 from pandas import Grouper
 from pandas import pivot_table
+from plotly.graph_objects import Figure
+from plotly.graph_objects import Heatmap
+from plotly.offline import plot as po_plot
 from plotly.subplots import make_subplots
 
 from hamcontestanalysis.plots.plot_base import PlotBase
@@ -24,23 +28,23 @@ class PlotLogHeatmap(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int = 1,
-        continents: List[str] | None = None,
+        continents: Optional[List[str]] = None,
     ):
         """Init method of the PlotLogHeatmap class.
 
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
-            continents (List[str] | None, optional): Continents to consider. Defaults
+            continents (Optional[List[str]], optional): Continents to consider. Defaults
                 to None.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
         self.time_bin = time_bin_size
-        self.continents: list[str] = continents or CONTINENTS
+        self.continents: List[str] = continents or CONTINENTS
 
     def _prepare_dataframe(self) -> DataFrame:
         """Prepare dataframe for plotting."""
@@ -49,7 +53,7 @@ class PlotLogHeatmap(PlotBase):
             self.data.query(f"continent.isin({self.continents})")
             .assign(
                 callsign_year=lambda x: x["mycall"] + "(" + x["year"].astype(str) + ")",
-                contest_hour=lambda x: floor(x["hour"]).astype(int),
+                contest_hour=lambda x: floor(x["hour"]).astype(int64),
             )
             .groupby(
                 [
@@ -61,17 +65,17 @@ class PlotLogHeatmap(PlotBase):
             )
             .agg(qsos=("callsign_year", "count"), calls=("call", "unique"))
             .assign(
-                contest_minute=lambda x: x["datetime"].dt.minute.astype(int),
+                contest_minute=lambda x: x["datetime"].dt.minute.astype(int64),
             )
         )
 
         # Template for missing values
         df_minutes = DataFrame(
             arange(0, 60, self.time_bin), columns=["contest_minute"]
-        ).astype({"contest_minute": int})
+        ).astype({"contest_minute": int64})
         df_hours = DataFrame(
             arange(0, 48, self.time_bin), columns=["contest_hour"]
-        ).astype({"contest_hour": int})
+        ).astype({"contest_hour": int64})
         df_call_year = DataFrame(
             grp["callsign_year"].unique(), columns=["callsign_year"]
         )
@@ -89,18 +93,18 @@ class PlotLogHeatmap(PlotBase):
                 qsos=lambda x: where(x["qsos"].isnull(), 0, x["qsos"]),
                 calls=lambda x: where(x["calls"].isnull(), "[]", x["calls"]),
             )
-            .astype({"qsos": int})
+            .astype({"qsos": int64})
         )
         return grp
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optinal[Figure]: _description_
         """
         n_callsigns_years = len(self.callsigns_years)
         fig = make_subplots(
@@ -127,7 +131,7 @@ class PlotLogHeatmap(PlotBase):
             vfunc = vectorize(lambda x: f"QSOs: {', '.join(x)}")
 
             fig.add_trace(
-                go.Heatmap(
+                Heatmap(
                     x=table.columns,
                     y=table.index,
                     z=table.values,
@@ -154,4 +158,4 @@ class PlotLogHeatmap(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="log_heatmap.html")
+        po_plot(fig, filename="log_heatmap.html")

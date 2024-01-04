@@ -1,10 +1,14 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import line
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
@@ -16,7 +20,7 @@ class PlotRollingRate(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int = 1,
         target: str = "qsos",
     ):
@@ -25,7 +29,7 @@ class PlotRollingRate(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
             target (str, optional): Target to be plotted. Defaults to qsos.
         """
@@ -33,14 +37,14 @@ class PlotRollingRate(PlotBase):
         self.time_bin = time_bin_size
         self.target = target
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # TODO: Add this in the processing.
         self.data = self.data.assign(qsos=1)
@@ -67,7 +71,7 @@ class PlotRollingRate(PlotBase):
             )
         )
 
-        fig = px.line(
+        fig = line(
             grp,
             x="dummy_datetime",
             y=f"{self.target}_sum",
@@ -84,4 +88,4 @@ class PlotRollingRate(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="rolling_rate.html")
+        po_plot(fig, filename="rolling_rate.html")

@@ -1,10 +1,14 @@
 """Plot QSO rate."""
 
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
 from pandas import DataFrame
+from plotly.express import bar
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import CONTINENTS
@@ -18,8 +22,8 @@ class PlotQsosHour(PlotBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple[str, int]],
-        continents: list[str] | None = None,
+        callsigns_years: List[Tuple[str, int]],
+        continents: Optional[List[str]] = None,
         time_bin_size: int = 60,
     ):
         """Init method of the PlotQsosHour class.
@@ -27,28 +31,27 @@ class PlotQsosHour(PlotBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
-            continents (list[str] | None): List of continents to filter out. Defaults
+            callsigns_years (List[Tuple[str, int]]): Callsign and year of the contest
+            continents (Optional[List[str]]): List of continents to filter out. Defaults
                 to None.
             time_bin_size (int): size of the time bin in minutes. Defaults to 60.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
-        self.continents: list[str] = continents or CONTINENTS
+        self.continents: List[str] = continents or CONTINENTS
         self.time_bin_size = time_bin_size
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: _description_
         """
         # Groupby data
         grp = (
             self.data.assign(
-                # hour_rounded=lambda x: np.floor(x["hour"])
                 hour_rounded=lambda x: custom_floor(
                     x=x["hour"], precision=float(self.time_bin_size) / 60
                 )
@@ -95,7 +98,7 @@ class PlotQsosHour(PlotBase):
             )
         )
 
-        fig = px.bar(
+        fig = bar(
             grp,
             x="hour_rounded",
             y="qsos",
@@ -115,4 +118,4 @@ class PlotQsosHour(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="qsos_hour.html")
+        po_plot(fig, filename="qsos_hour.html")

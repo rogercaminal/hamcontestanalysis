@@ -1,12 +1,16 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import List
+from typing import Optional
+from typing import Tuple
+
 from pandas import Grouper
 from pandas import concat
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import scatter
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
@@ -20,7 +24,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         self,
         contest: str,
         mode: str,
-        callsigns_years: list[tuple],
+        callsigns_years: List[Tuple[str, int]],
         time_bin_size: int,
     ):
         """Init method of the PlotBandConditions class.
@@ -28,8 +32,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         Args:
             contest (str): Contest name
             mode (str): Mode of the contest
-            years (list[int]): Years of the contest
-            callsigns_years (list[tuple]): List of callsign-year tuples
+            callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             time_bin_size (int): Time bin size in minutes.
         """
         super().__init__(
@@ -38,14 +41,14 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         self.callsigns_years = callsigns_years
         self.time_bin_size = time_bin_size
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # Filter callsigns and years
         _data = []
@@ -76,7 +79,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
             .agg(speed=("speed", "mean"))
         )
 
-        fig = px.scatter(
+        fig = scatter(
             _data,
             x="dummy_datetime",
             y="speed",
@@ -98,4 +101,4 @@ class PlotCwSpeed(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="cw_speed.html")
+        po_plot(fig, filename="cw_speed.html")

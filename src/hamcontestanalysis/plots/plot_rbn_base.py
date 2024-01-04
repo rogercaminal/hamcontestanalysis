@@ -1,6 +1,9 @@
 """HamContestAnalysis plot base class."""
 from abc import ABC
 from abc import abstractmethod
+from typing import Dict
+from typing import List
+from typing import Optional
 
 from pandas import DataFrame
 from pandas import concat
@@ -19,7 +22,7 @@ class PlotReverseBeaconBase(ABC):
     way to create a plotly object, implemented by each plot subclass.
     """
 
-    def __init__(self, contest: str, mode: str, years: list[int]):
+    def __init__(self, contest: str, mode: str, years: List[int]):
         """Init method of the base class."""
         self.contest = contest
         self.mode = mode
@@ -40,7 +43,7 @@ class PlotReverseBeaconBase(ABC):
             raise TypeError("data must be a Pandas DataFrame")
         self._data = value
 
-    def _get_inputs(self) -> dict[str, DataFrame]:
+    def _get_inputs(self) -> Dict[str, DataFrame]:
         """Get downloaded inputs needed for the plot."""
         data = []
         for year in self.years:
@@ -58,12 +61,12 @@ class PlotReverseBeaconBase(ABC):
         return concat(data, sort=False).reset_index(drop=True)
 
     @abstractmethod
-    def plot(self, save: bool = False) -> None | Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: _description_
         """
