@@ -46,14 +46,17 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                     x["mycontinent"] != x["continent"],
                     5,
                     np.where(
-                        (x["myexchange"] != x["exchange"]) & (x["country"] == x["mycountry"]),
+                        (x["myexchange"] != x["exchange"])
+                        & (x["country"] == x["mycountry"]),
                         1,
                         np.where(x["myexchange"] != x["exchange"], 3, 1),
                     ),
                 )
             ),
             qso_points=lambda x: x["is_valid"] * x["potential_qso_points"],
-            is_mult=lambda x: (x["datetime"] == x["multiplier_first_occurrence"]).astype(int),
+            is_mult=lambda x: (
+                x["datetime"] == x["multiplier_first_occurrence"]
+            ).astype(int),
             n_mult=lambda x: x["is_mult"],
             cum_qso_points=lambda x: x["qso_points"].cumsum(),
             cum_mult=lambda x: x["n_mult"].cumsum(),

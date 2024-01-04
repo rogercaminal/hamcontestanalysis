@@ -30,9 +30,9 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             ].rename("datetime_first_occurrence")
         )
         .join(
-            data.drop_duplicates(subset=["prefix"], keep="first")[
-                "datetime"
-            ].rename("prefix_first_occurrence")
+            data.drop_duplicates(subset=["prefix"], keep="first")["datetime"].rename(
+                "prefix_first_occurrence"
+            )
         )
         .assign(
             is_valid=lambda x: x["datetime"] == x["datetime_first_occurrence"],
@@ -40,12 +40,14 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 _data.apply(lambda x: call_info.get_continent(x["mycall"]), axis=1)
             ),
             potential_qso_points=lambda x: where(
-                    x["mycontinent"] != x["continent"],
-                    3 + 3 * x["band"].isin([40, 80, 160]).astype(int32),
-                    1 + 1 * x["band"].isin([40, 80, 160]).astype(int32),
+                x["mycontinent"] != x["continent"],
+                3 + 3 * x["band"].isin([40, 80, 160]).astype(int32),
+                1 + 1 * x["band"].isin([40, 80, 160]).astype(int32),
             ),
             qso_points=lambda x: x["is_valid"] * x["potential_qso_points"],
-            is_mult=lambda x: (x["datetime"] == x["prefix_first_occurrence"]).astype(int),
+            is_mult=lambda x: (x["datetime"] == x["prefix_first_occurrence"]).astype(
+                int
+            ),
             n_mult=lambda x: x["is_mult"],
             cum_qso_points=lambda x: x["qso_points"].cumsum(),
             cum_mult=lambda x: x["n_mult"].cumsum(),
