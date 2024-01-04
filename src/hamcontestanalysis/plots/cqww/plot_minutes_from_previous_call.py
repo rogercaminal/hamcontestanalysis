@@ -18,7 +18,9 @@ CONTEST_MINUTES = 48 * 60
 class PlotMinutesPreviousCall(PlotBase):
     """Plot Minutes from previous call histogram."""
 
-    def __init__(self, mode: str, callsigns_years: List[Tuple[str, int]], time_bin_size: int = 5):
+    def __init__(
+        self, mode: str, callsigns_years: List[Tuple[str, int]], time_bin_size: int = 5
+    ):
         """Init method of the PlotCqWwScore class.
 
         Args:

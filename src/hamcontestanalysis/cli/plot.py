@@ -1,9 +1,9 @@
 """HamContestAnalysis Plot CLI definition."""
 from logging import getLogger
+from typing import List
 
 from typer import Option
 from typer import Typer
-from typing import List
 
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap

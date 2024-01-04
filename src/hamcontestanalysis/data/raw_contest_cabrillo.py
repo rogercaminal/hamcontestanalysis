@@ -7,6 +7,7 @@ from os.path import exists
 from os.path import join
 from typing import Any
 from typing import ClassVar
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -123,7 +124,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [call.upper().replace("-", "/") for call in raw_list]
 
     @classmethod
-    def _get_available_year_modes(cls) -> dict[str, int]:
+    def _get_available_year_modes(cls) -> Dict[str, int]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for CQ WW and CQ WPX.
@@ -132,7 +133,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             NotImplementedError: If contest not implemented
 
         Returns:
-            dict[str, int]: Dictionary of contest and years available.
+            Dict[str, int]: Dictionary of contest and years available.
         """
         website_address = f"{cls.prefix}"
         html = cls._download_raw_data(website_address=website_address)
@@ -140,7 +141,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(item[4:].replace("ph", "ssb"), item[:4]) for item in raw_list]
 
     @classmethod
-    def _get_available_years(cls) -> dict[int, int]:
+    def _get_available_years(cls) -> Dict[int, int]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for ARRL contests.
@@ -149,7 +150,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             NotImplementedError: If contest not implemented
 
         Returns:
-            dict[int, int]: Dictionary of years and corresponding website iid.
+            Dict[int, int]: Dictionary of years and corresponding website iid.
         """
         website_address = f"{cls.prefix}"
         html = cls._download_raw_data(website_address=website_address)

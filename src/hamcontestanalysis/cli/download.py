@@ -1,9 +1,9 @@
 """HamContestAnalysis Download CLI definition."""
 from logging import getLogger
+from typing import List
 
 from typer import Option
 from typer import Typer
-from typing import List
 
 from hamcontestanalysis.modules.download.main import main as _main
 

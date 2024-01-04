@@ -1,12 +1,13 @@
 """HamContestAnalysis plot base class."""
 from abc import ABC
 from abc import abstractmethod
+from typing import Dict
+from typing import List
 from typing import Optional
 
 from pandas import DataFrame
 from pandas import concat
 from plotly.graph_objects import Figure
-from typing import List
 
 from hamcontestanalysis.data.processed_rbn_source import (
     ProcessedReverseBeaconDataSource,
@@ -42,7 +43,7 @@ class PlotReverseBeaconBase(ABC):
             raise TypeError("data must be a Pandas DataFrame")
         self._data = value
 
-    def _get_inputs(self) -> dict[str, DataFrame]:
+    def _get_inputs(self) -> Dict[str, DataFrame]:
         """Get downloaded inputs needed for the plot."""
         data = []
         for year in self.years:

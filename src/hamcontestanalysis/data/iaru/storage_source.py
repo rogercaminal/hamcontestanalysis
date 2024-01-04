@@ -1,6 +1,7 @@
 """IARU HF Contest cabrillo data source module."""
 from os import PathLike
 from typing import ClassVar
+from typing import Dict
 from typing import Optional
 from typing import Union
 
@@ -18,7 +19,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         Union[str, PathLike]
     ] = "https://contests.arrl.org/showpubliclog.php?q={q}"
     prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid=4"
-    dtypes: ClassVar[dict[str, str]] = {
+    dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
         "date": "str",

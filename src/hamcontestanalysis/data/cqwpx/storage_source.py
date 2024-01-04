@@ -1,6 +1,7 @@
 """CQ WPX Contest cabrillo data source module."""
 from os import PathLike
 from typing import ClassVar
+from typing import Dict
 from typing import Optional
 from typing import Union
 
@@ -15,7 +16,7 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
 
     path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
     prefix: Optional[str] = "http://www.cqwpx.com/publiclogs/"
-    dtypes: ClassVar[dict[str, str]] = {
+    dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
         "date": "str",
