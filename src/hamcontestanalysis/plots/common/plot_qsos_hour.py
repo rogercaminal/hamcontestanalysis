@@ -1,5 +1,7 @@
 """Plot QSO rate."""
 
+from typing import Optional
+
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
@@ -19,7 +21,7 @@ class PlotQsosHour(PlotBase):
         contest: str,
         mode: str,
         callsigns_years: list[tuple[str, int]],
-        continents: list[str] | None = None,
+        continents: Optional[list[str]] = None,
         time_bin_size: int = 60,
     ):
         """Init method of the PlotQsosHour class.
@@ -28,7 +30,7 @@ class PlotQsosHour(PlotBase):
             contest (str): Contest name
             mode (str): Mode of the contest
             callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
-            continents (list[str] | None): List of continents to filter out. Defaults
+            continents (Optional[list[str]]): List of continents to filter out. Defaults
                 to None.
             time_bin_size (int): size of the time bin in minutes. Defaults to 60.
         """

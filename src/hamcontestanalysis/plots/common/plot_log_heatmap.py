@@ -1,11 +1,13 @@
 """Plot QSO rate."""
 
 from typing import List
+from typing import Optional
 
 import plotly.graph_objects as go
 import plotly.offline as pyo
 from numpy import arange
 from numpy import floor
+from numpy import int64
 from numpy import vectorize
 from numpy import where
 from pandas import DataFrame
@@ -26,7 +28,7 @@ class PlotLogHeatmap(PlotBase):
         mode: str,
         callsigns_years: list[tuple[str, int]],
         time_bin_size: int = 1,
-        continents: List[str] | None = None,
+        continents: Optional[List[str]] = None,
     ):
         """Init method of the PlotLogHeatmap class.
 
@@ -35,7 +37,7 @@ class PlotLogHeatmap(PlotBase):
             mode (str): Mode of the contest
             callsigns_years (list[tuple[str, int]]): Callsign and year of the contest
             time_bin_size (int, optional): Time bin size in minutes. Defaults to 1.
-            continents (List[str] | None, optional): Continents to consider. Defaults
+            continents (Optional[List[str]], optional): Continents to consider. Defaults
                 to None.
         """
         super().__init__(contest=contest, mode=mode, callsigns_years=callsigns_years)
@@ -49,7 +51,7 @@ class PlotLogHeatmap(PlotBase):
             self.data.query(f"continent.isin({self.continents})")
             .assign(
                 callsign_year=lambda x: x["mycall"] + "(" + x["year"].astype(str) + ")",
-                contest_hour=lambda x: floor(x["hour"]).astype(int),
+                contest_hour=lambda x: floor(x["hour"]).astype(int64),
             )
             .groupby(
                 [

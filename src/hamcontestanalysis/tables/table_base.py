@@ -3,6 +3,7 @@
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from dash.dash_table import DataTable
 from pandas import DataFrame
@@ -19,8 +20,8 @@ class TableBase:
     def __init__(
         self,
         columns: List[Dict[str, str]],
-        style_table: Dict[Any, Any] | None = None,
-        style_data: Dict[Any, Any] | None = None,
+        style_table: Optional[Dict[Any, Any]] = None,
+        style_data: Optional[Dict[Any, Any]] = None,
         filter_action: str = "native",
         sort_action: str = "native",
     ):

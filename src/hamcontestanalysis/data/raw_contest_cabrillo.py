@@ -98,14 +98,16 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return _df
 
     @classmethod
-    def _get_available_callsigns(cls, year: int, mode: str | None = None) -> list[str]:
+    def _get_available_callsigns(
+        cls, year: int, mode: Optional[str] = None
+    ) -> list[str]:
         """Retrieve list of available callsigns in a contest, year and mode.
 
         Valid only for CQ WW and CQ WPX.
 
         Args:
             year (int): Year of the contest
-            mode (str): Mode of the contest. Defaults to None.
+            mode (Optional[str]): Mode of the contest. Defaults to None.
 
         Raises:
             NotImplementedError: If contest is not available.
@@ -157,16 +159,13 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(int(group[2]), int(group[1])) for group in raw_list]
 
     @classmethod
-    def _get_available_callsigns_and_links(
-        cls, iid: int | None = None
-    ) -> List[Tuple[str, str]]:
+    def _get_available_callsigns_and_links(cls, iid: int) -> List[Tuple[str, str]]:
         """Retrieve list of available callsigns the IARU HF and year.
 
         Valid only for ARRL contests.
 
         Args:
-            iid (int): ID corresponding to contest in the website. Defaults
-                to None.
+            iid (int): ID corresponding to contest in the website.
 
         Raises:
             NotImplementedError: If contest is not available.

@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from typing import List
+from typing import Optional
 
 from pandas import to_datetime
 
@@ -48,9 +49,9 @@ class ContestDates(BaseSettings):
 class ContestModes(BaseSettings):
     """Dates for each contest mode."""
 
-    cw: ContestDates | None
-    ssb: ContestDates | None
-    mixed: ContestDates | None
+    cw: Optional[ContestDates]
+    ssb: Optional[ContestDates]
+    mixed: Optional[ContestDates]
 
     @property
     def modes(self):
@@ -78,9 +79,9 @@ class ContestData(BaseSettings):
 class ContestSettings(BaseSettings):
     """Contest dates Settings model."""
 
-    cqww: ContestData | None
-    cqwpx: ContestData | None
-    iaru: ContestData | None
+    cqww: Optional[ContestData]
+    cqwpx: Optional[ContestData]
+    iaru: Optional[ContestData]
 
     @property
     def contests(self):
