@@ -1,11 +1,13 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import Optional
+
 from pandas import Grouper
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import line
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
@@ -34,14 +36,14 @@ class PlotRate(PlotBase):
         self.time_bin = time_bin_size
         self.target = target
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: _description_
         """
         # TODO: Add this in the processing.
         self.data = self.data.assign(qsos=1)
@@ -68,7 +70,7 @@ class PlotRate(PlotBase):
             )
         )
 
-        fig = px.line(
+        fig = line(
             grp,
             x="dummy_datetime",
             y=f"{self.target}_sum",
@@ -85,4 +87,4 @@ class PlotRate(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="rate.html")
+        po_plot(fig, filename="rate.html")

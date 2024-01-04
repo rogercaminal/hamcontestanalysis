@@ -1,15 +1,16 @@
 """Plot QSO rate."""
 
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
 from pandas import DataFrame
 from pandas import Grouper
 from pandas import date_range
 from pandas import merge
+from plotly.express import line
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 
@@ -184,18 +185,18 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         )
         return df_grp
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         _data = self._clean_dataset()
 
-        fig = px.line(
+        fig = line(
             _data,
             x="datetime",
             y="db",
@@ -216,21 +217,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
 
         fig.update_layout(hovermode="x unified", plot_bgcolor="white")
         fig.update_traces(marker_size=4, line=dict(width=0.5))
-        # fig.update_xaxes(
-        #     mirror=True,
-        #     ticks="outside",
-        #     showline=True,
-        #     linecolor="black",
-        #     gridcolor="lightgrey",
-        # )
-        # fig.update_yaxes(
-        #     mirror=True,
-        #     ticks="outside",
-        #     showline=True,
-        #     linecolor="black",
-        #     gridcolor="lightgrey",
-        # )
 
         if not save:
             return fig
-        pyo.plot(fig, filename="cw_snr_band_continent.html")
+        po_plot(fig, filename="cw_snr_band_continent.html")

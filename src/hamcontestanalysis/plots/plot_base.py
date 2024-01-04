@@ -1,6 +1,7 @@
 """HamContestAnalysis plot base class."""
 from abc import ABC
 from abc import abstractmethod
+from typing import Optional
 
 from pandas import DataFrame
 from pandas import concat
@@ -57,12 +58,12 @@ class PlotBase(ABC):
         return concat(data, sort=False).reset_index(drop=True)
 
     @abstractmethod
-    def plot(self, save: bool = False) -> None | Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: Figure containing the plot
+            Optional[Figure]: Figure containing the plot
         """

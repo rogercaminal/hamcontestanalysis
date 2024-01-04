@@ -1,10 +1,12 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import Optional
+
 from numpy import where
 from pandas import Grouper
+from plotly.express import line
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 from plotly.subplots import make_subplots
 
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
@@ -38,14 +40,14 @@ class PlotBandConditions(PlotReverseBeaconBase):
         self.reference = reference
         self.continents = continents
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         bands = list(BANDMAP.keys())
         grp = (
@@ -84,7 +86,7 @@ class PlotBandConditions(PlotReverseBeaconBase):
             cols=2,
         )
 
-        fig = px.line(
+        fig = line(
             grp,
             x="datetime",
             y="percent",
@@ -107,4 +109,4 @@ class PlotBandConditions(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="band_conditions.html")
+        po_plot(fig, filename="band_conditions.html")

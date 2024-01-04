@@ -1,12 +1,14 @@
 """Plot QSO rate."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import Optional
+
 from pandas import Grouper
 from pandas import concat
 from pandas import to_datetime
 from pandas import to_timedelta
+from plotly.express import scatter
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
@@ -41,14 +43,14 @@ class PlotSnr(PlotReverseBeaconBase):
         self.time_bin_size = time_bin_size
         self.rx_continents = rx_continents
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # Filter callsigns and years
         _data = []
@@ -80,7 +82,7 @@ class PlotSnr(PlotReverseBeaconBase):
             .agg(db=("db", "mean"))
         )
 
-        fig = px.scatter(
+        fig = scatter(
             _data,
             x="dummy_datetime",
             y="db",
@@ -102,4 +104,4 @@ class PlotSnr(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="cw_snr.html")
+        po_plot(fig, filename="cw_snr.html")

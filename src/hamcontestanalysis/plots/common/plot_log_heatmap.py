@@ -3,8 +3,6 @@
 from typing import List
 from typing import Optional
 
-import plotly.graph_objects as go
-import plotly.offline as pyo
 from numpy import arange
 from numpy import floor
 from numpy import int64
@@ -13,6 +11,9 @@ from numpy import where
 from pandas import DataFrame
 from pandas import Grouper
 from pandas import pivot_table
+from plotly.graph_objects import Figure
+from plotly.graph_objects import Heatmap
+from plotly.offline import plot as po_plot
 from plotly.subplots import make_subplots
 
 from hamcontestanalysis.plots.plot_base import PlotBase
@@ -95,14 +96,14 @@ class PlotLogHeatmap(PlotBase):
         )
         return grp
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optinal[Figure]: _description_
         """
         n_callsigns_years = len(self.callsigns_years)
         fig = make_subplots(
@@ -129,7 +130,7 @@ class PlotLogHeatmap(PlotBase):
             vfunc = vectorize(lambda x: f"QSOs: {', '.join(x)}")
 
             fig.add_trace(
-                go.Heatmap(
+                Heatmap(
                     x=table.columns,
                     y=table.index,
                     z=table.values,
@@ -156,4 +157,4 @@ class PlotLogHeatmap(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="log_heatmap.html")
+        po_plot(fig, filename="log_heatmap.html")

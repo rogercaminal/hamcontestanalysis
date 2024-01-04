@@ -1,9 +1,11 @@
 """Plot minutes until next call."""
 
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.offline as pyo
+from typing import Optional
+
 from pandas import concat
+from plotly.express import histogram
+from plotly.graph_objects import Figure
+from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots.plot_base import PlotBase
 
@@ -28,14 +30,14 @@ class PlotMinutesPreviousCall(PlotBase):
         super().__init__(contest="cqww", mode=mode, callsigns_years=callsigns_years)
         self.nbins = CONTEST_MINUTES // time_bin_size
 
-    def plot(self, save: bool = False) -> None | go.Figure:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
 
         Args:
             save (bool): Save file in html. Defaults to False.
 
         Returns:
-            None | Figure: _description_
+            Optional[Figure]: Plotly figure
         """
         # Filter callsigns and years
         _data = []
@@ -51,7 +53,7 @@ class PlotMinutesPreviousCall(PlotBase):
         )
 
         _data_filtered = _data.query("~(minutes_from_previous_call.isnull())")
-        fig = px.histogram(
+        fig = histogram(
             _data_filtered,
             x="minutes_from_previous_call",
             color="band_transition_from_previous_call",
@@ -74,4 +76,4 @@ class PlotMinutesPreviousCall(PlotBase):
 
         if not save:
             return fig
-        pyo.plot(fig, filename="cqww_minutes_from_previous_call.html")
+        po_plot(fig, filename="cqww_minutes_from_previous_call.html")
