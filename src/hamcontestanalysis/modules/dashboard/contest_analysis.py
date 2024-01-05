@@ -187,24 +187,35 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     graph_contest_log = html.Div(
         [
             html.Div(
+                id="ph_contest_log",
+            ),
+            html.Div(html.Div(id="contest_log_heatmap")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_contest_log", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_contest_log_continent(signal):
+        return html.Div(
+            [
                 dcc.Checklist(
                     id="cl_contest_log_continent",
                     options=CONTINENTS,
                     value=CONTINENTS,
                     inline=True,
-                )
-            ),
-            html.Div(
+                ),
                 dcc.RadioItems(
                     id="rb_contest_log_time_bin",
                     options=[1, 5, 10],
                     value=1,
                     inline=True,
-                )
-            ),
-            html.Div(html.Div(id="contest_log_heatmap")),
-        ]
-    )
+                ),
+            ]
+        )
 
     @app.callback(
         Output("contest_log_heatmap", "children"),
@@ -244,25 +255,34 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph qsos/hour
     graph_qsos_hour = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_qsos_hour"),
+            html.Div(html.Div(id="qsos_hour")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_qsos_hour", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_qsos_hour(signal):
+        return html.Div(
+            [
                 dcc.Checklist(
                     id="cl_qsos_hour_continent",
                     options=CONTINENTS,
                     value=CONTINENTS,
                     inline=True,
-                )
-            ),
-            html.Div(
+                ),
                 dcc.RadioItems(
                     id="rb_qsos_hour_time_bin",
                     options=[15, 30, 60],
                     value=60,
                     inline=True,
-                )
-            ),
-            html.Div(html.Div(id="qsos_hour")),
-        ]
-    )
+                ),
+            ]
+        )
 
     @app.callback(
         Output("qsos_hour", "children"),
@@ -330,7 +350,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph qso rate
     graph_qso_rate = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_qso_rate"),
+            html.Div(html.Div(id="qso_rate")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_qso_rate", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_qso_rate(signal):
+        return html.Div(
+            [
                 dcc.RadioItems(
                     id="rb_qso_rate_type",
                     options=[
@@ -339,19 +372,15 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     ],
                     value="hour",
                     inline=True,
-                )
-            ),
-            html.Div(
+                ),
                 dcc.RadioItems(
                     id="rb_qso_rate_time_bin",
                     options=[5, 15, 30, 60],
                     value=60,
                     inline=True,
-                )
-            ),
-            html.Div(html.Div(id="qso_rate")),
-        ]
-    )
+                ),
+            ]
+        )
 
     @app.callback(
         Output("qso_rate", "children"),
@@ -398,12 +427,21 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph qso direction
     graph_qso_direction = html.Div(
         [
-            html.Div(
-                dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
-            ),
+            html.Div(id="ph_range_hour_qso_direction"),
             html.Div(html.Div(id="qso_direction")),
         ]
     )
+
+    @app.callback(
+        Output("ph_range_hour_qso_direction", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_qso_direction(signal):
+        return html.Div(
+            dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
+        )
 
     @app.callback(
         Output("qso_direction", "children"),
@@ -439,33 +477,40 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph band conditions
     graph_band_conditions = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_band_conditions"),
+            html.Div(html.Div(id="band_conditions")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_band_conditions", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_band_conditions(signal):
+        return html.Div(
+            [
                 dcc.RadioItems(
                     id="rb_band_conditions_time_bin",
                     options=[5, 15, 30, 60],
                     value=60,
                     inline=True,
                 ),
-            ),
-            html.Div(
                 dcc.RadioItems(
                     id="rb_band_conditions_reference",
                     options=CONTINENTS,
                     value="EU",
                     inline=True,
                 ),
-            ),
-            html.Div(
                 dcc.Checklist(
                     id="cl_band_conditions_continent",
                     options=CONTINENTS,
                     value=CONTINENTS,
                     inline=True,
                 ),
-            ),
-            html.Div(html.Div(id="band_conditions")),
-        ]
-    )
+            ]
+        )
 
     @app.callback(
         Output("band_conditions", "children"),
@@ -512,7 +557,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph RBN stats
     graph_rbn_stats = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_rbn"),
+            html.Div(html.Div(id="rbn_stats")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_rbn", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_rbn_stats(signal):
+        return html.Div(
+            [
                 dcc.RadioItems(
                     id="rb_rbn_feature",
                     options=[
@@ -523,26 +581,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     value="counts",
                     inline=True,
                 ),
-            ),
-            html.Div(
                 dcc.RadioItems(
                     id="rb_rbn_time_bin",
                     options=[5, 15, 30, 60],
                     value=60,
                     inline=True,
                 ),
-            ),
-            html.Div(
                 dcc.Checklist(
                     id="cl_rbn_rx_continent",
                     options=CONTINENTS,
                     value=CONTINENTS,
                     inline=True,
                 ),
-            ),
-            html.Div(html.Div(id="rbn_stats")),
-        ]
-    )
+            ]
+        )
 
     @app.callback(
         Output("rbn_stats", "children"),
@@ -601,7 +653,20 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph contest_evolution_feature
     graph_contest_evolution_feature = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_contest_evolution"),
+            html.Div(html.Div(id="contest_evolution_feature")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_contest_evolution", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_contest_evolution(signal):
+        return html.Div(
+            [
                 dcc.RadioItems(
                     id="rb_contest_evolution_feature",
                     options=[
@@ -611,18 +676,14 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                     value="valid_qsos",
                     inline=False,
                 ),
-            ),
-            html.Div(
                 dcc.RadioItems(
                     id="rb_contest_evolution_time_bin",
                     options=[1, 5, 15, 30, 60],
                     value=1,
                     inline=True,
                 ),
-            ),
-            html.Div(html.Div(id="contest_evolution_feature")),
-        ]
-    )
+            ]
+        )
 
     @app.callback(
         Output("contest_evolution_feature", "children"),
@@ -664,17 +725,28 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     # Graph minutes previous call
     graph_minutes_previous_call = html.Div(
         [
-            html.Div(
+            html.Div(id="ph_prev_call"),
+            html.Div(html.Div(id="minutes_previous_call")),
+        ]
+    )
+
+    @app.callback(
+        Output("ph_prev_call", "children"),
+        [
+            Input("signal", "data"),
+        ],
+    )
+    def option_prev_call(signal):
+        return html.Div(
+            [
                 dcc.RadioItems(
                     id="rb_previous_call_time_bin",
                     options=[1, 5, 15, 30, 60],
                     value=1,
                     inline=True,
                 ),
-            ),
-            html.Div(html.Div(id="minutes_previous_call")),
-        ]
-    )
+            ]
+        )
 
     @app.callback(
         Output("minutes_previous_call", "children"),
@@ -708,7 +780,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         plot.data = DATA_CONTEST.copy()
         return dcc.Graph(figure=plot.plot())
 
-    # Table
+    # Table contest log
     table_contest_log = html.Div(html.Div(id="table_contest_log"))
 
     @app.callback(
@@ -747,6 +819,45 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         table.data = concat(_data).reset_index(drop=True)
         return table.show(page_size=25)
 
+    # Table contest summary
+    table_summary = html.Div(html.Div(id="table_summary"))
+
+    @app.callback(
+        Output("table_summary", "children"),
+        [
+            Input("signal", "data"),
+        ],
+        [
+            State("contest", "value"),
+            State("mode", "value"),
+            State("callsigns_years", "value"),
+        ],
+    )
+    def show_table_summary(signal, contest, mode, callsigns_years):
+        f_callsigns_years = []
+        if not signal or not callsigns_years:
+            raise dash.exceptions.PreventUpdate
+        for callsign_year in callsigns_years:
+            callsign = callsign_year.split(",")[0]
+            year = int(callsign_year.split(",")[1])
+            f_callsigns_years.append((callsign, year))
+            if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
+                raise dash.exceptions.PreventUpdate
+
+        table = importlib.import_module(
+            f"hamcontestanalysis.tables.{contest.lower()}.table_contest_summary"
+        ).TableContestSummary()
+
+        _data = []
+        for callsign, year in f_callsigns_years:
+            _data.append(
+                DATA_CONTEST.query(
+                    f"(mycall == '{callsign}') & (year == {year})"
+                ).copy()
+            )
+        table.data = concat(_data).reset_index(drop=True)
+        return table.show()
+
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
@@ -755,6 +866,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             radio_mode,
             dropdown_year_call,
             submit_button,
+            table_summary,
             table_contest_log,
             graph_contest_log,
             graph_qsos_hour,

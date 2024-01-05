@@ -8,6 +8,7 @@ from plotly.express import scatter
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import BANDMAP
 
@@ -44,7 +45,7 @@ class PlotFrequency(PlotBase):
             category_orders={"band": list(BANDMAP.keys())},
         )
 
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Dummy contest datetime")
         fig.update_yaxes(title="Frequency", matches=None)
 

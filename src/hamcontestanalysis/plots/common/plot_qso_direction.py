@@ -10,6 +10,7 @@ from plotly.express import line_polar
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 
 
@@ -76,7 +77,7 @@ class PlotQsoDirection(PlotBase):
             f"{self.contest_hours[0]} <= hour < {self.contest_hours[1]}",
             markers=True,
         )
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
 
         if not save:
             return fig

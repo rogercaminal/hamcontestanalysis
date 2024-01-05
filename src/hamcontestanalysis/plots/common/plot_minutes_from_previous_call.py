@@ -9,6 +9,7 @@ from plotly.express import histogram
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 
 
@@ -76,6 +77,8 @@ class PlotMinutesPreviousCall(PlotBase):
             },
             cumulative=True,
         )
+
+        fig.update_layout(template=PLOT_TEMPLATE)
 
         if not save:
             return fig

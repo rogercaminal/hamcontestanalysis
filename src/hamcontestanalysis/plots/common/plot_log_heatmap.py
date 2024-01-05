@@ -17,6 +17,7 @@ from plotly.graph_objects import Heatmap
 from plotly.offline import plot as po_plot
 from plotly.subplots import make_subplots
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import CONTINENTS
 
@@ -152,7 +153,7 @@ class PlotLogHeatmap(PlotBase):
                 col=1,
             )
 
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Contest minute")
         fig.update_yaxes(title="Contest hour")
 

@@ -14,14 +14,13 @@ from pandas import DataFrame
 from pandas import concat
 from pandas import read_csv
 from pandas import to_datetime
-from pyhamtools import Callinfo
-from pyhamtools import LookupLib
 
+from hamcontestanalysis.commons import get_call_info
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.storage_source import StorageDataSource
 
 
-call_info = Callinfo(LookupLib(lookuptype="countryfile"))
+call_info = get_call_info()
 
 
 class ReverseBeaconRawDataSource(StorageDataSource):

@@ -11,8 +11,6 @@ from pandas import DataFrame
 from pandas import Timedelta
 from pandas import json_normalize
 from pandas import to_datetime
-from pyhamtools import Callinfo
-from pyhamtools import LookupLib
 from pyhamtools.locator import calculate_distance
 from pyhamtools.locator import calculate_distance_longpath
 from pyhamtools.locator import calculate_heading
@@ -20,11 +18,12 @@ from pyhamtools.locator import calculate_heading_longpath
 from pyhamtools.locator import calculate_sunrise_sunset
 from pyhamtools.locator import latlong_to_locator
 
+from hamcontestanalysis.commons import get_call_info
 from hamcontestanalysis.utils import BANDMAP
 
 
 logger = getLogger(__name__)
-call_info = Callinfo(LookupLib(lookuptype="countryfile"))
+call_info = get_call_info()
 
 
 def compute_band(data: DataFrame) -> DataFrame:

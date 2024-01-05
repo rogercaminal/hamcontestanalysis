@@ -10,6 +10,7 @@ from plotly.express import bar
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.utils.calculations import custom_floor
@@ -112,7 +113,7 @@ class PlotQsosHour(PlotBase):
                 "band": "Band",
             },
         )
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Contest hour")
         fig.update_yaxes(title="QSOs")
 
