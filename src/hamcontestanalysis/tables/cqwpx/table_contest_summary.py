@@ -1,6 +1,6 @@
 """Dash table containing the summary of the CQ WPX contest."""
-from pandas import DataFrame, concat
-from numpy import NaN
+from pandas import DataFrame
+from pandas import concat
 
 from hamcontestanalysis.tables.table_base import TableBase
 from hamcontestanalysis.utils import BANDMAP
@@ -39,26 +39,20 @@ class TableContestSummary(TableBase):
         )
 
     def _filter_data(self) -> DataFrame:
-        self.data = (
-            concat(
-                [
-                    self.data
-                    .groupby(["year", "mycall", "band"], as_index=False)
-                    .agg(
-                        qsos=("is_valid", "sum"), 
-                        is_mult=("is_mult", "sum"),
-                        qso_points=("qso_points", "sum")
-                    ), 
-                    self.data
-                    .groupby(["year", "mycall"], as_index=False)
-                    .agg(
-                        qsos=("is_valid", "sum"), 
-                        is_mult=("is_mult", "sum"), 
-                        qso_points=("qso_points", "sum")
-                    )
-                    .assign(score=lambda x: x["qso_points"] * x["is_mult"])
-                ]
-            )
-            .query(f"(band.isin({list(BANDMAP.keys())}) | (band.isnull()))")
-        )
+        self.data = concat(
+            [
+                self.data.groupby(["year", "mycall", "band"], as_index=False).agg(
+                    qsos=("is_valid", "sum"),
+                    is_mult=("is_mult", "sum"),
+                    qso_points=("qso_points", "sum"),
+                ),
+                self.data.groupby(["year", "mycall"], as_index=False)
+                .agg(
+                    qsos=("is_valid", "sum"),
+                    is_mult=("is_mult", "sum"),
+                    qso_points=("qso_points", "sum"),
+                )
+                .assign(score=lambda x: x["qso_points"] * x["is_mult"]),
+            ]
+        ).query(f"(band.isin({list(BANDMAP.keys())}) | (band.isnull()))")
         return super()._filter_data()

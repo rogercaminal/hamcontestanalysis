@@ -6,7 +6,6 @@ from typing import List
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_sink import RawCabrilloDataSink
-from hamcontestanalysis.data.raw_contest_sink import RawCabrilloMetaDataSink
 from hamcontestanalysis.data.raw_rbn_sink import RawReverseBeaconDataSink
 from hamcontestanalysis.data.rbn.storage_source import ReverseBeaconRawDataSource
 from hamcontestanalysis.modules.download.data_manipulation import data_manipulation
