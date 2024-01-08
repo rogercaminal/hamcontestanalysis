@@ -13,6 +13,7 @@ from plotly.express import line
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 
 
@@ -215,7 +216,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
             template="plotly_white",
         )
 
-        fig.update_layout(hovermode="x unified", plot_bgcolor="white")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_traces(marker_size=4, line=dict(width=0.5))
 
         if not save:

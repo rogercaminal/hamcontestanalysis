@@ -10,6 +10,7 @@ from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 from plotly.subplots import make_subplots
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 from hamcontestanalysis.utils import BANDMAP
 
@@ -105,6 +106,7 @@ class PlotBandConditions(PlotReverseBeaconBase):
         fig.update_layout(
             hovermode="x unified",
             title=f"Reference: {self.reference} - % RBN spots per band and continent",
+            template=PLOT_TEMPLATE,
         )
         fig.update_yaxes(title="% spots")
 

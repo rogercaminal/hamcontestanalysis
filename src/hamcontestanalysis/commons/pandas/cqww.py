@@ -4,12 +4,12 @@ from logging import getLogger
 
 import numpy as np
 from pandas import DataFrame
-from pyhamtools import Callinfo
-from pyhamtools import LookupLib
+
+from hamcontestanalysis.commons import get_call_info
 
 
 logger = getLogger(__name__)
-call_info = Callinfo(LookupLib(lookuptype="countryfile"))
+call_info = get_call_info()
 
 
 def compute_contest_score(data: DataFrame) -> DataFrame:

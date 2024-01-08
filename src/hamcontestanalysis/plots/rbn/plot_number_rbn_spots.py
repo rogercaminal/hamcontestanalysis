@@ -13,6 +13,7 @@ from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 from hamcontestanalysis.utils import BANDMAP
 
@@ -101,7 +102,7 @@ class PlotNumberRbnSpots(PlotReverseBeaconBase):
             range_y=[0.0, _data["counts"].max() * 1.05],
         )
 
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Dummy contest datetime")
         fig.update_yaxes(title="# RBN spots", matches=None)
 

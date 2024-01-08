@@ -10,6 +10,7 @@ from plotly.express import line
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 
 
@@ -82,7 +83,7 @@ class PlotRollingRate(PlotBase):
                 "qsos_sum": f"QSOs / {self.time_bin}min",
             },
         )
-        fig.update_layout(hovermode="x unified")
+        fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Dummy contest datetime")
         fig.update_yaxes(title=f"QSOs / {self.time_bin}min (rolling sum)")
 

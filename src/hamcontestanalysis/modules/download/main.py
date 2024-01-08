@@ -6,7 +6,6 @@ from typing import List
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_sink import RawCabrilloDataSink
-from hamcontestanalysis.data.raw_contest_sink import RawCabrilloMetaDataSink
 from hamcontestanalysis.data.raw_rbn_sink import RawReverseBeaconDataSink
 from hamcontestanalysis.data.rbn.storage_source import ReverseBeaconRawDataSource
 from hamcontestanalysis.modules.download.data_manipulation import data_manipulation
@@ -78,6 +77,7 @@ def download_contest_data(
                 contest_data = data_source_class(
                     callsign=callsign, year=year, mode=mode
                 ).load()
+                contest_data["meta_data"] = str(contest_data._attrs)
 
                 # Feature engineering
                 contest_data = data_manipulation(data=contest_data, contest=contest)
@@ -86,18 +86,8 @@ def download_contest_data(
                 prefix_raw_storage_data = settings.storage.paths.raw_data.format(
                     contest=contest, mode=mode, year=year, callsign=callsign.lower()
                 )
-                prefix_raw_storage_metadata = (
-                    settings.storage.paths.raw_metadata.format(
-                        contest=contest, mode=mode, year=year, callsign=callsign.lower()
-                    )
-                )
                 logger.info(f"Store data in {prefix_raw_storage_data}")
                 RawCabrilloDataSink(prefix=prefix_raw_storage_data).push(contest_data)
-
-                logger.info(f"Store metadata in {prefix_raw_storage_metadata}")
-                RawCabrilloMetaDataSink(prefix=prefix_raw_storage_metadata).push(
-                    contest_data
-                )
             else:
                 logger.info(
                     f"\t- {contest} - {mode} - {year} - {callsign} already exists!"
