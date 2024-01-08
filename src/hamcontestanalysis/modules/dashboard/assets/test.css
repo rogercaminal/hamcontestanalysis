@@ -1,11 +1,22 @@
 body {
-  font-family: sans-serif;
+  font-family: "Poppins";
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: hotpink;
+
+.hca_header {
+  background-color: white !important;
+  border-bottom: 0.3px solid #86929e !important;
+}
+.hca_header a {
+  color: #86929e;
+}
+
+.hca_search {
+  background-color: #f6f6f8;
+  margin: 16px;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.me-1 {
+  background-color: #017ef5;
 }

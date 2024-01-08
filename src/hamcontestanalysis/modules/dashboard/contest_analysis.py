@@ -37,12 +37,13 @@ from hamcontestanalysis.utils import CONTINENTS
 YEAR_MIN = 2020
 DATA_CONTEST = None
 DATA_RBN = None
+FONTS = ["https://fonts.googleapis.com/css?family=Poppins"]
+
 settings = get_settings()
 
 
 def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
     """Main dashboard entrypoint.
-
     This method generates the dashboard to be displayed with the analysis of each
     contest.
 
@@ -52,7 +53,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         host (str, optional): host for the dashboard. Defaults to "localhost".
         port (int, optional): port to display the dashboard. Defaults to 8050.
     """
-    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+    app = dash.Dash(
+        __name__,
+        external_stylesheets=[dbc.themes.BOOTSTRAP] + FONTS,
+        suppress_callback_exceptions=True,
+    )
 
     # Buttons
     radio_contest = html.Div(
@@ -70,8 +76,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                 multi=False,
                 placeholder="Choose a contest...",
             )
-        ],
-        style={"width": "25%", "display": "inline-block"},
+        ]
     )
 
     radio_mode = html.Div(
@@ -84,7 +89,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                 placeholder="Choose a mode...",
             )
         ],
-        style={"width": "25%", "display": "inline-block"},
     )
 
     dropdown_year_call = html.Div(
@@ -95,7 +99,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             value=None,
             placeholder="Choose year - callsign pairs...",
         ),
-        style={"width": "25%", "display": "inline-block"},
     )
 
     @app.callback(
@@ -129,12 +132,19 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         return options
 
     submit_button = html.Div(
-        html.Button(
+        # html.Button(
+        #     id="submit-button",
+        #     n_clicks=0,
+        #     children="submit",
+        #     style={"fontsize": 24},
+        # )
+        dbc.Button(
+            children="Analyze",
+            color="primary",
+            className="me-1",
             id="submit-button",
             n_clicks=0,
-            children="submit",
-            style={"fontsize": 24},
-        )
+        ),
     )
 
     # Download step
@@ -858,25 +868,86 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         table.data = concat(_data).reset_index(drop=True)
         return table.show()
 
+    navbar = dbc.NavbarSimple(
+        children=[
+            dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+            dbc.DropdownMenu(
+                children=[
+                    dbc.DropdownMenuItem("More pages", header=True),
+                    dbc.DropdownMenuItem("Page 2", href="#"),
+                    dbc.DropdownMenuItem("Page 3", href="#"),
+                ],
+                nav=True,
+                in_navbar=True,
+                label="More",
+            ),
+        ],
+        brand="HamContestAnalysis",
+        brand_href="#",
+        class_name="hca_header",
+    )
+
+    search_container = dbc.Container(
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        radio_contest,
+                    ],
+                    sm=12,
+                    md=3,
+                ),
+                dbc.Col(
+                    [
+                        radio_mode,
+                    ],
+                    sm=12,
+                    md=3,
+                ),
+                dbc.Col(
+                    [
+                        dropdown_year_call,
+                    ],
+                    sm=12,
+                    md=4,
+                ),
+                dbc.Col(
+                    [
+                        submit_button,
+                    ],
+                    sm=12,
+                    md=2,
+                ),
+            ]
+        ),
+        class_name="hca_search",
+    )
+
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
             dcc.Store(id="signal"),
-            radio_contest,
-            radio_mode,
-            dropdown_year_call,
-            submit_button,
-            table_summary,
-            table_contest_log,
-            graph_contest_log,
-            graph_qsos_hour,
-            graph_frequency,
-            graph_qso_rate,
-            graph_qso_direction,
-            graph_band_conditions,
-            graph_rbn_stats,
-            graph_contest_evolution_feature,
-            graph_minutes_previous_call,
+            navbar,
+            dbc.Container(
+                dbc.Row(
+                    dbc.Col(
+                        [
+                            search_container,
+                            table_summary,
+                            table_contest_log,
+                            graph_contest_log,
+                            graph_qsos_hour,
+                            graph_frequency,
+                            graph_qso_rate,
+                            graph_qso_direction,
+                            graph_band_conditions,
+                            graph_rbn_stats,
+                            graph_contest_evolution_feature,
+                            graph_minutes_previous_call,
+                        ]
+                    )
+                )
+            ),
         ]
     )
 
