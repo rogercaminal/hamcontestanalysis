@@ -66,8 +66,4 @@ class ProcessedContestDataSource(StorageDataSource):
         _data = self.read(
             file_format=self.file_format, path=self.path_data, **self.storage_options
         )
-        _metadata = self.read(
-            file_format=self.file_format, path=self.path_meta, **self.storage_options
-        )
-        _data.attrs = _metadata.to_dict()["value"]
         return _data
