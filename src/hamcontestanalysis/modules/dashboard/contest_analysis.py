@@ -8,7 +8,7 @@ from dash import html
 from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
-from pandas import concat
+from pandas import concat, DataFrame, to_datetime
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import download_contest_data
@@ -34,12 +34,40 @@ from hamcontestanalysis.plots.rbn.plot_snr import PlotSnr
 from hamcontestanalysis.utils import CONTINENTS
 
 
-YEAR_MIN = 2020
-DATA_CONTEST = None
-DATA_RBN = None
 FONTS = ["https://fonts.googleapis.com/css?family=Poppins"]
 
 settings = get_settings()
+
+
+def fix_types_data_rbn(data: DataFrame) -> DataFrame:
+    """Fix the datetime types after serializing in RBN dataset.
+
+    Args:
+        data (DataFrame): dataframe with datetime as object
+
+    Returns:
+        DataFrame: dataframe with types fixed
+    """
+    return data.assign(datetime=lambda x: to_datetime(x["datetime"]))
+
+
+def fix_types_data_contest(data: DataFrame) -> DataFrame:
+    """Fix the datetime types after serializing in contest dataset.
+
+    Args:
+        data (DataFrame): dataframe with datetime as object
+
+    Returns:
+        DataFrame: dataframe with types fixed
+    """
+    return data.assign(
+        datetime=lambda x: to_datetime(x["datetime"]),
+        morning_dawn=lambda x: to_datetime(x["morning_dawn"]),
+        sunrise=lambda x: to_datetime(x["sunrise"]),
+        evening_dawn=lambda x: to_datetime(x["evening_dawn"]),
+        sunset=lambda x: to_datetime(x["sunset"]),
+    )
+
 
 
 def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None:
@@ -132,12 +160,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         return options
 
     submit_button = html.Div(
-        # html.Button(
-        #     id="submit-button",
-        #     n_clicks=0,
-        #     children="submit",
-        #     style={"fontsize": 24},
-        # )
         dbc.Button(
             children="Analyze",
             color="primary",
@@ -161,10 +183,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         if not callsigns_years:
             raise dash.exceptions.PreventUpdate
         callsign_years_tuple_list = []
+        query_rbn = []
         for callsign_year in callsigns_years:
             callsign = callsign_year.split(",")[0]
             year = int(callsign_year.split(",")[1])
             callsign_years_tuple_list.append(tuple([callsign, year]))
+            query_rbn.append(f"(dx == '{callsign}' & (year == {year}))")
             if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
                 download_contest_data(
                     contest=contest, years=[year], callsigns=[callsign], mode=mode
@@ -173,6 +197,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                 contest=contest, year=year, mode=mode
             ):
                 download_rbn_data(contest=contest, years=[year], mode=mode)
+        query_rbn = " | ".join(query_rbn)
         data_contest = PlotRate(
             contest=contest, mode=mode, callsigns_years=callsign_years_tuple_list
         ).data
@@ -183,15 +208,12 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
                 mode=mode,
                 callsigns_years=callsign_years_tuple_list,
                 time_bin_size=10,
-            ).data
+            ).data.query(query_rbn)
 
-        global DATA_CONTEST
-        DATA_CONTEST = data_contest
-
-        global DATA_RBN
-        DATA_RBN = data_rbn
-
-        return n_clicks > 0
+        return dict(
+            data_contest=data_contest.to_dict("records"),
+            data_rbn=data_rbn.to_dict("records")
+        )
 
     # Graph Contest log
     graph_contest_log = html.Div(
@@ -259,7 +281,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             continents=continents,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph qsos/hour
@@ -326,7 +349,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             continents=continents,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph frequency
@@ -354,7 +378,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         plot = PlotFrequency(
             contest=contest, mode=mode, callsigns_years=f_callsigns_years
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph qso rate
@@ -431,7 +456,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             )
         else:
             raise ValueError("plot_type must be either 'hour' or 'rolling'")
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph qso direction
@@ -481,7 +507,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             callsigns_years=f_callsigns_years,
             contest_hours=contest_hours,
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph band conditions
@@ -561,7 +588,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             reference=reference,
             continents=continents,
         )
-        plot.data = DATA_RBN
+        data = fix_types_data_rbn(data=DataFrame(signal["data_rbn"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph RBN stats
@@ -657,7 +685,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             )
         else:
             raise ValueError("Plot does not exist")
-        plot.data = DATA_RBN
+        data = fix_types_data_rbn(data=DataFrame(signal["data_rbn"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph contest_evolution_feature
@@ -729,7 +758,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             feature=feature,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Graph minutes previous call
@@ -787,7 +817,8 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             callsigns_years=f_callsigns_years,
             time_bin_size=time_bin_size,
         )
-        plot.data = DATA_CONTEST.copy()
+        data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+        plot.data = data
         return dcc.Graph(figure=plot.plot())
 
     # Table contest log
@@ -821,8 +852,9 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
 
         _data = []
         for callsign, year in f_callsigns_years:
+            _data_contest = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
             _data.append(
-                DATA_CONTEST.query(
+                _data_contest.query(
                     f"(mycall == '{callsign}') & (year == {year})"
                 ).copy()
             )
@@ -860,8 +892,9 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
 
         _data = []
         for callsign, year in f_callsigns_years:
+            _data_contest = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
             _data.append(
-                DATA_CONTEST.query(
+                _data_contest.query(
                     f"(mycall == '{callsign}') & (year == {year})"
                 ).copy()
             )
