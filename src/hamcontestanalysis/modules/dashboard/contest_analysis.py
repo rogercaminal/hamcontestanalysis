@@ -11,8 +11,7 @@ from dash.dependencies import State
 from pandas import concat, DataFrame, to_datetime
 
 from hamcontestanalysis.config import get_settings
-from hamcontestanalysis.modules.download.main import download_contest_data
-from hamcontestanalysis.modules.download.main import download_rbn_data
+from hamcontestanalysis.modules.dashboard.callbacks.search import callback_manager as search_callback_manager
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.modules.download.main import exists_rbn
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
@@ -87,6 +86,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         external_stylesheets=[dbc.themes.BOOTSTRAP] + FONTS,
         suppress_callback_exceptions=True,
     )
+    search_callback_manager.attach_to_app(app=app)
 
     # Buttons
     radio_contest = html.Div(
@@ -129,36 +129,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         ),
     )
 
-    @app.callback(
-        Output("mode", "options"),
-        [Input("contest", "value")],
-    )
-    def load_available_modes(contest):
-        if not contest:
-            return []
-        modes = getattr(settings.contest, contest.lower()).modes.modes
-        options = [{"label": m.upper(), "value": m.lower()} for m in modes]
-        return options
-
-    @app.callback(
-        Output("callsigns_years", "options"),
-        [Input("contest", "value"), Input("mode", "value")],
-    )
-    def load_available_calls_years(contest, mode):
-        if not contest or not mode:
-            return []
-
-        data_source_class = importlib.import_module(
-            f"hamcontestanalysis.data.{contest.lower()}.storage_source"
-        ).CabrilloDataSource
-        data = data_source_class.get_all_options().query(f"(mode == '{mode}')")
-
-        options = [
-            {"label": f"{y} - {c}", "value": f"{c},{y}"}
-            for y, c in data[["year", "callsign"]].to_numpy()
-        ]
-        return options
-
     submit_button = html.Div(
         dbc.Button(
             children="Analyze",
@@ -168,52 +138,6 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             n_clicks=0,
         ),
     )
-
-    # Download step
-    @app.callback(
-        Output("signal", "data"),
-        [Input("submit-button", "n_clicks")],
-        [
-            State("contest", "value"),
-            State("mode", "value"),
-            State("callsigns_years", "value"),
-        ],
-    )
-    def run_download(n_clicks, contest, mode, callsigns_years):
-        if not callsigns_years:
-            raise dash.exceptions.PreventUpdate
-        callsign_years_tuple_list = []
-        query_rbn = []
-        for callsign_year in callsigns_years:
-            callsign = callsign_year.split(",")[0]
-            year = int(callsign_year.split(",")[1])
-            callsign_years_tuple_list.append(tuple([callsign, year]))
-            query_rbn.append(f"(dx == '{callsign}' & (year == {year}))")
-            if not exists(contest=contest, year=year, mode=mode, callsign=callsign):
-                download_contest_data(
-                    contest=contest, years=[year], callsigns=[callsign], mode=mode
-                )
-            if mode.lower() == "cw" and not exists_rbn(
-                contest=contest, year=year, mode=mode
-            ):
-                download_rbn_data(contest=contest, years=[year], mode=mode)
-        query_rbn = " | ".join(query_rbn)
-        data_contest = PlotRate(
-            contest=contest, mode=mode, callsigns_years=callsign_years_tuple_list
-        ).data
-        data_rbn = None
-        if mode == "cw":
-            data_rbn = PlotCwSpeed(
-                contest=contest,
-                mode=mode,
-                callsigns_years=callsign_years_tuple_list,
-                time_bin_size=10,
-            ).data.query(query_rbn)
-
-        return dict(
-            data_contest=data_contest.to_dict("records"),
-            data_rbn=data_rbn.to_dict("records")
-        )
 
     # Graph Contest log
     graph_contest_log = html.Div(
@@ -901,6 +825,7 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         table.data = concat(_data).reset_index(drop=True)
         return table.show()
 
+    # New stuff!
     navbar = dbc.NavbarSimple(
         children=[
             dbc.NavItem(dbc.NavLink("Page 1", href="#")),
@@ -956,6 +881,69 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
         class_name="hca_search",
     )
 
+    tabs_container = dbc.Container(
+        dbc.Tabs(
+            [
+                dbc.Tab(
+                    [
+                        dbc.Container(
+                            table_summary,
+                            class_name="pt-5",
+                        ),
+                    ],
+                    label="Summary"
+                ),
+                dbc.Tab(
+                    [
+                        dbc.Container(
+                            graph_qsos_hour,
+                            class_name="mt-5 p-5 hca_plot",
+                        ),
+                        dbc.Container(
+                            graph_qso_rate,
+                            class_name="mt-5 p-5 hca_plot",
+                        ),
+                    ],
+                    label="Rates"
+                ),
+                dbc.Tab(
+                    [
+                        table_contest_log,
+                        graph_contest_log,
+                        graph_frequency,
+                    ],
+                    label="Log"
+                ),
+                dbc.Tab(
+                    [
+                        graph_rbn_stats
+                    ],
+                    label="Reverse beacon"
+                ),
+                dbc.Tab(
+                    [
+                        graph_band_conditions,
+                    ],
+                    label="General propagation"
+                ),
+                dbc.Tab(
+                    [
+                        graph_qso_direction,
+                    ],
+                    label="Directions"
+                ),
+                dbc.Tab(
+                    [
+                        graph_contest_evolution_feature,
+                        graph_minutes_previous_call,
+                    ],
+                    label="Contest evolution"
+                ),
+            ]
+        ),
+        class_name="hca_tabs",
+    )
+
     # Construct layout of the dashboard using components defined above
     app.layout = html.Div(
         [
@@ -963,22 +951,10 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             navbar,
             dbc.Container(
                 dbc.Row(
-                    dbc.Col(
                         [
                             search_container,
-                            table_summary,
-                            table_contest_log,
-                            graph_contest_log,
-                            graph_qsos_hour,
-                            graph_frequency,
-                            graph_qso_rate,
-                            graph_qso_direction,
-                            graph_band_conditions,
-                            graph_rbn_stats,
-                            graph_contest_evolution_feature,
-                            graph_minutes_previous_call,
+                            tabs_container,  
                         ]
-                    )
                 )
             ),
         ]
