@@ -30,15 +30,17 @@ class PlotFrequency(PlotBase):
             dummy_datetime=lambda x: to_datetime("2000-01-01")
             + to_timedelta(x["hour"], "H"),
         )
+        do_dummy_datetime = len(self.data["year"].unique()) > 1
         fig = scatter(
             _data,
-            x="dummy_datetime",
+            x="dummy_datetime" if do_dummy_datetime else "datetime",
             y="frequency",
             color="callsign_year",
             facet_row="band",
             labels={
                 "callsign_year": "Callsign (year)",
                 "dummy_datetime": "Dummy contest datetime",
+                "datetime": "Contest datetime",
                 "frequency": "Frequency",
                 "band": "Band",
             },
@@ -46,7 +48,6 @@ class PlotFrequency(PlotBase):
         )
 
         fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
-        fig.update_xaxes(title="Dummy contest datetime")
         fig.update_yaxes(title="Frequency", matches=None)
 
         if not save:
