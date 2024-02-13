@@ -1,7 +1,8 @@
-"""Search container for the contest analysis dashboard"""
+"""Search container for the contest analysis dashboard."""
+import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import html
-import dash_bootstrap_components as dbc
+
 from hamcontestanalysis.config import get_settings
 
 
@@ -56,48 +57,42 @@ submit_button = html.Div(
         id="submit-button",
         n_clicks=0,
     ),
-    id="loading_dummy"
+    id="loading_dummy",
 )
 
 
 search_container = dbc.Container(
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        radio_contest,
-                    ],
-                    sm=12,
-                    md=3,
-                ),
-                dbc.Col(
-                    [
-                        radio_mode,
-                    ],
-                    sm=12,
-                    md=3,
-                ),
-                dbc.Col(
-                    [
-                        dcc.Loading(
-                            children=dropdown_year_call,
-                            type="dot"
-                        ),
-                    ],
-                    sm=12,
-                    md=4,
-                ),
-                dbc.Col(
-                    [
-                        dcc.Loading(
-                            children=submit_button,
-                            type="dot"
-                        ),
-                    ],
-                    sm=12,
-                    md=2,
-                ),
-            ]
-        ),
-        class_name="hca_search",
-    )
+    dbc.Row(
+        [
+            dbc.Col(
+                [
+                    radio_contest,
+                ],
+                sm=12,
+                md=3,
+            ),
+            dbc.Col(
+                [
+                    radio_mode,
+                ],
+                sm=12,
+                md=3,
+            ),
+            dbc.Col(
+                [
+                    dcc.Loading(children=dropdown_year_call, type="dot"),
+                ],
+                sm=12,
+                md=4,
+            ),
+            dbc.Col(
+                [
+                    dcc.Loading(children=submit_button, type="dot"),
+                ],
+                sm=12,
+                md=2,
+            ),
+        ]
+    ),
+    class_name="hca_search",
+)

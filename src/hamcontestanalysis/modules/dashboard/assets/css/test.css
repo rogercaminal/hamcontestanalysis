@@ -23,14 +23,16 @@ body {
   background-color: #017ef5;
 }
 
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
   color: #017ef5;
   border: 0;
   border-bottom: 3px solid #017ef5;
   font-weight: bold;
   background-color: #f6f6f8;
 }
-.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
   border: 0;
   color: #86929e;
   font-weight: 700;

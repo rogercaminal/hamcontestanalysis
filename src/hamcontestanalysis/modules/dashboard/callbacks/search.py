@@ -121,7 +121,7 @@ def run_download(
             download_contest_data(
                 contest=contest, years=[year], callsigns=[callsign], mode=mode
             )
-        if mode.lower() == "cw" and not exists_rbn(
+        if (mode.lower() == "cw" or mode.lower() == "mixed") and not exists_rbn(
             contest=contest, year=year, mode=mode
         ):
             download_rbn_data(contest=contest, years=[year], mode=mode)
@@ -130,7 +130,7 @@ def run_download(
         contest=contest, mode=mode, callsigns_years=callsign_years_tuple_list
     ).data
     data_rbn = None
-    if mode == "cw":
+    if mode == "cw" or mode == "mixed":
         data_rbn = PlotCwSpeed(
             contest=contest,
             mode=mode,

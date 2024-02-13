@@ -1,13 +1,17 @@
 """Callbacks for the direction tab."""
 import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+from pandas import DataFrame
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
-from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
-from pandas import DataFrame
-from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
+from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
+from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
 
 
 callback_manager = CallbackManager()
@@ -24,6 +28,7 @@ def option_qso_direction(signal):
     return html.Div(
         dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
     )
+
 
 @callback_manager.callback(
     Output("qso_direction", "children"),

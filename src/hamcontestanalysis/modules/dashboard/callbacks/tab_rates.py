@@ -1,16 +1,21 @@
 """Callbacks for the rates tab."""
 import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+from pandas import DataFrame
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
-from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
-from pandas import DataFrame
+from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
 from hamcontestanalysis.utils import CONTINENTS
-from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
+from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
+from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
+
 
 callback_manager = CallbackManager()
 settings = get_settings()
@@ -40,6 +45,7 @@ def option_qsos_hour(signal):
         ]
     )
 
+
 @callback_manager.callback(
     Output("qsos_hour", "children"),
     [
@@ -53,9 +59,7 @@ def option_qsos_hour(signal):
         State("callsigns_years", "value"),
     ],
 )
-def plot_qsos_hour(
-    signal, continents, time_bin_size, contest, mode, callsigns_years
-):
+def plot_qsos_hour(signal, continents, time_bin_size, contest, mode, callsigns_years):
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate
@@ -74,7 +78,9 @@ def plot_qsos_hour(
     )
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data
-    return dcc.Graph(figure=plot.plot(), style={"height": f"{40 * len(f_callsigns_years)}vh"})
+    return dcc.Graph(
+        figure=plot.plot(), style={"height": f"{40 * len(f_callsigns_years)}vh"}
+    )
 
 
 @callback_manager.callback(
@@ -103,6 +109,7 @@ def option_qso_rate(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("qso_rate", "children"),
@@ -145,4 +152,4 @@ def plot_qso_rate(signal, plot_type, time_bin, contest, mode, callsigns_years):
         raise ValueError("plot_type must be either 'hour' or 'rolling'")
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data
-    return dcc.Graph(figure=plot.plot(), style={"height": f"40vh"})
+    return dcc.Graph(figure=plot.plot(), style={"height": "40vh"})

@@ -1,6 +1,8 @@
 """Summary tab."""
-from dash import html, dcc
 import dash_bootstrap_components as dbc
+from dash import dcc
+from dash import html
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
 
@@ -27,5 +29,5 @@ tab_summary = dbc.Tab(
             class_name="mt-5 p-5 hca_table",
         ),
     ],
-    label="Summary"
+    label="Summary",
 )

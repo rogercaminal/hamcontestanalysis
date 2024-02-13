@@ -1,6 +1,7 @@
 """Components for the general propagation tab."""
-from dash import html, dcc
 import dash_bootstrap_components as dbc
+from dash import dcc
+from dash import html
 
 
 graph_band_conditions = html.Div(
@@ -20,5 +21,5 @@ tab_propagation = dbc.Tab(
             class_name="mt-5 p-5 hca_plot",
         ),
     ],
-    label="General propagation"
+    label="General propagation",
 )

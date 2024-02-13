@@ -65,6 +65,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
     mylocator = latlong_to_locator(
         **call_info.get_lat_long(data["mycall"].to_numpy()[0])
     )
+    mycountry = call_info.get_all(data["mycall"].to_numpy()[0])["country"]
 
     def _get_all_dxcc_info_handle_exceptions(x: DataFrame) -> Dict[str, Any]:
         try:
@@ -78,6 +79,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
                 "continent": None,
                 "latitude": None,
                 "longitude": None,
+                "mycountry": None,
             }
 
     data = (
@@ -86,6 +88,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
         )
         .dropna(subset=["country"])
         .assign(
+            mycountry=mycountry,
             locator=lambda _data: _data.apply(
                 lambda x: latlong_to_locator(**call_info.get_lat_long(x["call"])),
                 axis=1,

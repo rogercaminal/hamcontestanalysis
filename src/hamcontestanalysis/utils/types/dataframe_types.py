@@ -1,5 +1,6 @@
-"""Utils to fix dataframe types in the dashboards"""
-from pandas import DataFrame, to_datetime
+"""Utils to fix dataframe types in the dashboards."""
+from pandas import DataFrame
+from pandas import to_datetime
 
 
 def fix_types_data_rbn(data: DataFrame) -> DataFrame:

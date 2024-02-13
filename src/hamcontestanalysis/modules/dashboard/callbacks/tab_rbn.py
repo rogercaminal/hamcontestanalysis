@@ -1,19 +1,26 @@
 """Callbacks for the rbn statistics tab."""
 import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+from pandas import DataFrame
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists_rbn
-from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
-from pandas import DataFrame
-from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_rbn
-from hamcontestanalysis.utils import CONTINENTS, BANDMAP
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
 from hamcontestanalysis.plots.rbn.plot_snr_band_continent import PlotSnrBandContinent
+from hamcontestanalysis.utils import BANDMAP
+from hamcontestanalysis.utils import CONTINENTS
+from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
+from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_rbn
+
 
 callback_manager = CallbackManager()
 settings = get_settings()
+
 
 @callback_manager.callback(
     Output("ph_snr_band_continent", "children"),
@@ -44,6 +51,7 @@ def option_snr_band_continent(signal):
         ]
     )
 
+
 @callback_manager.callback(
     Output("snr_band_continent", "children"),
     [
@@ -62,7 +70,7 @@ def plot_snr_band_continent(
     signal, bands, rx_continents, time_bin_size, contest, mode, callsigns_years
 ):
     f_callsigns_years = []
-    
+
     if not signal:
         raise dash.exceptions.PreventUpdate
     for callsign_year in callsigns_years:
@@ -71,11 +79,11 @@ def plot_snr_band_continent(
         f_callsigns_years.append((callsign, year))
         if not exists_rbn(year=year, contest=contest, mode=mode):
             raise dash.exceptions.PreventUpdate
-    
-    years = list(set([c[1] for c in f_callsigns_years]))
+
+    years = list({c[1] for c in f_callsigns_years})
     if len(years) > 1:
         raise dash.exceptions.PreventUpdate
-    
+
     plot = PlotSnrBandContinent(
         contest=contest,
         mode=mode,
@@ -126,6 +134,7 @@ def option_rbn_stats(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("rbn_stats", "children"),

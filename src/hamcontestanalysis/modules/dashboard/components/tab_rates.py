@@ -1,6 +1,7 @@
 """Components for the rates tab."""
-from dash import html, dcc
 import dash_bootstrap_components as dbc
+from dash import dcc
+from dash import html
 
 
 graph_qsos_hour = html.Div(
@@ -36,5 +37,5 @@ tab_rates = dbc.Tab(
             class_name="mt-5 p-5 hca_plot",
         ),
     ],
-    label="Rates"
+    label="Rates",
 )

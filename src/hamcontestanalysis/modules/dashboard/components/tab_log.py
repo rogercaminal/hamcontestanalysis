@@ -1,6 +1,7 @@
 """Components for the log tab."""
-from dash import html, dcc
 import dash_bootstrap_components as dbc
+from dash import dcc
+from dash import html
 
 
 table_contest_log = html.Div(html.Div(id="table_contest_log"))
@@ -38,5 +39,5 @@ tab_log = dbc.Tab(
             class_name="mt-5 p-5 hca_plot",
         ),
     ],
-    label="Log"
+    label="Log",
 )

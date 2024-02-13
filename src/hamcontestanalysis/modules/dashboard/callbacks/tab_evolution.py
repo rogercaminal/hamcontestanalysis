@@ -1,22 +1,29 @@
 """Callbacks for the general propagation tab."""
+import importlib
+
 import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+from pandas import DataFrame
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
-from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
-import importlib
-from pandas import DataFrame
-from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
 from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
     PlotMinutesPreviousCall,
 )
 from hamcontestanalysis.plots.cqww.plot_contest_evolution import (
     AVAILABLE_FEATURES as AVAILABLE_FEATURES_CQWW,
 )
+from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
+from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
+
 
 callback_manager = CallbackManager()
 settings = get_settings()
+
 
 @callback_manager.callback(
     Output("ph_contest_evolution", "children"),
@@ -44,6 +51,7 @@ def option_contest_evolution(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("contest_evolution_feature", "children"),
@@ -107,6 +115,7 @@ def option_prev_call(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("minutes_previous_call", "children"),

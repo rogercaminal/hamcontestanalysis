@@ -1,16 +1,22 @@
 """Callbacks for the log tab."""
-import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
 import importlib
-from pandas import concat, DataFrame
+
+import dash
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+from pandas import DataFrame
+from pandas import concat
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
-from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
+from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
+from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
 from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
-from hamcontestanalysis.utils import CONTINENTS
 
 
 callback_manager = CallbackManager()
@@ -47,9 +53,7 @@ def show_table_contest_data(signal, contest, mode, callsigns_years):
     for callsign, year in f_callsigns_years:
         _data_contest = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
         _data.append(
-            _data_contest.query(
-                f"(mycall == '{callsign}') & (year == {year})"
-            ).copy()
+            _data_contest.query(f"(mycall == '{callsign}') & (year == {year})").copy()
         )
     table.data = concat(_data).reset_index(drop=True)
     return table.show(page_size=25)
@@ -78,6 +82,7 @@ def option_contest_log_continent(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("contest_log_heatmap", "children"),
@@ -113,18 +118,20 @@ def plot_contest_log_heatmap(
     )
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data
-    return dcc.Graph(figure=plot.plot(), style={"height": f"{50 * len(f_callsigns_years)}vh"})
+    return dcc.Graph(
+        figure=plot.plot(), style={"height": f"{50 * len(f_callsigns_years)}vh"}
+    )
 
 
 @callback_manager.callback(
-        Output("frequency", "children"),
-        [Input("signal", "data")],
-        [
-            State("contest", "value"),
-            State("mode", "value"),
-            State("callsigns_years", "value"),
-        ],
-    )
+    Output("frequency", "children"),
+    [Input("signal", "data")],
+    [
+        State("contest", "value"),
+        State("mode", "value"),
+        State("callsigns_years", "value"),
+    ],
+)
 def plot_frequency(signal, contest, mode, callsigns_years):
     f_callsigns_years = []
     if not signal:
@@ -135,9 +142,7 @@ def plot_frequency(signal, contest, mode, callsigns_years):
         f_callsigns_years.append((callsign, year))
         if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
             raise dash.exceptions.PreventUpdate
-    plot = PlotFrequency(
-        contest=contest, mode=mode, callsigns_years=f_callsigns_years
-    )
+    plot = PlotFrequency(contest=contest, mode=mode, callsigns_years=f_callsigns_years)
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data
-    return dcc.Graph(figure=plot.plot(), style={"height": f"80vh"})
+    return dcc.Graph(figure=plot.plot(), style={"height": "80vh"})

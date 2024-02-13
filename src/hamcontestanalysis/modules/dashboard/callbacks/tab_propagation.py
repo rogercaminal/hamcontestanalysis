@@ -1,17 +1,21 @@
 """Callbacks for the general propagation tab."""
 import dash
-from dash import html, dcc
-from dash.dependencies import Input, Output, State
+from dash import dcc
+from dash import html
+from dash.dependencies import Input
+from dash.dependencies import Output
+from dash.dependencies import State
+
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists_rbn
-from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
-from pandas import DataFrame
-from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
+from hamcontestanalysis.utils import CONTINENTS
+from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
 
 
 callback_manager = CallbackManager()
 settings = get_settings()
+
 
 @callback_manager.callback(
     Output("ph_band_conditions", "children"),
@@ -42,6 +46,7 @@ def option_band_conditions(signal):
             ),
         ]
     )
+
 
 @callback_manager.callback(
     Output("band_conditions", "children"),
