@@ -1,4 +1,4 @@
-"""Plot IARU HF contest evolution."""
+"""Plot ARRL DX contest evolution."""
 
 from typing import List
 from typing import Optional
@@ -38,7 +38,7 @@ AVAILABLE_FEATURES = {
 
 
 class PlotContestEvolution(PlotBase):
-    """Plot IARU HF evolution."""
+    """Plot ARRL DX evolution."""
 
     def __init__(
         self,
@@ -47,7 +47,7 @@ class PlotContestEvolution(PlotBase):
         feature: str,
         time_bin_size: int = 1,
     ):
-        """Init method of the PlotCqWwScore class.
+        """Init methodof the class.
 
         Args:
             contest (str): Contest name
@@ -127,7 +127,7 @@ class PlotContestEvolution(PlotBase):
         fig.update_layout(hovermode="x unified", template=PLOT_TEMPLATE)
         fig.update_xaxes(title="Dummy contest datetime")
         fig.update_yaxes(
-            title=f"IARU HF {AVAILABLE_FEATURES[self.feature][1]}", matches=None
+            title=f"ARRL DX {AVAILABLE_FEATURES[self.feature][1]}", matches=None
         )
 
         if not save:

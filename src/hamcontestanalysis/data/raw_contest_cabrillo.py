@@ -72,6 +72,8 @@ class RawContestCabrilloDataSource(StorageDataSource):
         read_method = self.read_method_by_file_format[file_format]
 
         # Get text from web
+        if not path.startswith(("http:", "https:")):
+            raise ValueError("URL must start with 'http:' or 'https:'")
         with urlopen(path) as response:
             html = response.read()
         csv = "\n".join(
@@ -141,10 +143,16 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(item[4:].replace("ph", "ssb"), item[:4]) for item in raw_list]
 
     @classmethod
-    def _get_available_years(cls) -> Dict[int, int]:
+    def _get_available_years(
+        cls, website_address: Optional[str] = None
+    ) -> Dict[int, int]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for ARRL contests.
+
+        Args:
+            website_address (Optional[str]): Website address of the contest. If
+                not provided, use cls.prefix. Defaults to None.
 
         Raises:
             NotImplementedError: If contest not implemented
@@ -152,7 +160,9 @@ class RawContestCabrilloDataSource(StorageDataSource):
         Returns:
             Dict[int, int]: Dictionary of years and corresponding website iid.
         """
-        website_address = f"{cls.prefix}"
+        website_address = (
+            f"{cls.prefix}" if website_address is None else website_address
+        )
         html = cls._download_raw_data(website_address=website_address)
         raw_list = re.findall(
             r"<a href=\"publiclogs.php\?eid=([0-9]+)&iid=([0-9]+)\">([0-9]+)<", html
@@ -160,13 +170,17 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return [(int(group[2]), int(group[1])) for group in raw_list]
 
     @classmethod
-    def _get_available_callsigns_and_links(cls, iid: int) -> List[Tuple[str, str]]:
+    def _get_available_callsigns_and_links(
+        cls, iid: int, website_address: Optional[str] = None
+    ) -> List[Tuple[str, str]]:
         """Retrieve list of available callsigns the IARU HF and year.
 
         Valid only for ARRL contests.
 
         Args:
             iid (int): ID corresponding to contest in the website.
+            website_address (Optional[str]): Website address of the contest. If
+                not provided, use cls.prefix. Defaults to None.
 
         Raises:
             NotImplementedError: If contest is not available.
@@ -174,10 +188,14 @@ class RawContestCabrilloDataSource(StorageDataSource):
         Returns:
             List[Tuple[str, str]]: List of tuples with callsigns and links available.
         """
-        website_address = f"{cls.prefix}&iid={iid}"
+        website_address = (
+            f"{cls.prefix}&iid={iid}"
+            if website_address is None
+            else f"{website_address}&iid={iid}"
+        )
         html = cls._download_raw_data(website_address=website_address)
         raw_list = re.findall(
-            r"<a href\=\"showpubliclog.php\?q\=(\w+)\" target\=\"_new\">([A-Z0-9\/]+)<",
+            r"<a href\=\"showpubliclog.php\?q\=([0-9A-Za-z_%]+)\" target\=\"_new\">([A-Z0-9\/]+)<",
             html,
         )
         return [(call, link) for link, call in raw_list]
@@ -217,7 +235,9 @@ class RawContestCabrilloDataSource(StorageDataSource):
         return read_parquet(options_path)
 
     @classmethod
-    def get_all_options_arrl(cls, contest: str, force: bool = False) -> DataFrame:
+    def get_all_options_arrl(
+        cls, contest: str, eid: Optional[int] = None, force: bool = False
+    ) -> DataFrame:
         """Retrieve all contest/year/callsigns from the website.
 
         To do that, it uses _get_available_callsigns_and_links and
@@ -226,6 +246,8 @@ class RawContestCabrilloDataSource(StorageDataSource):
 
         Args:
             contest (str): contest to consider
+            eid (Optional[int]): eid to complete the website path, if
+                needed. Defaults to None.
             force (bool): force the reconstruction of the parquet file with the
                 information. Defaults to False.
 
@@ -237,12 +259,18 @@ class RawContestCabrilloDataSource(StorageDataSource):
         options_path = join(
             settings.storage.prefix, f"contest={contest}", "available_callsigns.parquet"
         )
+        website_address = cls.prefix if eid is None else cls.prefix.format(eid=eid)
         if not exists(options_path) or force:
-            df_year = DataFrame(cls._get_available_years(), columns=["year", "iid"])
+            df_year = DataFrame(
+                cls._get_available_years(website_address=website_address),
+                columns=["year", "iid"],
+            )
             data = []
             for year, iid in df_year.to_numpy():
                 _df = DataFrame(
-                    cls._get_available_callsigns_and_links(iid=iid),
+                    cls._get_available_callsigns_and_links(
+                        iid=iid, website_address=website_address
+                    ),
                     columns=["callsign", "q"],
                 ).assign(contest=contest, year=year)
                 data.append(_df)

@@ -80,6 +80,8 @@ class PlotContestEvolution(PlotBase):
         _data = concat(_data)
 
         # Dummy datetime to compare + time aggregation
+        do_dummy_datetime = len(self.data["year"].unique()) > 1
+        datetime_column_name = "dummy_datetime" if do_dummy_datetime else "datetime"
         _data = (
             _data.pipe(
                 func=hour_of_contest,
@@ -92,7 +94,7 @@ class PlotContestEvolution(PlotBase):
             .groupby(
                 [
                     "callsign_year",
-                    Grouper(key="dummy_datetime", freq=f"{self.time_bin_size}Min"),
+                    Grouper(key=datetime_column_name, freq=f"{self.time_bin_size}Min"),
                 ],
                 as_index=False,
             )
@@ -108,12 +110,13 @@ class PlotContestEvolution(PlotBase):
 
         fig = scatter(
             _data,
-            x="dummy_datetime",
+            x=datetime_column_name,
             y=AVAILABLE_FEATURES[self.feature][0],
             color="callsign_year",
             labels={
                 "callsign_year": "Callsign (year)",
                 "dummy_datetime": "Dummy contest datetime",
+                "datetime": "Contest datetime",
                 AVAILABLE_FEATURES[self.feature][0]: AVAILABLE_FEATURES[self.feature][
                     1
                 ],

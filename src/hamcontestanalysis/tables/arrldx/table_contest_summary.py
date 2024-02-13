@@ -1,4 +1,4 @@
-"""Dash table containing the summary of the CQ WW contest."""
+"""Dash table containing the summary of the IARU HF contest."""
 from pandas import DataFrame
 from pandas import concat
 
@@ -16,8 +16,7 @@ class TableContestSummary(TableBase):
             {"name": "My Call", "id": "mycall", "type": "text"},
             {"name": "Band", "id": "band", "type": "numeric"},
             {"name": "QSOs", "id": "qsos", "type": "numeric"},
-            {"name": "CQ Zone", "id": "zones", "type": "numeric"},
-            {"name": "DXCC", "id": "dxcc", "type": "numeric"},
+            {"name": "Multipliers", "id": "is_mult", "type": "numeric"},
             {"name": "QSO points", "id": "qso_points", "type": "numeric"},
             {"name": "Contest score", "id": "score", "type": "numeric"},
         ]
@@ -25,9 +24,9 @@ class TableContestSummary(TableBase):
         sort_action = "native"
         style_table = {"height": "300px", "overflowY": "auto"}
         style_data = {
-            # "width": "150px",
-            # "minWidth": "150px",
-            # "maxWidth": "150px",
+            "width": "150px",
+            "minWidth": "150px",
+            "maxWidth": "150px",
             "overflow": "hidden",
             "textOverflow": "ellipsis",
         }
@@ -44,18 +43,16 @@ class TableContestSummary(TableBase):
             [
                 self.data.groupby(["year", "mycall", "band"], as_index=False).agg(
                     qsos=("is_valid", "sum"),
-                    zones=("is_zone", "sum"),
-                    dxcc=("is_dxcc", "sum"),
+                    is_mult=("is_mult", "sum"),
                     qso_points=("qso_points", "sum"),
                 ),
                 self.data.groupby(["year", "mycall"], as_index=False)
                 .agg(
                     qsos=("is_valid", "sum"),
-                    zones=("is_zone", "sum"),
-                    dxcc=("is_dxcc", "sum"),
+                    is_mult=("is_mult", "sum"),
                     qso_points=("qso_points", "sum"),
                 )
-                .assign(score=lambda x: x["qso_points"] * (x["zones"] + x["dxcc"])),
+                .assign(score=lambda x: x["qso_points"] * x["is_mult"]),
             ]
         ).query(f"(band.isin({list(BANDMAP.keys())}) | (band.isnull()))")
         return super()._filter_data()

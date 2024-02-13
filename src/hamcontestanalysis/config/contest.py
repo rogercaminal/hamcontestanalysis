@@ -82,6 +82,7 @@ class ContestSettings(BaseSettings):
     cqww: Optional[ContestData]
     cqwpx: Optional[ContestData]
     iaru: Optional[ContestData]
+    arrldx: Optional[ContestData]
 
     @property
     def contests(self):

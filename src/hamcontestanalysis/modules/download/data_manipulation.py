@@ -44,26 +44,4 @@ def data_manipulation(data: DataFrame, contest: str) -> DataFrame:
     for function in functions:
         _data = _data.pipe(func=function)
 
-    # Process data
-    # _data = (
-    #     data.pipe(
-    #         func=compute_band,
-    #     )
-    #     .pipe(
-    #         func=add_dxcc_info,
-    #     )
-    #     .pipe(
-    #         func=hour_of_contest,
-    #     )
-    #     .pipe(
-    #         func=add_callsign_prefix,
-    #     )
-    #     .pipe(
-    #         func=compute_contest_score,
-    #     )
-    #     .pipe(
-    #         func=add_previous_calls_info,
-    #     )
-    # )
-
     return _data
