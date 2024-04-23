@@ -24,6 +24,7 @@ settings = get_settings()
     ],
 )
 def option_band_conditions(signal):
+    """Callback option for band conditions plot."""
     return html.Div(
         [
             dcc.RadioItems(
@@ -71,6 +72,7 @@ def plot_band_conditions(
     mode,
     callsigns_years,
 ):
+    """Generate Dash plot for band conditions."""
     years = []
     if not signal:
         raise dash.exceptions.PreventUpdate

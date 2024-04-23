@@ -28,6 +28,7 @@ settings = get_settings()
     ],
 )
 def option_qsos_hour(signal):
+    """Callback option for QSOs/hour plot."""
     return html.Div(
         [
             dcc.Checklist(
@@ -60,6 +61,7 @@ def option_qsos_hour(signal):
     ],
 )
 def plot_qsos_hour(signal, continents, time_bin_size, contest, mode, callsigns_years):
+    """Generate Dash plot of QSOs/hour."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate
@@ -90,6 +92,7 @@ def plot_qsos_hour(signal, continents, time_bin_size, contest, mode, callsigns_y
     ],
 )
 def option_qso_rate(signal):
+    """Callback option to for QSO rate plot."""
     return html.Div(
         [
             dcc.RadioItems(
@@ -125,6 +128,7 @@ def option_qso_rate(signal):
     ],
 )
 def plot_qso_rate(signal, plot_type, time_bin, contest, mode, callsigns_years):
+    """Generate Dash plot for QSO rate."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate

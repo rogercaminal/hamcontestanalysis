@@ -25,6 +25,7 @@ settings = get_settings()
     ],
 )
 def option_qso_direction(signal):
+    """Callback option to set QSO direction."""
     return html.Div(
         dcc.RangeSlider(0, 48, id="range_hour_qso_direction", value=[0, 48])
     )
@@ -43,6 +44,7 @@ def option_qso_direction(signal):
     ],
 )
 def plot_qso_direction(signal, contest_hours, contest, mode, callsigns_years):
+    """Generate Dash plot of QSO direction."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate

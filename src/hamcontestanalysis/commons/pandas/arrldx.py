@@ -51,7 +51,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             is_mult=lambda x: np.where(
                 x["mycountry"].isin(["United States", "Canada"]),
                 (x["datetime"] == x["dxcc_first_occurrence"]).astype(int),
-                (x["datetime"] == x["exchange_first_occurrence"]).astype(int)
+                (x["datetime"] == x["exchange_first_occurrence"]).astype(int),
             ),
             n_mult=lambda x: x["is_mult"],
             cum_qso_points=lambda x: x["qso_points"].cumsum(),

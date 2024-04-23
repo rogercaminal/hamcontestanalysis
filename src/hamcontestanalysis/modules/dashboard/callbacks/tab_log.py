@@ -35,6 +35,7 @@ settings = get_settings()
     ],
 )
 def show_table_contest_data(signal, contest, mode, callsigns_years):
+    """Generate Dash table with contest data."""
     f_callsigns_years = []
     if not signal or not callsigns_years:
         raise dash.exceptions.PreventUpdate
@@ -66,6 +67,7 @@ def show_table_contest_data(signal, contest, mode, callsigns_years):
     ],
 )
 def option_contest_log_continent(signal):
+    """Callback option to set the continent."""
     return html.Div(
         [
             dcc.Checklist(
@@ -100,6 +102,7 @@ def option_contest_log_continent(signal):
 def plot_contest_log_heatmap(
     signal, continents, time_bin_size, contest, mode, callsigns_years
 ):
+    """Generate Dash plot of contest log heatmap."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate
@@ -133,6 +136,7 @@ def plot_contest_log_heatmap(
     ],
 )
 def plot_frequency(signal, contest, mode, callsigns_years):
+    """Generate Dash plot with frequency."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate

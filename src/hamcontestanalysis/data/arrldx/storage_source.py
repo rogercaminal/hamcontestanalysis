@@ -5,11 +5,10 @@ from typing import Dict
 from typing import Optional
 from typing import Union
 
-from pandas import concat
 from pandas import DataFrame
+from pandas import concat
 from pandas import to_datetime
 
-from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
 
 
@@ -52,7 +51,6 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
-        # self.prefix = self.prefix.format(eid=13) if mode == "cw" else self.prefix.format(eid=14)
         hash_q = (
             self.get_all_options()
             .query(f"(callsign=='{callsign}') & (year == {year})")

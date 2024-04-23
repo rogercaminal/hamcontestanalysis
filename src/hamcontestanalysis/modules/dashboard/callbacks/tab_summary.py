@@ -27,12 +27,12 @@ settings = get_settings()
     ],
 )
 def print_contest_metadata(signal):
+    """Callback to generate table header with contest meta-data."""
     data = DataFrame(signal["data_contest"])
 
-    meta = literal_eval(data["meta_data"].iloc[0])
-
     text = []
-    for r in data[["mycall", "year"]].drop_duplicates().iterrows():
+    for r in data[["mycall", "year", "meta_data"]].drop_duplicates().iterrows():
+        meta = literal_eval(r[1]["meta_data"])
         text.append(f"Callsign: {r[1]['mycall']}")
         text.append(f"Year: {r[1]['year']}")
         text.append("Category:")
@@ -60,6 +60,7 @@ def print_contest_metadata(signal):
     ],
 )
 def show_table_summary(signal, contest, mode, callsigns_years):
+    """Generate Dash Table with contest summary."""
     f_callsigns_years = []
     if not signal or not callsigns_years:
         raise dash.exceptions.PreventUpdate

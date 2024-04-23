@@ -32,6 +32,7 @@ settings = get_settings()
     ],
 )
 def option_contest_evolution(signal):
+    """Callback option to set options for contest evolution."""
     return html.Div(
         [
             dcc.RadioItems(
@@ -69,6 +70,7 @@ def option_contest_evolution(signal):
 def plot_contest_evolution_feature(
     signal, feature, time_bin_size, contest, mode, callsigns_years
 ):
+    """Generate Dash plot for contest evolution."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate
@@ -99,6 +101,7 @@ def plot_contest_evolution_feature(
     ],
 )
 def option_prev_call(signal):
+    """Callback option to set previous call plot."""
     return html.Div(
         [
             dcc.RadioItems(
@@ -133,6 +136,7 @@ def option_prev_call(signal):
 def plot_minutes_from_previous_call(
     signal, time_bin_size, xaxis_max_value, contest, mode, callsigns_years
 ):
+    """Generate Dash plot for previous call."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate

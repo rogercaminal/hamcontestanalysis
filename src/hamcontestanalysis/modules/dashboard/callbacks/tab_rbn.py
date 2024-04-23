@@ -29,6 +29,7 @@ settings = get_settings()
     ],
 )
 def option_snr_band_continent(signal):
+    """Callback option for SNR band-continent plot."""
     return html.Div(
         [
             dcc.Checklist(
@@ -69,6 +70,7 @@ def option_snr_band_continent(signal):
 def plot_snr_band_continent(
     signal, bands, rx_continents, time_bin_size, contest, mode, callsigns_years
 ):
+    """Generate Dash plot of SNR band-continent."""
     f_callsigns_years = []
 
     if not signal:
@@ -105,6 +107,7 @@ def plot_snr_band_continent(
     ],
 )
 def option_rbn_stats(signal):
+    """Callback option for RBN stast plot."""
     return html.Div(
         [
             dcc.Dropdown(
@@ -154,6 +157,7 @@ def option_rbn_stats(signal):
 def plot_rbn_stats(
     signal, feature, time_bin_size, bands, rx_continents, contest, mode, callsigns_years
 ):
+    """Generate Dash RBN stats plot."""
     f_callsigns_years = []
     if not signal:
         raise dash.exceptions.PreventUpdate
