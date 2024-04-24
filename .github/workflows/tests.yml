@@ -59,6 +59,8 @@ jobs:
           pwd
           ls -a .
           ls -a .github/workflows/
+          echo "Puta merda"
+          cat .github/workflows/constraints.txt
           pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
