@@ -62,7 +62,7 @@ jobs:
           echo $PWD
           ls -a $PWD/
           echo "BYE BYE"
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args=--constraint=$PWD/.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Install Nox
