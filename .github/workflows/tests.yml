@@ -60,7 +60,8 @@ jobs:
           cat .github/workflows/constraints.txt
           pipx --version
           echo "BYE BYE"
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          # pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args="-r .github/workflows/constraints.txt" poetry
           poetry --version
 
       - name: Install Nox
