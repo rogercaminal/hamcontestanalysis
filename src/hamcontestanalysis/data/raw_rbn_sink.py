@@ -1,4 +1,5 @@
 """HamContestAnalysis CQWW contest storage data sink module."""
+
 from os import PathLike
 from typing import ClassVar
 from typing import Union

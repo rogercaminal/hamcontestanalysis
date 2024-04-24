@@ -1,4 +1,5 @@
 """Utils to fix dataframe types in the dashboards."""
+
 from pandas import DataFrame
 from pandas import to_datetime
 

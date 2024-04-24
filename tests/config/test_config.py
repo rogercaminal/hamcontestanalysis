@@ -1,4 +1,5 @@
 """Test Config package initilization."""
+
 import pytest
 
 from hamcontestanalysis.config import SETTINGS_FILES

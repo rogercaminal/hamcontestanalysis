@@ -1,4 +1,5 @@
 """Contest cabrillo data source module."""
+
 import re
 from collections import defaultdict
 from io import StringIO

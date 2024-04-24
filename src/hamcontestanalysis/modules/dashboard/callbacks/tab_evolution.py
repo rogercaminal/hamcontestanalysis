@@ -1,4 +1,5 @@
 """Callbacks for the general propagation tab."""
+
 import importlib
 
 import dash

@@ -1,4 +1,5 @@
 """HamContestAnalysis Storage Data Sink class definition."""
+
 import os
 from abc import ABC
 from os import PathLike

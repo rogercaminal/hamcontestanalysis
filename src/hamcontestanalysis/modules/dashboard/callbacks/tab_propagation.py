@@ -1,4 +1,5 @@
 """Callbacks for the general propagation tab."""
+
 import dash
 from dash import dcc
 from dash import html

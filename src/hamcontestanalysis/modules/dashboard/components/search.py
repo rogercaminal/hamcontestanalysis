@@ -1,4 +1,5 @@
 """Search container for the contest analysis dashboard."""
+
 import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import html

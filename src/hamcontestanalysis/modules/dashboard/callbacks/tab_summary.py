@@ -1,4 +1,5 @@
 """Callbacks for the summary tab."""
+
 import importlib
 from ast import literal_eval
 

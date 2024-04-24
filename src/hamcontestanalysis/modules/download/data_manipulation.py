@@ -1,4 +1,5 @@
 """HamContestAnalysis data manipulation module."""
+
 import importlib
 import logging
 

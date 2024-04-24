@@ -1,4 +1,5 @@
 """Callback manager class definition."""
+
 from dataclasses import dataclass
 from dataclasses import field
 from typing import Callable

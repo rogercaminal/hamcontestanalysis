@@ -1,4 +1,5 @@
 """Callbacks for the log tab."""
+
 import importlib
 
 import dash

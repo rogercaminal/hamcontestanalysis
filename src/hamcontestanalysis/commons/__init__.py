@@ -1,4 +1,5 @@
 """Common package entrypoint."""
+
 from functools import lru_cache
 
 from pyhamtools import Callinfo

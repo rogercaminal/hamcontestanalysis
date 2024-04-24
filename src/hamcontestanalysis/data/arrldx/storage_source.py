@@ -1,4 +1,5 @@
 """ARRL DX Contest cabrillo data source module."""
+
 from os import PathLike
 from typing import ClassVar
 from typing import Dict
@@ -15,9 +16,9 @@ from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataS
 class CabrilloDataSource(RawContestCabrilloDataSource):
     """ARRL DX Contest cabrillo data source definition."""
 
-    path: ClassVar[
-        Union[str, PathLike]
-    ] = "https://contests.arrl.org/showpubliclog.php?q={q}"
+    path: ClassVar[Union[str, PathLike]] = (
+        "https://contests.arrl.org/showpubliclog.php?q={q}"
+    )
     prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid={eid}"
     dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",

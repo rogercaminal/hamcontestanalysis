@@ -1,4 +1,5 @@
 """Test contest log heatmap plot."""
+
 import pytest
 from pandas import read_parquet
 from pandas.testing import assert_frame_equal

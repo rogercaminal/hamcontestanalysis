@@ -1,4 +1,5 @@
 """HamContestAnalysis Command Line Interface application definition."""
+
 from dotenv import load_dotenv
 from typer import Typer
 

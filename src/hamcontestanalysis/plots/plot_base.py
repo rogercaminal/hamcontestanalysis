@@ -1,4 +1,5 @@
 """HamContestAnalysis plot base class."""
+
 from abc import ABC
 from abc import abstractmethod
 from typing import List

@@ -1,4 +1,5 @@
 """CQ WW Contest cabrillo data source module."""
+
 from datetime import date
 from io import BytesIO
 from os import PathLike

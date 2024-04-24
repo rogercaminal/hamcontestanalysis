@@ -1,4 +1,5 @@
 """Dash table containing the log of the contest."""
+
 from hamcontestanalysis.tables.table_base import TableBase
 
 

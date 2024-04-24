@@ -1,4 +1,5 @@
 """Callbacks for the rates tab."""
+
 import dash
 from dash import dcc
 from dash import html
