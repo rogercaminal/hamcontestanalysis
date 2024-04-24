@@ -1,4 +1,5 @@
 """Settings Info class definition."""
+
 from hamcontestanalysis.config.base import BaseSettings
 
 

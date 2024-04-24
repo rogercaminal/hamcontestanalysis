@@ -1,4 +1,5 @@
 """HamContestAnalysis Download CLI definition."""
+
 from logging import getLogger
 from typing import List
 

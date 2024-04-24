@@ -1,4 +1,4 @@
-# hca
+# HamContestAnalysis
 
 [![PyPI](https://img.shields.io/pypi/v/hamcontestanalysis.svg)][pypi_]
 [![Status](https://img.shields.io/pypi/status/hamcontestanalysis.svg)][status]
@@ -31,7 +31,7 @@
 
 ## Installation
 
-You can install _hca_ via [pip] from [PyPI]:
+You can install _HamContestAnalysis_ via [pip] from [PyPI]:
 
 ```console
 $ pip install hamcontestanalysis
@@ -49,7 +49,7 @@ To learn more, see the [Contributor Guide].
 ## License
 
 Distributed under the terms of the [MIT license][license],
-_hca_ is free and open source software.
+_HamContestAnalysis_ is free and open source software.
 
 ## Issues
 

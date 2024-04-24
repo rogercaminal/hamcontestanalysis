@@ -1,4 +1,5 @@
 """Dash table containing the summary of the CQ WW contest."""
+
 from pandas import DataFrame
 from pandas import concat
 
@@ -25,9 +26,9 @@ class TableContestSummary(TableBase):
         sort_action = "native"
         style_table = {"height": "300px", "overflowY": "auto"}
         style_data = {
-            "width": "150px",
-            "minWidth": "150px",
-            "maxWidth": "150px",
+            # "width": "150px",
+            # "minWidth": "150px",
+            # "maxWidth": "150px",
             "overflow": "hidden",
             "textOverflow": "ellipsis",
         }

@@ -120,12 +120,15 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         df_list = [
             DataFrame(
                 date_range(
-                    df_grp["datetime"].min(), df_grp["datetime"].max(), freq="10Min"
+                    df_grp["datetime"].min(),
+                    df_grp["datetime"].max(),
+                    freq=f"{self.time_bin_size}Min",
                 ),
                 columns=["datetime"],
             ),
             DataFrame(self.callsigns, columns=["dx"]),
             DataFrame(self.bands, columns=["band"]),
+            DataFrame(self.rx_continents, columns=["de_cont"]),
         ]
         df_template = None
         for i, _dfl in enumerate(df_list):
@@ -133,7 +136,12 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
                 df_template = _dfl
             else:
                 df_template = merge(df_template, _dfl, how="cross")
-        df_grp = df_template.merge(df_grp, how="left", on=["datetime", "dx", "band"])
+        df_grp = df_template.merge(
+            df_grp, how="left", on=["datetime", "dx", "band", "de_cont"]
+        ).assign(
+            db=lambda x: np.where(x["db"].isnull(), -1, x["db"]),
+            callsign=lambda x: np.where(x["callsign"].isnull(), "dummy", x["callsign"]),
+        )
 
         # Recover nulls in time-series per band and dx
         logger.info("Recover NULLs in time series per band, DX, and RX spotter")

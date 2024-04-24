@@ -1,4 +1,5 @@
 """Sphinx configuration."""
+
 project = "hca"
 author = "Roger Caminal Armadans"
 copyright = "2023, Roger Caminal Armadans"

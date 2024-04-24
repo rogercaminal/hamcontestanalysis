@@ -4,8 +4,9 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from numpy import around
 from pandas import concat
-from plotly.express import histogram
+from plotly.express import line
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
@@ -13,14 +14,15 @@ from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 
 
-CONTEST_MINUTES = 48 * 60
-
-
 class PlotMinutesPreviousCall(PlotBase):
     """Plot Minutes from previous call histogram."""
 
     def __init__(
-        self, mode: str, callsigns_years: List[Tuple[str, int]], time_bin_size: int = 5
+        self,
+        mode: str,
+        callsigns_years: List[Tuple[str, int]],
+        time_bin_size: int = 5,
+        xaxis_max_value: int = 10,
     ):
         """Init method of the PlotCqWwScore class.
 
@@ -30,9 +32,12 @@ class PlotMinutesPreviousCall(PlotBase):
             callsigns_years (List[Tuple[str, int]]): List of callsign-year tuples
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
+            xaxis_max_value (int): Max value (in minutes) of the x-axis. Defaults to 10.
         """
         super().__init__(contest="cqww", mode=mode, callsigns_years=callsigns_years)
-        self.nbins = CONTEST_MINUTES // time_bin_size
+        self.xaxis_max_value = xaxis_max_value
+        self.nbins = xaxis_max_value // time_bin_size
+        self.time_bin_size = time_bin_size
 
     def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
@@ -51,33 +56,39 @@ class PlotMinutesPreviousCall(PlotBase):
             )
         _data = concat(_data)
 
-        # Dummy datetime to compare + time aggregation
+        # Add callsign (year) for labels
         _data = _data.assign(
             callsign_year=lambda x: x["mycall"] + "(" + x["year"].astype(str) + ")",
         )
 
-        _data_filtered = _data.query("~(minutes_from_previous_call.isnull())")
-        fig = histogram(
-            _data_filtered,
-            x="minutes_from_previous_call",
-            color="band_transition_from_previous_call",
-            facet_row="callsign_year",
-            labels={
-                "callsign_year": "Callsign (year)",
-                "minutes_from_previous_call": "Less than X minutes since last QSO from "
-                "each callsign",
-            },
-            range_x=[0, 30],
-            range_y=[0, 30],
-            nbins=self.nbins,
-            category_orders={
-                "band_transition_from_previous_call": sorted(
-                    _data_filtered["band_transition_from_previous_call"].unique()
+        _data_filtered = (
+            _data.query("~(minutes_from_previous_call.isnull())")
+            .query(f"(minutes_from_previous_call <= {self.xaxis_max_value})")
+            .assign(
+                custom_minutes_from_previous_call=lambda x: around(
+                    x["minutes_from_previous_call"] / self.time_bin_size, decimals=0
                 )
-            },
-            cumulative=True,
+                * self.time_bin_size
+            )
+            .groupby(["callsign_year", "custom_minutes_from_previous_call"])
+            .aggregate(counts=("callsign_year", "count"))
+            .groupby(["callsign_year"])["counts"]
+            .cumsum()
+            .reset_index()
         )
 
+        fig = line(
+            _data_filtered,
+            x="custom_minutes_from_previous_call",
+            y="counts",
+            color="callsign_year",
+            labels={
+                "callsign_year": "Callsign (year)",
+                "custom_minutes_from_previous_call": "Minutes between a "
+                "callsign worked in two different bands (cumulative)",
+                "counts": "QSOs",
+            },
+        )
         fig.update_layout(template=PLOT_TEMPLATE)
 
         if not save:

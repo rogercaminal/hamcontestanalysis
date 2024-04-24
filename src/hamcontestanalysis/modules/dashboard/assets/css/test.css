@@ -1,0 +1,55 @@
+body {
+  font-family: "Poppins";
+  background-color: #f6f6f8;
+}
+
+.hca_header {
+  background-color: white !important;
+  box-shadow: 0 0 4px #dcdcdc;
+}
+.hca_header a {
+  color: #86929e;
+}
+
+.hca_search {
+  background-color: #ffffff;
+  margin: 16px;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #dcdcdc;
+}
+
+.me-1 {
+  background-color: #017ef5;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  color: #017ef5;
+  border: 0;
+  border-bottom: 3px solid #017ef5;
+  font-weight: bold;
+  background-color: #f6f6f8;
+}
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+  border: 0;
+  color: #86929e;
+  font-weight: 700;
+}
+
+.nav-link {
+  color: #86929e;
+}
+
+.hca_plot {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #dcdcdc;
+}
+
+.hca_table {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px #dcdcdc;
+}

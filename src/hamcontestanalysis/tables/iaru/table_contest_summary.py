@@ -1,4 +1,5 @@
 """Dash table containing the summary of the IARU HF contest."""
+
 from pandas import DataFrame
 from pandas import concat
 

@@ -1,4 +1,5 @@
 """HamContestAnalysis Dashboard CLI definition."""
+
 from logging import getLogger
 
 from typer import Option

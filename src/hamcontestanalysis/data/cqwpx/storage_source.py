@@ -1,4 +1,5 @@
 """CQ WPX Contest cabrillo data source module."""
+
 from os import PathLike
 from typing import ClassVar
 from typing import Dict

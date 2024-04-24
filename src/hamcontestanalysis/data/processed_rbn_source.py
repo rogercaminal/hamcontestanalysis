@@ -1,4 +1,5 @@
 """Contest cabrillo data source module."""
+
 from os import PathLike
 from os import path
 from typing import Any

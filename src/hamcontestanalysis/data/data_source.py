@@ -1,4 +1,5 @@
 """Data Source base class definition."""
+
 from abc import ABC
 from abc import abstractmethod
 from typing import Generic

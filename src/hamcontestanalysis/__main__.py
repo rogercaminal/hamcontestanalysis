@@ -1,4 +1,5 @@
 """HamContestAnalysis package CLI entrypoint."""
+
 from hamcontestanalysis.cli import app
 
 

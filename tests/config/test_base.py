@@ -1,4 +1,5 @@
 """Test Base Settings class."""
+
 import os
 from unittest.mock import patch
 

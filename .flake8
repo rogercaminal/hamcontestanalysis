@@ -7,8 +7,8 @@ docstring-convention = google
 rst-roles = class,const,func,meth,mod,ref
 rst-directives = deprecated
 per-file-ignores = tests/*:D101,D103,D106,S101
-    src/hamcontestanalysis/cli/*:B008,
-    src/hamcontestanalysis/data/raw_contest_cabrillo.py:S310,
-    src/hamcontestanalysis/data/rbn/storage_source.py:S310,
-    src/hamcontestanalysis/modules/dashboard/contest_analysis.py:C901,
+    src/hamcontestanalysis/cli/*:B008
+    src/hamcontestanalysis/data/raw_contest_cabrillo.py:B950,S310
+    src/hamcontestanalysis/data/rbn/storage_source.py:S310
+    src/hamcontestanalysis/modules/dashboard/contest_analysis.py:C901
     src/hamcontestanalysis/data/storage_source.py:S310

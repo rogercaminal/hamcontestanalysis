@@ -1,4 +1,5 @@
 """HamContestAnalysis Plot CLI definition."""
+
 from logging import getLogger
 from typing import List
 
