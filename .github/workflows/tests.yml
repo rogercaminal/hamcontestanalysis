@@ -56,12 +56,9 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pwd
-          ls -a .
-          ls -a .github/workflows/
           echo "Puta merda"
           cat .github/workflows/constraints.txt
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry | tee /tmp/log.txt || cat /tmp/log.txt
           poetry --version
 
       - name: Install Nox
@@ -131,7 +128,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install --pip-args="--constraint=.github/workflows/constraints.txt" poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Install Nox
