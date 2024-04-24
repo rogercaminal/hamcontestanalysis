@@ -3,4 +3,7 @@
 from hamcontestanalysis.cli import app
 
 
-app(prog_name="hamcontestanalysis")
+def main():
+    return app(prog_name="hamcontestanalysis")
+
+main()

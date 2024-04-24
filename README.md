@@ -1,7 +1,7 @@
 # HamContestAnalysis
 
 [![PyPI](https://img.shields.io/pypi/v/hamcontestanalysis.svg)][pypi_]
-[![Status](https://img.shields.io/pypi/status/hamcontestanalysis.svg)][status]
+<!-- [![Status](https://img.shields.io/pypi/status/hamcontestanalysis.svg)][status] -->
 [![Python Version](https://img.shields.io/pypi/pyversions/hamcontestanalysis)][python version]
 [![License](https://img.shields.io/pypi/l/hamcontestanalysis)][license]
 
@@ -21,25 +21,35 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
-## Features
+<!-- ## Features
 
 - TODO
 
 ## Requirements
 
-- TODO
+- TODO -->
+
+## Introduction
+
+_HamContestAnalysis_ comprises a set of tools for radio amateurs dedicated to analyze contest with the maximum detail. 
+
+This library is divided into two main components: a collection of functions and classes that allow to easily download public logs and process them for further analysis, as well as a dashboard that provides the user not only with a general view of the contest, but also with the possibility to compare between different call signs and/or years.
 
 ## Installation
 
-You can install _HamContestAnalysis_ via [pip] from [PyPI]:
+_HamContestAnalysis_ can be installed via [pip] from [PyPI]:
 
 ```console
 $ pip install hamcontestanalysis
 ```
 
+## Documentation
+
+Please see the [documentation](https://github.com/rogercaminal/hamcontestanalysis/wiki) for an overview of the package, as well as some examples. 
+
 ## Usage
 
-Please see the [Command-line Reference] for details.
+Please see the [Command-line Reference] for technical details.
 
 ## Contributing
 

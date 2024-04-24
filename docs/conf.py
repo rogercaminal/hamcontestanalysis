@@ -1,6 +1,6 @@
 """Sphinx configuration."""
 
-project = "hca"
+project = "HamContestAnalysis"
 author = "Roger Caminal Armadans"
 copyright = "2023, Roger Caminal Armadans"
 extensions = [
