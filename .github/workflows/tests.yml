@@ -60,8 +60,7 @@ jobs:
           cat .github/workflows/constraints.txt
           pipx --version
           echo $PWD
-          echo $PIPX_HOME
-          echo $PIPX_BIN_DIR
+          ls -a $PWD/
           echo "BYE BYE"
           pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
