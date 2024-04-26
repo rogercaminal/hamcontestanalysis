@@ -1,1 +1,1 @@
-"""HamContestAnalysis"""
+"""hamcontestanalysis"""

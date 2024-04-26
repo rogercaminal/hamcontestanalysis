@@ -147,13 +147,12 @@ def add_previous_calls_info(data: DataFrame) -> DataFrame:
     """Adds information about previous calls in other bands.
 
     It adds the following columns:
-    - minutes_from_previous_call: indicates the number of minutes since this
-        callsign previously called.
-    - band_transition_from_previous_call: the band that this callsign
-        previously called.
+    - minutes_from_previous_call: indicates the number of minutes since this callsign 
+    previously called.
+    - band_transition_from_previous_call: the band that this callsign previously called.
 
     Args:
-        data (DataFrame): Data frame containing the log
+        data (DataFrame): Data frame containing the log.
 
     Returns:
         DataFrame: Dataframe with the new information added.

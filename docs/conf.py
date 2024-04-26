@@ -8,6 +8,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_click",
     "myst_parser",
+    "sphinxcontrib.typer",
 ]
 autodoc_typehints = "description"
 html_theme = "furo"
+autosummary_generate = True

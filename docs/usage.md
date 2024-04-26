@@ -1,7 +1,13 @@
 # Usage
 
 ```{eval-rst}
-.. click:: hamcontestanalysis.__main__:main
+.. typer:: hamcontestanalysis.cli:app
     :prog: hamcontestanalysis
-    :nested: full
 ```
+
+```{eval-rst}
+.. typer:: hamcontestanalysis.cli.dashboard:app
+    :prog: hamcontestanalysis dashboard
+```
+
+<!-- Usage blah blah blah. -->
