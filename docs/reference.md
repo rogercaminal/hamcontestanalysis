@@ -286,7 +286,7 @@ Customized Dash tables.
 Other util functions and classes.
 
 ```{eval-rst}
-.. automodule:: hamcontestanalysis.utils.calculationscontests
+.. automodule:: hamcontestanalysis.utils.calculations.contests
    :members:
 ```
 
