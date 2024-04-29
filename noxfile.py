@@ -118,7 +118,7 @@ def precommit(session: Session) -> None:
         "run",
         "--all-files",
         "--hook-stage=manual",
-        "--show-diff-on-failure",
+        # "--show-diff-on-failure",
     ]
     session.install(
         "black",
