@@ -14,7 +14,7 @@ def fixture_runner(caplog: LogCaptureFixture):
     caplog.clear()
 
 
-@fixture(name="command", params=["download"])
+@fixture(name="command", params=["download", "dashboard", "plot"])
 def fixture_command(request: FixtureRequest) -> str:
     return request.param
 
@@ -28,12 +28,16 @@ def test_app_with_no_command_exits_with_error(runner: CliRunner):
 def test_app_with_help_exits_correctly(runner: CliRunner):
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "Usage: hamcontestanalysis [OPTIONS] COMMAND [ARGS]" in result.stdout
+    assert (
+        "Usage: hamcontestanalysis [OPTIONS] COMMAND [ARGS]"
+        in result.stdout_bytes.decode("utf-8")
+    )
 
 
 def test_app_command_with_help_exit_correclty(runner: CliRunner, command: str):
     result = runner.invoke(app, [command, "--help"])
     assert result.exit_code == 0
     assert (
-        f"Usage: hamcontestanalysis {command} [OPTIONS] COMMAND [ARGS]" in result.stdout
+        f"Usage: hamcontestanalysis {command} [OPTIONS] COMMAND [ARGS]"
+        in result.stdout_bytes.decode("utf-8")
     )
