@@ -1,5 +1,6 @@
 """Plot CQ WPX contest evolution."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -39,6 +40,8 @@ AVAILABLE_FEATURES = {
 
 class PlotContestEvolution(PlotBase):
     """Plot CQ WPX evolution."""
+
+    name = "cqwpx_evolution"
 
     def __init__(
         self,
@@ -132,6 +135,9 @@ class PlotContestEvolution(PlotBase):
 
         if not save:
             return fig
-        po_plot(
-            fig, filename=f"cqwpx_evolution_{AVAILABLE_FEATURES[self.feature][0]}.html"
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(
+            self.prefix_plots, f"{self.name}_{AVAILABLE_FEATURES[self.feature][0]}.html"
         )
+        po_plot(fig, filename=filename)

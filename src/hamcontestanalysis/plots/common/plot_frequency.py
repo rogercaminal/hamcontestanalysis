@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import Optional
 
 from pandas import to_datetime
@@ -15,6 +16,8 @@ from hamcontestanalysis.utils import BANDMAP
 
 class PlotFrequency(PlotBase):
     """Plot QSOs Hour."""
+
+    name = "frequency"
 
     def plot(self, save: bool = False) -> Optional[Figure]:
         """Create plot.
@@ -52,4 +55,7 @@ class PlotFrequency(PlotBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="frequency.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)

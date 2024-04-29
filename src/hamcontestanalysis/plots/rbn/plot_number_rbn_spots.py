@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -13,13 +14,19 @@ from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.commons.pandas.general import hour_of_contest
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 from hamcontestanalysis.utils import BANDMAP
 
 
+settings = get_settings()
+
+
 class PlotNumberRbnSpots(PlotReverseBeaconBase):
     """Plot SNR from RBN."""
+
+    name = "cw_rbn_spots"
 
     def __init__(
         self,
@@ -49,6 +56,11 @@ class PlotNumberRbnSpots(PlotReverseBeaconBase):
         self.rx_continents = rx_continents
         self.bands = (
             [int(b) for b in bands] if bands is not None else list(BANDMAP.keys())
+        )
+        self.prefix_plots = settings.storage.paths.plots.format(
+            contest=self.contest,
+            mode=self.mode,
+            callsigns_years="__".join([f"{c}_{y}" for c, y in self.callsigns_years]),
         )
 
     def plot(self, save: bool = False) -> Optional[Figure]:
@@ -119,4 +131,7 @@ class PlotNumberRbnSpots(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="cw_rbn_spots.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)
