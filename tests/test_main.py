@@ -28,8 +28,9 @@ def test_app_with_no_command_exits_with_error(runner: CliRunner):
 def test_app_with_help_exits_correctly(runner: CliRunner):
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    stdout = result.stdout.decode("utf-8")
-    assert "Usage: hamcontestanalysis [OPTIONS] COMMAND [ARGS]" in stdout
+    assert isinstance(result.stdout, str)
+    assert isinstance(result.stdout_bytes, bytes)
+    assert "Usage: hamcontestanalysis [OPTIONS] COMMAND [ARGS]" in result.stdout
 
 
 def test_app_command_with_help_exit_correclty(runner: CliRunner, command: str):
