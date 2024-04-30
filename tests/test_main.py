@@ -30,6 +30,7 @@ def test_app_with_help_exits_correctly(runner: CliRunner):
     assert result.exit_code == 0
     assert isinstance(result.stdout, str)
     assert isinstance(result.stdout_bytes, bytes)
+    assert result.stdout_bytes.decode("utf-8") == result.stdout
     assert "Usage: hamcontestanalysis [OPTIONS] COMMAND [ARGS]" in result.stdout
 
 
