@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from logging import getLogger
 from typing import List
 from typing import Optional
@@ -13,15 +14,19 @@ from plotly.express import line
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 
 
 logger = getLogger(__name__)
+settings = get_settings()
 
 
 class PlotSnrBandContinent(PlotReverseBeaconBase):
     """Plot SNR from RBN in a grid of bands and continents."""
+
+    name = "cw_snr_band_continent"
 
     def __init__(
         self,
@@ -53,6 +58,11 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         self.min_rx_spots_per_hour = 2
         self.filter_str = None
         self.closed_list_spotters = True
+        self.prefix_plots = settings.storage.paths.plots.format(
+            contest=self.contest,
+            mode=self.mode,
+            callsigns_years="__".join([f"{c}_{year}"] for c in self.callsigns),
+        )
 
     def _clean_dataset(self):
         _df = self.data.copy().assign(
@@ -229,4 +239,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="cw_snr_band_continent.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)

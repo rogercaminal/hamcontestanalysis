@@ -10,9 +10,13 @@ from pandas import DataFrame
 from pandas import concat
 from plotly.graph_objects import Figure
 
+from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.processed_rbn_source import (
     ProcessedReverseBeaconDataSource,
 )
+
+
+settings = get_settings()
 
 
 class PlotReverseBeaconBase(ABC):
@@ -23,11 +27,18 @@ class PlotReverseBeaconBase(ABC):
     way to create a plotly object, implemented by each plot subclass.
     """
 
+    name: str
+
     def __init__(self, contest: str, mode: str, years: List[int]):
         """Init method of the base class."""
         self.contest = contest
         self.mode = mode
         self.years = years
+        self.prefix_plots = settings.storage.paths.plots.format(
+            contest=self.contest,
+            mode=self.mode,
+            callsigns_years="__".join(self.years),
+        )
         self._data = None
 
     @property

@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -16,6 +17,8 @@ from hamcontestanalysis.plots.plot_base import PlotBase
 
 class PlotQsoDirection(PlotBase):
     """Plot QSO direction."""
+
+    name = "qso_direction"
 
     def __init__(
         self,
@@ -81,4 +84,7 @@ class PlotQsoDirection(PlotBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="rate.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)

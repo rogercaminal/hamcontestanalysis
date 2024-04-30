@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -24,6 +25,8 @@ from hamcontestanalysis.utils import CONTINENTS
 
 class PlotLogHeatmap(PlotBase):
     """Plot Contest log heatmap."""
+
+    name = "log_heatmap"
 
     def __init__(
         self,
@@ -159,4 +162,7 @@ class PlotLogHeatmap(PlotBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="log_heatmap.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)
