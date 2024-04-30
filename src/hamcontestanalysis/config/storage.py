@@ -9,6 +9,7 @@ class StoragePathsSettings(BaseSettings):
     raw_data: str
     raw_metadata: str
     raw_rbn: str
+    plots: str
     temporary: str
 
 
@@ -18,6 +19,8 @@ class StorageSettings(BaseSettings):
     partitions: str
     prefix: str
     partitions_rbn: str
+    prefix_plots: str
+    partitions_plots: str
 
     @property
     def paths(self):
@@ -34,6 +37,7 @@ class StorageSettings(BaseSettings):
             raw_data=(f"{self.prefix}/{self.partitions}/raw_data"),
             raw_metadata=(f"{self.prefix}/{self.partitions}/raw_metadata"),
             raw_rbn=(f"{self.prefix}/{self.partitions_rbn}/rbn"),
+            plots=(f"{self.prefix_plots}/{self.partitions_plots}"),
             temporary=f"{self.prefix}/temporary",
         )
 
@@ -41,4 +45,4 @@ class StorageSettings(BaseSettings):
     class Config:
         """Pydantic model config."""
 
-        env_prefix = "PYCA_STORAGE__"
+        env_prefix = "HCA_STORAGE__"

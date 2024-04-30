@@ -1,1 +1,1 @@
-"""hca."""
+"""hamcontestanalysis library."""

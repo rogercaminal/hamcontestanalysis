@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import List
 from typing import Optional
 
@@ -17,6 +18,8 @@ from hamcontestanalysis.utils import BANDMAP
 
 class PlotBandConditions(PlotReverseBeaconBase):
     """Plot band conditions."""
+
+    name = "band_conditions"
 
     def __init__(
         self,
@@ -112,4 +115,7 @@ class PlotBandConditions(PlotReverseBeaconBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="band_conditions.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)

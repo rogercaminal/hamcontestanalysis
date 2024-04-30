@@ -1,5 +1,6 @@
 """Plot QSO rate."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -18,6 +19,8 @@ from hamcontestanalysis.utils.calculations import custom_floor
 
 class PlotQsosHour(PlotBase):
     """Plot QSOs Hour."""
+
+    name = "qsos_hour"
 
     def __init__(
         self,
@@ -119,4 +122,7 @@ class PlotQsosHour(PlotBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="qsos_hour.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)

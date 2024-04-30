@@ -1,5 +1,6 @@
 """Plot minutes until next call."""
 
+import os
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -16,6 +17,8 @@ from hamcontestanalysis.plots.plot_base import PlotBase
 
 class PlotMinutesPreviousCall(PlotBase):
     """Plot Minutes from previous call histogram."""
+
+    name = "minutes_from_previous_call"
 
     def __init__(
         self,
@@ -93,4 +96,7 @@ class PlotMinutesPreviousCall(PlotBase):
 
         if not save:
             return fig
-        po_plot(fig, filename="cqww_minutes_from_previous_call.html")
+        if not os.path.exists(self.prefix_plots):
+            os.makedirs(self.prefix_plots)
+        filename = os.path.join(self.prefix_plots, f"{self.name}.html")
+        po_plot(fig, filename=filename)
