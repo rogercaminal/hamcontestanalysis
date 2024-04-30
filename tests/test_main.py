@@ -35,5 +35,6 @@ def test_app_command_with_help_exit_correclty(runner: CliRunner, command: str):
     result = runner.invoke(app, [command, "--help"])
     assert result.exit_code == 0
     # assert (
-    #     f"Usage: hamcontestanalysis {command} [OPTIONS] COMMAND [ARGS]" in result.stdout
+    #     f"Usage: hamcontestanalysis {command} [OPTIONS] COMMAND [ARGS]"
+    #     in result.stdout
     # )
