@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hamcontestanalysis"
-version = "1.0.0"
+version = "1.1.0"
 description = "Ham radio contest analysis tools"
 authors = ["Roger Caminal Armadans <roger.caminal@gmail.com>"]
 license = "MIT"
