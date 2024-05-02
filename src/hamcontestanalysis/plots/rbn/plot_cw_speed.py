@@ -46,7 +46,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
             bands (Optional[List[int]]): Bands to consider. Defaults to None.
         """
         super().__init__(
-            contest=contest, mode=mode, years=[y for (_, y) in callsigns_years]
+            contest=contest, mode=mode, years=[str(y) for (_, y) in callsigns_years]
         )
         self.callsigns_years = callsigns_years
         self.time_bin_size = time_bin_size

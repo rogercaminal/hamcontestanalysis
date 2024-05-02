@@ -37,7 +37,7 @@ class PlotReverseBeaconBase(ABC):
         self.prefix_plots = settings.storage.paths.plots.format(
             contest=self.contest,
             mode=self.mode,
-            callsigns_years="__".join(self.years),
+            callsigns_years="__".join([str(y) for y in self.years]),
         )
         self._data = None
 
