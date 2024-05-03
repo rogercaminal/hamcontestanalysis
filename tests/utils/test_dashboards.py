@@ -1,20 +1,17 @@
 """Test utils.calculation.contests."""
 
-from numpy import sqrt
-from pandas import read_parquet
-from pandas.testing import assert_frame_equal
-import pytest
 from typing import Tuple
 
 import dash
+import pytest
 from dash.dependencies import Input
 from dash.dependencies import Output
 from dash.dependencies import State
-
 from pydantic.error_wrappers import ValidationError
 
 from hamcontestanalysis.utils.dashboards.callbacks_manager import Callback
 from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
+
 
 @pytest.fixture
 def callback_object():
@@ -26,7 +23,8 @@ def callback_object():
     )
     return co
 
-callback_manager =  CallbackManager()
+
+callback_manager = CallbackManager()
 app = dash.Dash("test")
 
 
@@ -64,18 +62,19 @@ def test_type_error_callback_object():
             states=None,
         )
 
+
 def test_callback_manager():
     # Define dummy functions with callback
     @callback_manager.callback(
         Output("output_argument", "output_property"),
         [
-            Input("input_argument_1", "input_property_1"), 
-            Input("input_argument_2", "input_property_2")
+            Input("input_argument_1", "input_property_1"),
+            Input("input_argument_2", "input_property_2"),
         ],
     )
     def dummy_function(a: str, b: str) -> Tuple[str, str]:
         return a, b
-    
+
     assert isinstance(app._callback_list, list)
     assert len(app._callback_list) == 0
 
@@ -91,4 +90,3 @@ def test_callback_manager():
     assert app._callback_list[0]["inputs"][0]["property"] == "input_property_1"
     assert app._callback_list[0]["inputs"][1]["id"] == "input_argument_2"
     assert app._callback_list[0]["inputs"][1]["property"] == "input_property_2"
-    
