@@ -80,6 +80,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 "potential_qso_points",
             ]
         )
+        .astype({"diff_contest_score": "int"})
     )
 
     return data

@@ -72,6 +72,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             ],
             errors="ignore",
         )
+        .astype({"diff_contest_score": "int"})
     )
 
     return data

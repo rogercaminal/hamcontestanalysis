@@ -38,18 +38,21 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             mycontinent=lambda _data: (
                 _data.apply(lambda x: call_info.get_continent(x["mycall"]), axis=1)
             ),
-            mycountry=lambda _data: (
-                _data.apply(lambda x: call_info.get_country_name(x["mycall"]), axis=1)
+            is_hq_station=lambda x: np.where(
+                x["exchange"].astype(str).str.isnumeric(), 0, 1
             ),
             potential_qso_points=lambda x: (
                 np.where(
-                    x["mycontinent"] != x["continent"],
+                    (x["mycontinent"] != x["continent"])
+                    & (x["myexchange"] != x["exchange"])
+                    & (x["is_hq_station"] == 0),
                     5,
                     np.where(
-                        (x["myexchange"] != x["exchange"])
-                        & (x["country"] == x["mycountry"]),
+                        (x["mycontinent"] == x["continent"])
+                        & (x["myexchange"] != x["exchange"])
+                        & (x["is_hq_station"] == 0),
+                        3,
                         1,
-                        np.where(x["myexchange"] != x["exchange"], 3, 1),
                     ),
                 )
             ),
@@ -72,8 +75,10 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 "datetime_first_occurrence",
                 "multiplier_first_occurrence",
                 "potential_qso_points",
+                "is_hq_station",
             ]
         )
+        .astype({"diff_contest_score": "int"})
     )
 
     return data

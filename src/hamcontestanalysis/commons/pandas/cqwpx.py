@@ -42,7 +42,11 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             potential_qso_points=lambda x: where(
                 x["mycontinent"] != x["continent"],
                 3 + 3 * x["band"].isin([40, 80, 160]).astype(int32),
-                1 + 1 * x["band"].isin([40, 80, 160]).astype(int32),
+                where(
+                    x["mycontinent"] == "NA",
+                    2 + 2 * x["band"].isin([40, 80, 160]).astype(int32),
+                    1 + 1 * x["band"].isin([40, 80, 160]).astype(int32),
+                ),
             ),
             qso_points=lambda x: x["is_valid"] * x["potential_qso_points"],
             is_mult=lambda x: (x["datetime"] == x["prefix_first_occurrence"]).astype(
@@ -65,6 +69,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 "potential_qso_points",
             ]
         )
+        .astype({"diff_contest_score": "int", "qso_points": "int"})
     )
 
     return data

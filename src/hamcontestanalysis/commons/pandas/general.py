@@ -62,6 +62,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
         DataFrame: Log with DXCC-related information
     """
     logger.info("Add DXCC info")
+
     mylocator = latlong_to_locator(
         **call_info.get_lat_long(data["mycall"].to_numpy()[0])
     )
@@ -79,7 +80,6 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
                 "continent": None,
                 "latitude": None,
                 "longitude": None,
-                "mycountry": None,
             }
 
     data = (
@@ -87,6 +87,17 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
             json_normalize(data.apply(_get_all_dxcc_info_handle_exceptions, axis=1))
         )
         .dropna(subset=["country"])
+        .astype(
+            {
+                "country": str,
+                "adif": int,
+                "cqz": int,
+                "ituz": int,
+                "continent": str,
+                "latitude": float,
+                "longitude": float,
+            }
+        )
         .assign(
             mycountry=mycountry,
             locator=lambda _data: _data.apply(
@@ -157,21 +168,21 @@ def add_previous_calls_info(data: DataFrame) -> DataFrame:
     Returns:
         DataFrame: Dataframe with the new information added.
     """
+    data_minutes_previous_call = (
+        data.query("is_valid == 1")
+        .groupby(["call"])["datetime"]
+        .transform(lambda x: x.diff(1).dt.days * 24 * 60 + x.diff(1).dt.seconds / 60.0)
+        .rename("minutes_from_previous_call")
+    )
+    data_band_previous_call = (
+        data.query("is_valid == 1")
+        .groupby(["call"])["band"]
+        .transform(lambda x: x.shift(1))
+        .rename("band_from_previous_call")
+    )
     data = (
-        data.join(
-            data.query("is_valid")
-            .groupby(["call"])["datetime"]
-            .transform(
-                lambda x: x.diff(1).dt.days * 24 * 60 + x.diff(1).dt.seconds / 60.0
-            )
-            .rename("minutes_from_previous_call")
-        )
-        .join(
-            data.query("is_valid")
-            .groupby(["call"])["band"]
-            .transform(lambda x: x.shift(1))
-            .rename("band_from_previous_call")
-        )
+        data.join(data_minutes_previous_call)
+        .join(data_band_previous_call)
         .assign(
             band_transition_from_previous_call=lambda x: (
                 x["band_from_previous_call"].fillna(-1).astype(int).astype(str)
