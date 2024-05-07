@@ -50,7 +50,7 @@ def compute_band(data: DataFrame) -> DataFrame:
             i,
             data["band_id"],
         )
-    return data.astype({"band": "int", "band_id": "int"})
+    return data.astype({"band": "int64", "band_id": "int64"})
 
 
 def add_dxcc_info(data: DataFrame) -> DataFrame:
@@ -93,12 +93,12 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
         .astype(
             {
                 "country": str,
-                "adif": int,
-                "cqz": int,
-                "ituz": int,
                 "continent": str,
                 "latitude": float,
                 "longitude": float,
+                "adif": "int64",
+                "cqz": "int64",
+                "ituz": "int64",
             }
         )
         .assign(

@@ -80,7 +80,13 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 "potential_qso_points",
             ]
         )
-        .astype({"diff_contest_score": "int"})
+        .astype(
+            {
+                "diff_contest_score": "int64",
+                "n_mult": "int64",
+                "qso_points": "int64",
+            }
+        )
     )
 
     return data
