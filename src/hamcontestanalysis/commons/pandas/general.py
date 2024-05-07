@@ -8,6 +8,7 @@ from typing import Dict
 
 import numpy as np
 from pandas import DataFrame
+from pandas import Series
 from pandas import Timedelta
 from pandas import json_normalize
 from pandas import to_datetime
@@ -68,7 +69,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
     )
     mycountry = call_info.get_all(data["mycall"].to_numpy()[0])["country"]
 
-    def _get_all_dxcc_info_handle_exceptions(x: DataFrame) -> Dict[str, Any]:
+    def _get_all_dxcc_info_handle_exceptions(x: Series) -> Dict[str, Any]:
         try:
             return call_info.get_all(x["call"])
         except KeyError:
@@ -84,7 +85,9 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
 
     data = (
         data.join(
-            json_normalize(data.apply(_get_all_dxcc_info_handle_exceptions, axis=1))
+            json_normalize(
+                data.apply(lambda x: _get_all_dxcc_info_handle_exceptions(x), axis=1)
+            )
         )
         .dropna(subset=["country"])
         .astype(
