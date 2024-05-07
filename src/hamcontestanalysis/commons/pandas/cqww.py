@@ -81,7 +81,7 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
             ]
         )
         .astype(
-            {                
+            {
                 "qso_points": "int64",
                 "is_dxcc": "int64",
                 "is_zone": "int64",
