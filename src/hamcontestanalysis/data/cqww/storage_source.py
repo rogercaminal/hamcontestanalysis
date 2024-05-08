@@ -1,6 +1,6 @@
 """CQ WW Contest cabrillo data source module."""
 
-from os import PathLike
+import os
 from typing import ClassVar
 from typing import Dict
 from typing import Optional
@@ -9,14 +9,15 @@ from typing import Union
 from pandas import DataFrame
 from pandas import to_datetime
 
-from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
+from hamcontestanalysis.data.raw_contest_cabrillo_cq import RawContestCQCabrilloDataSource
 
 
-class CabrilloDataSource(RawContestCabrilloDataSource):
+class CabrilloDataSource(RawContestCQCabrilloDataSource):
     """CQ WW Contest cabrillo data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = "{year}{mode}/{callsign}.log"
-    prefix: Optional[str] = "http://www.cqww.com/publiclogs/"
+    website_prefix: ClassVar[str] = "http://www.cqww.com/publiclogs/"
+    partitions: ClassVar[str] = "{year}{mode}/{callsign}.log"
+    contest_name: ClassVar[str] = "cqww"
     dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
@@ -30,7 +31,6 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
         "zone": "int",
         "radio": "int",
     }
-    contest: str = "cqww"
 
     def __init__(
         self,
@@ -50,10 +50,16 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             year (int): Year of the contest
             mode (str): Mode of the contest
         """
-        self.path = self.path.format(
-            callsign=callsign.lower(), year=year, mode=mode.lower()
+        super().__init__(
+            path=os.path.join(
+                self.website_prefix,
+                self.partitions.format(
+                    callsign=callsign.lower(), 
+                    year=year, 
+                    mode=mode.lower()
+                )
+            )
         )
-        super().__init__(callsign=callsign, year=year, mode=mode)
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
@@ -68,22 +74,3 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             .drop(columns=["date", "time"])
         )
         return data
-
-    @classmethod
-    def get_all_options(cls, force: bool = False) -> DataFrame:
-        """Retrieve all contest/year/mode/callsigns from the website.
-
-        To do that, it uses _get_available_callsigns and
-            _get_available_year_modes functions above to get all potential
-            options from the contest website.
-
-        Args:
-            contest (str): contest to consider
-            force (bool): force the reconstruction of the parquet file with the
-                information. Defaults to False.
-
-        Returns:
-            DataFrame: Dataframe with information about the available contest,
-                mode and year
-        """
-        return super().get_all_options_cq(contest="cqww", force=force)

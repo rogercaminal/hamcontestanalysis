@@ -45,7 +45,7 @@ def load_available_calls_years(contest: str, mode: str) -> List[Dict[str, str]]:
     data_source_class = importlib.import_module(
         f"hamcontestanalysis.data.{contest.lower()}.storage_source"
     ).CabrilloDataSource
-    data = data_source_class.get_all_options().query(f"(mode == '{mode}')")
+    data = data_source_class.get_historical_participation().query(f"(mode == '{mode}')")
 
     options = [
         {"label": f"{y} - {c}", "value": f"{c},{y}"}

@@ -45,8 +45,6 @@ class StorageDataSource(DataSource, ABC):
     """
 
     file_format: ClassVar[str]
-    path: ClassVar[Union[str, PathLike]]
-    prefix: Optional[str]
     storage_options: ClassVar[Mapping[str, Any]] = {}
     supported_file_formats: ClassVar[List[str]] = ["csv", "parquet", "pickle"]
     read_method_by_file_format: ClassVar[Mapping[str, Callable[..., DataFrame]]] = {
@@ -54,15 +52,14 @@ class StorageDataSource(DataSource, ABC):
         "parquet": read_parquet,
     }
 
-    def __init__(self, prefix: Optional[str] = None) -> None:
+    def __init__(self, path: Optional[str] = None) -> None:
         """Storage Data Source constructor.
 
         Args:
             prefix: string with prefix to prepend the data source's path. Defaults to
                 None to avoid prepending.
         """
-        self.path = self.path if prefix is None else os.path.join(prefix, self.path)
-        self.prefix = prefix
+        self.path = path
 
     def load(self) -> DataFrame:
         """Load data from storage.

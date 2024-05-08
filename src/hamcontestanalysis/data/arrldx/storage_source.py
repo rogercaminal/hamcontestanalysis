@@ -10,16 +10,18 @@ from pandas import DataFrame
 from pandas import concat
 from pandas import to_datetime
 
-from hamcontestanalysis.data.raw_contest_cabrillo import RawContestCabrilloDataSource
+from hamcontestanalysis.data.raw_contest_cabrillo_arrl import RawContestARRLCabrilloDataSource
 
 
-class CabrilloDataSource(RawContestCabrilloDataSource):
+class CabrilloDataSource(RawContestARRLCabrilloDataSource):
     """ARRL DX Contest cabrillo data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = (
+    eid: ClassVar[Dict[str, int]] = {"cw": 13, "ssb": 14}
+    website_prefix: ClassVar[str] = "https://contests.arrl.org/publiclogs.php?eid={eid}"
+    website_path: ClassVar[str] = (
         "https://contests.arrl.org/showpubliclog.php?q={q}"
     )
-    prefix: Optional[str] = "https://contests.arrl.org/publiclogs.php?eid={eid}"
+    contest_name: ClassVar[str] = "arrldx"
     dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",
         "mode": "str",
@@ -53,15 +55,12 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             mode (str): Mode of the contest
         """
         hash_q = (
-            self.get_all_options()
+            self.get_historical_participation()
             .query(f"(callsign=='{callsign}') & (year == {year})")
             .loc[:, "q"]
             .values[0]
         )
-        self.path = self.path.format(q=hash_q)
-        super().__init__(callsign=callsign, year=year, mode=mode)
-        # TODO: fix the main class as in this case the prefix is not really so.
-        self.path = self.path.split(self.prefix + "/")[1]
+        super().__init__(path=self.website_path.format(q=hash_q))
 
     def process_result(self, data: DataFrame) -> DataFrame:
         """Processes Performance output loaded data."""
@@ -80,32 +79,3 @@ class CabrilloDataSource(RawContestCabrilloDataSource):
             .drop(columns=["date", "time"])
         )
         return data
-
-    @classmethod
-    def get_all_options(cls, force: bool = False) -> DataFrame:
-        """Retrieve all contest/year/mode/callsigns from the website.
-
-        To do that, it uses _get_available_callsigns and
-            _get_available_year_modes functions above to get all potential
-            options from the contest website.
-
-        Args:
-            contest (str): contest to consider
-            force (bool): force the reconstruction of the parquet file with the
-                information. Defaults to False.
-
-        Returns:
-            DataFrame: Dataframe with information about the available contest,
-                mode and year
-        """
-        all_options_cw = (
-            super()
-            .get_all_options_arrl(contest="arrldx", force=force, eid=13)
-            .assign(mode="cw")
-        )
-        all_options_ssb = (
-            super()
-            .get_all_options_arrl(contest="arrldx", force=force, eid=14)
-            .assign(mode="ssb")
-        )
-        return concat([all_options_cw, all_options_ssb]).reset_index(drop=True)
