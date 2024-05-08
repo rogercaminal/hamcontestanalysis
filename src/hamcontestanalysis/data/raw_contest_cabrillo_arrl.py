@@ -5,11 +5,8 @@ import re
 from os.path import exists
 from os.path import join
 from typing import ClassVar
-from typing import Tuple
 from typing import List
-from typing import Optional
 from typing import Tuple
-from urllib.error import HTTPError
 
 from pandas import DataFrame
 from pandas import concat
@@ -38,9 +35,7 @@ class RawContestARRLCabrilloDataSource(RawContestCabrilloDataSource):
         super().__init__(path=path)
 
     @classmethod
-    def _get_available_years(
-        cls
-    ) -> List[Tuple[int, int]]:
+    def _get_available_years(cls) -> List[Tuple[int, int]]:
         """Retrieve available year and modes from the contest website.
 
         Valid only for ARRL contests.
@@ -53,7 +48,9 @@ class RawContestARRLCabrilloDataSource(RawContestCabrilloDataSource):
         """
         mode_list = []
         for mode, eid in cls.eid.items():
-            html = cls.download_raw_data(website_address=cls.website_prefix.format(eid=eid))
+            html = cls.download_raw_data(
+                website_address=cls.website_prefix.format(eid=eid)
+            )
             raw_list = re.findall(
                 r"<a href=\"publiclogs.php\?eid=([0-9]+)&iid=([0-9]+)\">([0-9]+)<", html
             )
@@ -98,7 +95,7 @@ class RawContestARRLCabrilloDataSource(RawContestCabrilloDataSource):
         Args:
             force (bool): force the reconstruction of the parquet file with the
                 information. Defaults to False.
-            save (bool): save the the parquet file with the information. Defaults 
+            save (bool): save the the parquet file with the information. Defaults
                 to True.
 
         Returns:
@@ -106,12 +103,8 @@ class RawContestARRLCabrilloDataSource(RawContestCabrilloDataSource):
                 mode and year
         """
         settings = get_settings()
-        options_folder = join(
-            settings.storage.prefix, f"contest={cls.contest_name}"
-        )
-        options_path = join(
-            options_folder, "available_callsigns.parquet"
-        )
+        options_folder = join(settings.storage.prefix, f"contest={cls.contest_name}")
+        options_path = join(options_folder, "available_callsigns.parquet")
         if not exists(options_path) or force:
             df_year = DataFrame(
                 cls._get_available_years(),
@@ -120,13 +113,10 @@ class RawContestARRLCabrilloDataSource(RawContestCabrilloDataSource):
             data = []
             for mode, year, eid, iid in df_year.to_numpy():
                 _df = DataFrame(
-                    cls._get_available_callsigns_and_links(
-                        eid=eid,
-                        iid=iid
-                    ),
+                    cls._get_available_callsigns_and_links(eid=eid, iid=iid),
                     columns=["callsign", "q"],
                 ).assign(
-                    contest=cls.contest_name, 
+                    contest=cls.contest_name,
                     year=year,
                     mode=mode,
                 )

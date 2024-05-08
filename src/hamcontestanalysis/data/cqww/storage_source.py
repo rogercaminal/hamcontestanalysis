@@ -3,13 +3,13 @@
 import os
 from typing import ClassVar
 from typing import Dict
-from typing import Optional
-from typing import Union
 
 from pandas import DataFrame
 from pandas import to_datetime
 
-from hamcontestanalysis.data.raw_contest_cabrillo_cq import RawContestCQCabrilloDataSource
+from hamcontestanalysis.data.raw_contest_cabrillo_cq import (
+    RawContestCQCabrilloDataSource,
+)
 
 
 class CabrilloDataSource(RawContestCQCabrilloDataSource):
@@ -54,10 +54,8 @@ class CabrilloDataSource(RawContestCQCabrilloDataSource):
             path=os.path.join(
                 self.website_prefix,
                 self.partitions.format(
-                    callsign=callsign.lower(), 
-                    year=year, 
-                    mode=mode.lower()
-                )
+                    callsign=callsign.lower(), year=year, mode=mode.lower()
+                ),
             )
         )
 

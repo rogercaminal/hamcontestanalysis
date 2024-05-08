@@ -1,6 +1,5 @@
 """HamContestAnalysis Storage Data Source class definition."""
 
-import os
 from abc import ABC
 from os import PathLike
 from typing import Any
@@ -56,8 +55,7 @@ class StorageDataSource(DataSource, ABC):
         """Storage Data Source constructor.
 
         Args:
-            prefix: string with prefix to prepend the data source's path. Defaults to
-                None to avoid prepending.
+            path (str): path where the data is allocated.
         """
         self.path = path
 
@@ -111,8 +109,7 @@ class StorageDataSource(DataSource, ABC):
 
     @staticmethod
     def download_raw_data(website_address: str) -> str:
-        """Download RAW contest data in Cabrillo format from the dedicated contest
-        web page.
+        """Download RAW contest data in Cabrillo format from the dedicated contest page.
 
         Args:
             website_address (str): Website address pointing to the contest log.

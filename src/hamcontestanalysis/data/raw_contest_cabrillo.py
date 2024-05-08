@@ -4,22 +4,13 @@ import re
 from collections import defaultdict
 from io import StringIO
 from os import PathLike
-from os.path import exists
-from os.path import join
 from typing import Any
 from typing import ClassVar
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
 from typing import Union
 from urllib.request import urlopen
 
 from pandas import DataFrame
-from pandas import concat
-from pandas import read_parquet
 
-from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.data.storage_source import StorageDataSource
 
 
@@ -43,7 +34,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             path (str): Path to the Cabrillo contest data in the website.
         """
         super().__init__(path=path)
-        
+
     def read(
         self,
         file_format: str,

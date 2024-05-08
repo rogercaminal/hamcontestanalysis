@@ -1,16 +1,14 @@
 """ARRL DX Contest cabrillo data source module."""
 
-from os import PathLike
 from typing import ClassVar
 from typing import Dict
-from typing import Optional
-from typing import Union
 
 from pandas import DataFrame
-from pandas import concat
 from pandas import to_datetime
 
-from hamcontestanalysis.data.raw_contest_cabrillo_arrl import RawContestARRLCabrilloDataSource
+from hamcontestanalysis.data.raw_contest_cabrillo_arrl import (
+    RawContestARRLCabrilloDataSource,
+)
 
 
 class CabrilloDataSource(RawContestARRLCabrilloDataSource):
@@ -18,9 +16,7 @@ class CabrilloDataSource(RawContestARRLCabrilloDataSource):
 
     eid: ClassVar[Dict[str, int]] = {"cw": 13, "ssb": 14}
     website_prefix: ClassVar[str] = "https://contests.arrl.org/publiclogs.php?eid={eid}"
-    website_path: ClassVar[str] = (
-        "https://contests.arrl.org/showpubliclog.php?q={q}"
-    )
+    website_path: ClassVar[str] = "https://contests.arrl.org/showpubliclog.php?q={q}"
     contest_name: ClassVar[str] = "arrldx"
     dtypes: ClassVar[Dict[str, str]] = {
         "frequency": "int",

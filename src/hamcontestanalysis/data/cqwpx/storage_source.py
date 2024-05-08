@@ -7,7 +7,9 @@ from typing import Dict
 from pandas import DataFrame
 from pandas import to_datetime
 
-from hamcontestanalysis.data.raw_contest_cabrillo_cq import RawContestCQCabrilloDataSource
+from hamcontestanalysis.data.raw_contest_cabrillo_cq import (
+    RawContestCQCabrilloDataSource,
+)
 
 
 class CabrilloDataSource(RawContestCQCabrilloDataSource):
@@ -52,10 +54,8 @@ class CabrilloDataSource(RawContestCQCabrilloDataSource):
             path=os.path.join(
                 self.website_prefix,
                 self.partitions.format(
-                    callsign=callsign.lower(), 
-                    year=year, 
-                    mode=mode.lower()
-                )
+                    callsign=callsign.lower(), year=year, mode=mode.lower()
+                ),
             )
         )
 
@@ -72,4 +72,3 @@ class CabrilloDataSource(RawContestCQCabrilloDataSource):
             .drop(columns=["date", "time"])
         )
         return data
-

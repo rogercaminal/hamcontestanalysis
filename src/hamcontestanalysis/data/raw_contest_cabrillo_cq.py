@@ -76,7 +76,9 @@ class RawContestCQCabrilloDataSource(RawContestCabrilloDataSource):
         return [call.upper().replace("-", "/") for call in raw_list]
 
     @classmethod
-    def get_historical_participation(cls, force: bool = False, save: bool = True) -> DataFrame:
+    def get_historical_participation(
+        cls, force: bool = False, save: bool = True
+    ) -> DataFrame:
         """Retrieve all contest/year/mode/callsigns from the website.
 
         To do that, it uses _get_available_callsigns and _get_available_year_modes
@@ -85,7 +87,7 @@ class RawContestCQCabrilloDataSource(RawContestCabrilloDataSource):
         Args:
             force (bool): force the reconstruction of the parquet file with the
                 information. Defaults to False.
-            save (bool): save the the parquet file with the information. Defaults 
+            save (bool): save the the parquet file with the information. Defaults
                 to True.
 
         Returns:
@@ -93,12 +95,8 @@ class RawContestCQCabrilloDataSource(RawContestCabrilloDataSource):
                 mode and year
         """
         settings = get_settings()
-        options_folder = join(
-            settings.storage.prefix, f"contest={cls.contest_name}"
-        )
-        options_path = join(
-            options_folder, "available_callsigns.parquet"
-        )
+        options_folder = join(settings.storage.prefix, f"contest={cls.contest_name}")
+        options_path = join(options_folder, "available_callsigns.parquet")
         if not exists(options_path) or force:
             df_mode_year = DataFrame(
                 cls._get_available_year_modes(), columns=["mode", "year"]
