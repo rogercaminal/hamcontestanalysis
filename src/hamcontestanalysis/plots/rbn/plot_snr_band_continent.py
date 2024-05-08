@@ -61,7 +61,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         self.prefix_plots = settings.storage.paths.plots.format(
             contest=self.contest,
             mode=self.mode,
-            callsigns_years="__".join([f"{c}_{year}"] for c in self.callsigns),
+            callsigns_years="__".join([f"{c}_{year}" for c in self.callsigns]),
         )
 
     def _clean_dataset(self):
