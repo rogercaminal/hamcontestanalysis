@@ -113,7 +113,16 @@ class StorageDataSource(DataSource, ABC):
         return read_method(path, **kwargs)
 
     @staticmethod
-    def _download_raw_data(website_address):
+    def download_raw_data(website_address: str) -> str:
+        """Download RAW contest data in Cabrillo format from the dedicated contest
+        web page.
+
+        Args:
+            website_address (str): Website address pointing to the contest log.
+
+        Returns:
+            str: HTML text from the website containing the contest log.
+        """
         with urlopen(website_address) as response:
             html = response.read().decode("unicode_escape")
         return html

@@ -121,7 +121,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         """
         mode_adapted = mode.lower().replace("ssb", "ph")
         website_address = f"{cls.prefix}{year}{mode_adapted}"
-        html = cls._download_raw_data(website_address=website_address)
+        html = cls.download_raw_data(website_address=website_address)
         # raw_list = re.findall(r"href='(.+)\.log'", html)
         raw_list = re.findall(r">([A-Z0-9\/]+)<", html)
         return [call.upper().replace("-", "/") for call in raw_list]
@@ -139,7 +139,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             Dict[str, int]: Dictionary of contest and years available.
         """
         website_address = f"{cls.prefix}"
-        html = cls._download_raw_data(website_address=website_address)
+        html = cls.download_raw_data(website_address=website_address)
         raw_list = re.findall(r"href=\"(\w+)/\"", html)
         return [(item[4:].replace("ph", "ssb"), item[:4]) for item in raw_list]
 
@@ -164,7 +164,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
         website_address = (
             f"{cls.prefix}" if website_address is None else website_address
         )
-        html = cls._download_raw_data(website_address=website_address)
+        html = cls.download_raw_data(website_address=website_address)
         raw_list = re.findall(
             r"<a href=\"publiclogs.php\?eid=([0-9]+)&iid=([0-9]+)\">([0-9]+)<", html
         )
@@ -194,7 +194,7 @@ class RawContestCabrilloDataSource(StorageDataSource):
             if website_address is None
             else f"{website_address}&iid={iid}"
         )
-        html = cls._download_raw_data(website_address=website_address)
+        html = cls.download_raw_data(website_address=website_address)
         raw_list = re.findall(
             r"<a href\=\"showpubliclog.php\?q\=([0-9A-Za-z_%]+)\" target\=\"_new\">([A-Z0-9\/]+)<",
             html,
