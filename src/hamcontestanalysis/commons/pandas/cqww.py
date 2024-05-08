@@ -80,6 +80,21 @@ def compute_contest_score(data: DataFrame) -> DataFrame:
                 "potential_qso_points",
             ]
         )
+        .astype(
+            {
+                "qso_points": "int64",
+                "is_dxcc": "int64",
+                "is_zone": "int64",
+                "n_mult": "int64",
+                "cum_qso_points": "int64",
+                "cum_dxcc": "int64",
+                "cum_zone": "int64",
+                "cum_mult": "int64",
+                "cum_contest_score": "int64",
+                "cum_valid_qsos": "int64",
+                "diff_contest_score": "int64",
+            }
+        )
     )
 
     return data

@@ -8,6 +8,7 @@ from typing import Dict
 
 import numpy as np
 from pandas import DataFrame
+from pandas import Series
 from pandas import Timedelta
 from pandas import json_normalize
 from pandas import to_datetime
@@ -49,7 +50,7 @@ def compute_band(data: DataFrame) -> DataFrame:
             i,
             data["band_id"],
         )
-    return data.astype({"band": "int", "band_id": "int"})
+    return data.astype({"band": "int64", "band_id": "int64"})
 
 
 def add_dxcc_info(data: DataFrame) -> DataFrame:
@@ -62,12 +63,13 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
         DataFrame: Log with DXCC-related information
     """
     logger.info("Add DXCC info")
+
     mylocator = latlong_to_locator(
         **call_info.get_lat_long(data["mycall"].to_numpy()[0])
     )
     mycountry = call_info.get_all(data["mycall"].to_numpy()[0])["country"]
 
-    def _get_all_dxcc_info_handle_exceptions(x: DataFrame) -> Dict[str, Any]:
+    def _get_all_dxcc_info_handle_exceptions(x: Series) -> Dict[str, Any]:
         try:
             return call_info.get_all(x["call"])
         except KeyError:
@@ -79,14 +81,26 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
                 "continent": None,
                 "latitude": None,
                 "longitude": None,
-                "mycountry": None,
             }
 
     data = (
         data.join(
-            json_normalize(data.apply(_get_all_dxcc_info_handle_exceptions, axis=1))
+            json_normalize(
+                data.apply(lambda x: _get_all_dxcc_info_handle_exceptions(x), axis=1)
+            )
         )
         .dropna(subset=["country"])
+        .astype(
+            {
+                "country": str,
+                "continent": str,
+                "latitude": float,
+                "longitude": float,
+                "adif": "int64",
+                "cqz": "int64",
+                "ituz": "int64",
+            }
+        )
         .assign(
             mycountry=mycountry,
             locator=lambda _data: _data.apply(
@@ -157,21 +171,21 @@ def add_previous_calls_info(data: DataFrame) -> DataFrame:
     Returns:
         DataFrame: Dataframe with the new information added.
     """
+    data_minutes_previous_call = (
+        data.query("is_valid == 1")
+        .groupby(["call"])["datetime"]
+        .transform(lambda x: x.diff(1).dt.days * 24 * 60 + x.diff(1).dt.seconds / 60.0)
+        .rename("minutes_from_previous_call")
+    )
+    data_band_previous_call = (
+        data.query("is_valid == 1")
+        .groupby(["call"])["band"]
+        .transform(lambda x: x.shift(1))
+        .rename("band_from_previous_call")
+    )
     data = (
-        data.join(
-            data.query("is_valid")
-            .groupby(["call"])["datetime"]
-            .transform(
-                lambda x: x.diff(1).dt.days * 24 * 60 + x.diff(1).dt.seconds / 60.0
-            )
-            .rename("minutes_from_previous_call")
-        )
-        .join(
-            data.query("is_valid")
-            .groupby(["call"])["band"]
-            .transform(lambda x: x.shift(1))
-            .rename("band_from_previous_call")
-        )
+        data.join(data_minutes_previous_call)
+        .join(data_band_previous_call)
         .assign(
             band_transition_from_previous_call=lambda x: (
                 x["band_from_previous_call"].fillna(-1).astype(int).astype(str)
