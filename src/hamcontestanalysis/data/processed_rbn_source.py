@@ -36,7 +36,6 @@ class ProcessedReverseBeaconDataSource(StorageDataSource):
         settings = get_settings()
         prefix_data = settings.storage.paths.raw_rbn
 
-        # super().__init__(prefix=self.prefix)
         self.contest = contest
         self.year = year
         self.mode = mode
