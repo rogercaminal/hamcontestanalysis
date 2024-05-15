@@ -78,18 +78,10 @@ Config classes, following the structure of the `yaml` files in `settings` folder
 
 I/O classes for the different contests/RBN data.
 
-```{eval-rst}
-.. automodule:: hamcontestanalysis.data.processed_contest_source
-   :members:
-```
+#### Data Sink
 
 ```{eval-rst}
-.. automodule:: hamcontestanalysis.data.processed_rbn_source
-   :members:
-```
-
-```{eval-rst}
-.. automodule:: hamcontestanalysis.data.raw_contest_cabrillo
+.. hamcontestanalysis.data.data_sink
    :members:
 ```
 
@@ -108,8 +100,45 @@ I/O classes for the different contests/RBN data.
    :members:
 ```
 
+#### Data Source
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.data_source
+   :members:
+```
+
 ```{eval-rst}
 .. automodule:: hamcontestanalysis.data.storage_source
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.processed_contest_source
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.processed_rbn_source
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.raw_contest_cabrillo
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.rbn.storage_source
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.raw_contest_cabrillo_cq
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.data.raw_contest_cabrillo_arrl
    :members:
 ```
 
@@ -130,11 +159,6 @@ I/O classes for the different contests/RBN data.
 
 ```{eval-rst}
 .. automodule:: hamcontestanalysis.data.iaru.storage_source
-   :members:
-```
-
-```{eval-rst}
-.. automodule:: hamcontestanalysis.data.rbn.storage_source
    :members:
 ```
 
@@ -238,6 +262,11 @@ Customized Dash tables.
 
 ```{eval-rst}
 .. automodule:: hamcontestanalysis.tables.table_base
+   :members:
+```
+
+```{eval-rst}
+.. automodule:: hamcontestanalysis.tables.table_contest_metadata
    :members:
 ```
 
