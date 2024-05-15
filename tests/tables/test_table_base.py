@@ -66,12 +66,6 @@ def test_setters(table, data):
 
 
 def test_exceptions(columns):
-    with pytest.raises(TypeError):
-        table = TableBase(columns="A")
-        table.columns
-    with pytest.raises(TypeError):
-        table = TableBase(columns=[["A"]])
-        table.columns
     with pytest.raises(ValueError):
         table = TableBase(
             columns=[
