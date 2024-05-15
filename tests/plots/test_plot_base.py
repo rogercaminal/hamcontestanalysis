@@ -1,5 +1,7 @@
 """Test plot base."""
 
+from typing import Optional
+
 import pytest
 from pandas import DataFrame
 from pandas.testing import assert_frame_equal
@@ -12,7 +14,7 @@ from hamcontestanalysis.plots.plot_base import PlotBase
 class PlotBaseDummy(PlotBase):
     """Dummy class to test PlotBase."""
 
-    def plot(self, save: bool = False) -> Figure | None:
+    def plot(self, save: bool = False) -> Optional[Figure]:
         """Dummy plot implementation."""
         return save
 
