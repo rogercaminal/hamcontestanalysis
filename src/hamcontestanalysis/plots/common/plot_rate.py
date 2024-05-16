@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -14,6 +15,9 @@ from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
+
+
+logger = getLogger(__name__)
 
 
 class PlotRate(PlotBase):
@@ -51,6 +55,7 @@ class PlotRate(PlotBase):
         Returns:
             Optional[Figure]: _description_
         """
+        logger.info(f"Plot {self.name}")
         # TODO: Add this in the processing.
         self.data = self.data.assign(qsos=1)
 

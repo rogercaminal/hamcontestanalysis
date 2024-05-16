@@ -213,6 +213,7 @@ class PlotSnrBandContinent(PlotReverseBeaconBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
         _data = self._clean_dataset()
 
         fig = line(

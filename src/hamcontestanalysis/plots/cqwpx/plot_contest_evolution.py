@@ -1,6 +1,7 @@
 """Plot CQ WPX contest evolution."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -17,6 +18,8 @@ from hamcontestanalysis.commons.pandas.general import hour_of_contest
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 
+
+logger = getLogger(__name__)
 
 AVAILABLE_FEATURES = {
     "valid_qsos": ["cum_valid_qsos", "Valid QSOs", "last"],
@@ -74,6 +77,7 @@ class PlotContestEvolution(PlotBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
         # Filter callsigns and years
         _data = []
         for callsign, year in self.callsigns_years:

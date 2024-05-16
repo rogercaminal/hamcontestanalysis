@@ -1,6 +1,7 @@
 """Plot QSO overlap."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -14,6 +15,9 @@ from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import BANDMAP
 from hamcontestanalysis.utils import CONTINENTS
+
+
+logger = getLogger(__name__)
 
 
 class PlotQsoOverlap(PlotBase):
@@ -53,6 +57,8 @@ class PlotQsoOverlap(PlotBase):
         Returns:
             Optional[Figure]: _description_
         """
+        logger.info(f"Plot {self.name}")
+
         # Groupby data
         grp_all = (
             self.data.query(

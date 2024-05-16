@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -21,6 +22,9 @@ from plotly.subplots import make_subplots
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import CONTINENTS
+
+
+logger = getLogger(__name__)
 
 
 class PlotLogHeatmap(PlotBase):
@@ -110,6 +114,8 @@ class PlotLogHeatmap(PlotBase):
         Returns:
             Optinal[Figure]: _description_
         """
+        logger.info(f"Plot {self.name}")
+
         n_callsigns_years = len(self.callsigns_years)
         fig = make_subplots(
             rows=n_callsigns_years,
