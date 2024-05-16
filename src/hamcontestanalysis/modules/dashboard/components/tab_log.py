@@ -14,6 +14,14 @@ graph_contest_log = html.Div(
         html.Div(html.Div(id="contest_log_heatmap")),
     ]
 )
+graph_qso_overlap = html.Div(
+    [
+        html.Div(
+            id="ph_contest_qso_overlap",
+        ),
+        html.Div(html.Div(id="contest_qso_overlap")),
+    ]
+)
 graph_frequency = html.Div(html.Div(id="frequency"))
 
 tab_log = dbc.Tab(
@@ -28,6 +36,13 @@ tab_log = dbc.Tab(
         dbc.Container(
             dcc.Loading(
                 graph_contest_log,
+                type="dot",
+            ),
+            class_name="mt-5 p-5 hca_plot",
+        ),
+        dbc.Container(
+            dcc.Loading(
+                graph_qso_overlap,
                 type="dot",
             ),
             class_name="mt-5 p-5 hca_plot",

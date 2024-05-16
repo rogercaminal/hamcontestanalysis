@@ -212,6 +212,11 @@ Customized Plotly plots.
 ```
 
 ```{eval-rst}
+.. automodule:: hamcontestanalysis.plots.common.plot_contest_qso_overlap
+   :members:
+```
+
+```{eval-rst}
 .. automodule:: hamcontestanalysis.plots.common.plot_rolling_rate
    :members:
 ```
