@@ -6,6 +6,9 @@ from typing import List
 from typer import Option
 from typer import Typer
 
+from hamcontestanalysis.plots.arrldx.plot_contest_evolution import (
+    PlotContestEvolution as PlotARRLDXContestEvolution,
+)
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
@@ -16,10 +19,15 @@ from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.plots.arrldx.plot_contest_evolution import PlotContestEvolution as PlotARRLDXContestEvolution
-from hamcontestanalysis.plots.cqwpx.plot_contest_evolution import PlotContestEvolution as PlotCQWPXContestEvolution
-from hamcontestanalysis.plots.cqww.plot_contest_evolution import PlotContestEvolution as PlotCQWWContestEvolution
-from hamcontestanalysis.plots.iaru.plot_contest_evolution import PlotContestEvolution as PlotIARUContestEvolution
+from hamcontestanalysis.plots.cqwpx.plot_contest_evolution import (
+    PlotContestEvolution as PlotCQWPXContestEvolution,
+)
+from hamcontestanalysis.plots.cqww.plot_contest_evolution import (
+    PlotContestEvolution as PlotCQWWContestEvolution,
+)
+from hamcontestanalysis.plots.iaru.plot_contest_evolution import (
+    PlotContestEvolution as PlotIARUContestEvolution,
+)
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
@@ -279,9 +287,7 @@ def contest_evolution(
         ContestEvolution = PlotIARUContestEvolution
     else:
         raise ValueError("contest not recognized.")
-    plot = ContestEvolution(
-        mode=mode, callsigns_years=callsigns_years, feature=feature
-    )
+    plot = ContestEvolution(mode=mode, callsigns_years=callsigns_years, feature=feature)
     plot.plot(save=True)
 
 

@@ -1,9 +1,12 @@
 """HamContestAnalysis dashboard."""
 
+import os
+
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import html
+from werkzeug.middleware.profiler import ProfilerMiddleware
 
 from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.dashboard.callbacks.search import (
@@ -41,9 +44,6 @@ from hamcontestanalysis.modules.dashboard.components.tab_propagation import (
 from hamcontestanalysis.modules.dashboard.components.tab_rates import tab_rates
 from hamcontestanalysis.modules.dashboard.components.tab_rbn import tab_rbn
 from hamcontestanalysis.modules.dashboard.components.tab_summary import tab_summary
-
-from werkzeug.middleware.profiler import ProfilerMiddleware
-import os
 
 
 FONTS = ["https://fonts.googleapis.com/css?family=Poppins"]
@@ -113,11 +113,11 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
     if os.getenv("PROFILER_DIR", None):
         app.server.config["PROFILE"] = True
         app.server.wsgi_app = ProfilerMiddleware(
-            app.server.wsgi_app, 
-            sort_by=("cumtime", "tottime"), 
+            app.server.wsgi_app,
+            sort_by=("cumtime", "tottime"),
             restrictions=[50],
             stream=None,
-            profile_dir=os.getenv("PROFILER_DIR")
+            profile_dir=os.getenv("PROFILER_DIR"),
         )
 
     # Run the dashboard

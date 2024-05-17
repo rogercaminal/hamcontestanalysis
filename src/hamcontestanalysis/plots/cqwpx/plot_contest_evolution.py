@@ -6,10 +6,11 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from pandas import DataFrame
 from pandas import Grouper
 from pandas import concat
 from pandas import to_datetime
-from pandas import to_timedelta, DataFrame
+from pandas import to_timedelta
 from plotly.express import scatter
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
@@ -67,7 +68,7 @@ class PlotContestEvolution(PlotBase):
         self.time_bin_size = time_bin_size
         if self.feature not in AVAILABLE_FEATURES.keys():
             raise ValueError("Feature to plot not known!")
-        
+
     def _prepare_dataframe(self, datetime_column_name: str) -> DataFrame:
         """Prepare dataframe for plotting."""
         # Filter callsigns and years
