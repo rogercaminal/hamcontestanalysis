@@ -42,6 +42,9 @@ from hamcontestanalysis.modules.dashboard.components.tab_rates import tab_rates
 from hamcontestanalysis.modules.dashboard.components.tab_rbn import tab_rbn
 from hamcontestanalysis.modules.dashboard.components.tab_summary import tab_summary
 
+from werkzeug.middleware.profiler import ProfilerMiddleware
+import os
+
 
 FONTS = ["https://fonts.googleapis.com/css?family=Poppins"]
 
@@ -104,6 +107,18 @@ def main(debug: bool = False, host: str = "localhost", port: int = 8050) -> None
             ),
         ]
     )
+
+    # Run profiler if PROFILER env variable is defined
+    # https://community.plotly.com/t/performance-profiling-dash-apps-with-werkzeug/65199
+    if os.getenv("PROFILER_DIR", None):
+        app.server.config["PROFILE"] = True
+        app.server.wsgi_app = ProfilerMiddleware(
+            app.server.wsgi_app, 
+            sort_by=("cumtime", "tottime"), 
+            restrictions=[50],
+            stream=None,
+            profile_dir=os.getenv("PROFILER_DIR")
+        )
 
     # Run the dashboard
     app.run(debug=debug, host=host, port=port)
