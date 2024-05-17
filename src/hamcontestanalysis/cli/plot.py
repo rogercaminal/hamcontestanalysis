@@ -16,7 +16,10 @@ from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.plots.cqww.plot_contest_evolution import PlotContestEvolution
+from hamcontestanalysis.plots.arrldx.plot_contest_evolution import PlotContestEvolution as PlotARRLDXContestEvolution
+from hamcontestanalysis.plots.cqwpx.plot_contest_evolution import PlotContestEvolution as PlotCQWPXContestEvolution
+from hamcontestanalysis.plots.cqww.plot_contest_evolution import PlotContestEvolution as PlotCQWWContestEvolution
+from hamcontestanalysis.plots.iaru.plot_contest_evolution import PlotContestEvolution as PlotIARUContestEvolution
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
@@ -242,7 +245,8 @@ def rolling_rate(
 
 
 @app.command()
-def cqww_evolution(
+def contest_evolution(
+    contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
     mode: str = Option(
         ...,
         "--mode",
@@ -264,7 +268,18 @@ def cqww_evolution(
 ):
     """CQ WW feature evolution plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
-    plot = PlotContestEvolution(
+
+    if contest.lower() == "arrldx":
+        ContestEvolution = PlotARRLDXContestEvolution
+    elif contest.lower() == "cqwpx":
+        ContestEvolution = PlotCQWPXContestEvolution
+    elif contest.lower() == "cqww":
+        ContestEvolution = PlotCQWWContestEvolution
+    elif contest.lower() == "iaru":
+        ContestEvolution = PlotIARUContestEvolution
+    else:
+        raise ValueError("contest not recognized.")
+    plot = ContestEvolution(
         mode=mode, callsigns_years=callsigns_years, feature=feature
     )
     plot.plot(save=True)

@@ -9,7 +9,7 @@ from typing import Tuple
 from pandas import Grouper
 from pandas import concat
 from pandas import to_datetime
-from pandas import to_timedelta
+from pandas import to_timedelta, DataFrame
 from plotly.express import scatter
 from plotly.graph_objects import Figure
 from plotly.offline import plot as po_plot
@@ -53,7 +53,7 @@ class PlotContestEvolution(PlotBase):
         feature: str,
         time_bin_size: int = 1,
     ):
-        """Init method of the PlotCqWwScore class.
+        """Init method of the PlotCqWpxScore class.
 
         Args:
             contest (str): Contest name
@@ -62,22 +62,14 @@ class PlotContestEvolution(PlotBase):
             feature (str): Feature to plot
             time_bin_size (int): Size of the time bin. Defaults to 1.
         """
-        super().__init__(contest="cqww", mode=mode, callsigns_years=callsigns_years)
+        super().__init__(contest="cqwpx", mode=mode, callsigns_years=callsigns_years)
         self.feature = feature
         self.time_bin_size = time_bin_size
         if self.feature not in AVAILABLE_FEATURES.keys():
             raise ValueError("Feature to plot not known!")
-
-    def plot(self, save: bool = False) -> Optional[Figure]:
-        """Create plot.
-
-        Args:
-            save (bool): Save file in html. Defaults to False.
-
-        Returns:
-            Optional[Figure]: Plotly figure
-        """
-        logger.info(f"Plot {self.name}")
+        
+    def _prepare_dataframe(self, datetime_column_name: str) -> DataFrame:
+        """Prepare dataframe for plotting."""
         # Filter callsigns and years
         _data = []
         for callsign, year in self.callsigns_years:
@@ -87,8 +79,6 @@ class PlotContestEvolution(PlotBase):
         _data = concat(_data)
 
         # Dummy datetime to compare + time aggregation
-        do_dummy_datetime = len(self.data["year"].unique()) > 1
-        datetime_column_name = "dummy_datetime" if do_dummy_datetime else "datetime"
         _data = (
             _data.pipe(
                 func=hour_of_contest,
@@ -114,6 +104,22 @@ class PlotContestEvolution(PlotBase):
                 }
             )
         )
+        return _data
+
+    def plot(self, save: bool = False) -> Optional[Figure]:
+        """Create plot.
+
+        Args:
+            save (bool): Save file in html. Defaults to False.
+
+        Returns:
+            Optional[Figure]: Plotly figure
+        """
+        logger.info(f"Plot {self.name}")
+
+        do_dummy_datetime = len(self.data["year"].unique()) > 1
+        datetime_column_name = "dummy_datetime" if do_dummy_datetime else "datetime"
+        _data = self._prepare_dataframe(datetime_column_name=datetime_column_name)
 
         fig = scatter(
             _data,
