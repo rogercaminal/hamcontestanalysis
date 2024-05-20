@@ -15,6 +15,8 @@ from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
+from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
+from hamcontestanalysis.utils import BANDMAP
 from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManager
 from hamcontestanalysis.utils.types.dataframe_types import fix_types_data_contest
@@ -119,6 +121,70 @@ def plot_contest_log_heatmap(
         callsigns_years=f_callsigns_years,
         continents=continents,
         time_bin_size=time_bin_size,
+    )
+    data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+    plot.data = data
+    return dcc.Graph(
+        figure=plot.plot(), style={"height": f"{50 * len(f_callsigns_years)}vh"}
+    )
+
+
+@callback_manager.callback(
+    Output("ph_contest_qso_overlap", "children"),
+    [
+        Input("signal", "data"),
+    ],
+)
+def option_qso_overlap(signal):
+    """Callback option to set the continent."""
+    return html.Div(
+        [
+            dcc.Checklist(
+                id="cl_qso_overlap_continent",
+                options=CONTINENTS,
+                value=CONTINENTS,
+                inline=True,
+            ),
+            dcc.Checklist(
+                id="cl_qso_overlap_band",
+                options=list(BANDMAP.keys()),
+                value=list(BANDMAP.keys()),
+                inline=True,
+            ),
+        ]
+    )
+
+
+@callback_manager.callback(
+    Output("contest_qso_overlap", "children"),
+    [
+        Input("signal", "data"),
+        Input("cl_qso_overlap_continent", "value"),
+        Input("cl_qso_overlap_band", "value"),
+    ],
+    [
+        State("contest", "value"),
+        State("mode", "value"),
+        State("callsigns_years", "value"),
+    ],
+)
+def plot_contest_qso_overlap(signal, continents, bands, contest, mode, callsigns_years):
+    """Generate Dash plot of contest QSO overlap."""
+    f_callsigns_years = []
+    if not signal:
+        raise dash.exceptions.PreventUpdate
+    for callsign_year in callsigns_years:
+        callsign = callsign_year.split(",")[0]
+        year = int(callsign_year.split(",")[1])
+        f_callsigns_years.append((callsign, year))
+        if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
+            raise dash.exceptions.PreventUpdate
+    plot = PlotQsoOverlap(
+        contest=contest,
+        mode=mode,
+        callsigns_years=f_callsigns_years,
+        continents=continents,
+        bands=bands,
     )
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data

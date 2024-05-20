@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import Optional
 
 from pandas import to_datetime
@@ -12,6 +13,9 @@ from plotly.offline import plot as po_plot
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import BANDMAP
+
+
+logger = getLogger(__name__)
 
 
 class PlotFrequency(PlotBase):
@@ -28,6 +32,8 @@ class PlotFrequency(PlotBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
+
         _data = self.data.assign(
             callsign_year=lambda x: x["mycall"] + "(" + x["year"].astype(str) + ")",
             dummy_datetime=lambda x: to_datetime("2000-01-01")

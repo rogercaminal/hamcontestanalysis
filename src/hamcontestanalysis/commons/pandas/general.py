@@ -89,7 +89,7 @@ def add_dxcc_info(data: DataFrame) -> DataFrame:
                 data.apply(lambda x: _get_all_dxcc_info_handle_exceptions(x), axis=1)
             )
         )
-        .dropna(subset=["country"])
+        .dropna(subset=["country", "cqz", "ituz"])
         .astype(
             {
                 "country": str,

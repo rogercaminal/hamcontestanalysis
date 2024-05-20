@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -19,6 +20,8 @@ from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 from hamcontestanalysis.utils import BANDMAP
 
+
+logger = getLogger(__name__)
 
 settings = get_settings()
 
@@ -68,6 +71,7 @@ class PlotCwSpeed(PlotReverseBeaconBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
         # Filter callsigns and years, and bands
         _data = []
         for callsign, year in self.callsigns_years:

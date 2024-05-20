@@ -1,6 +1,7 @@
 """Plot minutes until next call."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -13,6 +14,9 @@ from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
+
+
+logger = getLogger(__name__)
 
 
 class PlotMinutesPreviousCall(PlotBase):
@@ -51,6 +55,7 @@ class PlotMinutesPreviousCall(PlotBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
         # Filter callsigns and years
         _data = []
         for callsign, year in self.callsigns_years:

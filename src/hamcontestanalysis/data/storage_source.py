@@ -1,6 +1,5 @@
 """HamContestAnalysis Storage Data Source class definition."""
 
-import os
 from abc import ABC
 from os import PathLike
 from typing import Any
@@ -45,8 +44,6 @@ class StorageDataSource(DataSource, ABC):
     """
 
     file_format: ClassVar[str]
-    path: ClassVar[Union[str, PathLike]]
-    prefix: Optional[str]
     storage_options: ClassVar[Mapping[str, Any]] = {}
     supported_file_formats: ClassVar[List[str]] = ["csv", "parquet", "pickle"]
     read_method_by_file_format: ClassVar[Mapping[str, Callable[..., DataFrame]]] = {
@@ -54,15 +51,13 @@ class StorageDataSource(DataSource, ABC):
         "parquet": read_parquet,
     }
 
-    def __init__(self, prefix: Optional[str] = None) -> None:
+    def __init__(self, path: Optional[str] = None) -> None:
         """Storage Data Source constructor.
 
         Args:
-            prefix: string with prefix to prepend the data source's path. Defaults to
-                None to avoid prepending.
+            path (str): path where the data is allocated.
         """
-        self.path = self.path if prefix is None else os.path.join(prefix, self.path)
-        self.prefix = prefix
+        self.path = path
 
     def load(self) -> DataFrame:
         """Load data from storage.
@@ -113,7 +108,15 @@ class StorageDataSource(DataSource, ABC):
         return read_method(path, **kwargs)
 
     @staticmethod
-    def _download_raw_data(website_address):
+    def download_raw_data(website_address: str) -> str:
+        """Download RAW contest data in Cabrillo format from the dedicated contest page.
+
+        Args:
+            website_address (str): Website address pointing to the contest log.
+
+        Returns:
+            str: HTML text from the website containing the contest log.
+        """
         with urlopen(website_address) as response:
             html = response.read().decode("unicode_escape")
         return html

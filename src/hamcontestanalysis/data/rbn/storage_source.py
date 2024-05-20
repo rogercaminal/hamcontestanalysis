@@ -1,13 +1,12 @@
 """CQ WW Contest cabrillo data source module."""
 
+import os
 from datetime import date
 from io import BytesIO
-from os import PathLike
 from typing import ClassVar
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Union
 from urllib.request import urlopen
 from zipfile import ZipFile
 
@@ -18,17 +17,17 @@ from pandas import to_datetime
 
 from hamcontestanalysis.commons import get_call_info
 from hamcontestanalysis.config import get_settings
-from hamcontestanalysis.data.storage_source import StorageDataSource
+from hamcontestanalysis.data.data_source import DataSource
 
 
 call_info = get_call_info()
 
 
-class ReverseBeaconRawDataSource(StorageDataSource):
+class ReverseBeaconRawDataSource(DataSource):
     """Reverse beacon data source definition."""
 
-    path: ClassVar[Union[str, PathLike]] = "{date}.zip"
-    prefix: Optional[str] = "https://data.reversebeacon.net/rbn_history/"
+    website_prefix: ClassVar[str] = "https://data.reversebeacon.net/rbn_history/"
+    filename: ClassVar[str] = "{date}.zip"
     dtypes: ClassVar[Dict[str, str]] = {
         "callsign": "str",
         "freq": "float",
@@ -57,12 +56,16 @@ class ReverseBeaconRawDataSource(StorageDataSource):
             mode: string with the mode of the contest
             dates: if contest is None, dates to consider for custom downloads
         """
-        super().__init__(prefix=self.prefix)
+        super().__init__()
         _settings = get_settings()
-        self.contest = contest
         self.mode = mode
         self.year = year
-        self.dates: List[date] = (
+        if contest and dates:
+            raise ValueError("Only contest or dates must be provided.")
+        if not contest and not dates:
+            raise ValueError("Please, provide either contest or dates")
+        self.contest = contest
+        self.dates = (
             dates
             if contest is None
             else getattr(
@@ -73,8 +76,8 @@ class ReverseBeaconRawDataSource(StorageDataSource):
     def load(self) -> DataFrame:
         """Load data from storage.
 
-        This method reads the data from the given storage path according to the
-        specified file format and returns the read and processed dataframe.
+        This method reads the data from the given website according to the
+        specified file name and returns the read and processed dataframe.
 
         Returns:
             DataFrame loaded and processed.
@@ -83,10 +86,13 @@ class ReverseBeaconRawDataSource(StorageDataSource):
             return DataFrame()
         data = []
         for contest_date in self.dates:
-            contest_date_str = contest_date.strftime("%Y%m%d")
-            resp = urlopen(f"{self.path.format(date=contest_date_str)}")
+            url_path = os.path.join(
+                self.website_prefix,
+                self.filename.format(date=contest_date.strftime("%Y%m%d")),
+            )
+            resp = urlopen(url_path)
             myzip = ZipFile(BytesIO(resp.read()))
-            data.append(read_csv(myzip.open(f"{contest_date_str}.csv")))
+            data.append(read_csv(myzip.open(f"{contest_date.strftime('%Y%m%d')}.csv")))
         return self.process_result(data=concat(data).reset_index(drop=True))
 
     def process_result(self, data: DataFrame) -> DataFrame:

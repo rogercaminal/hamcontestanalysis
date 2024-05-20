@@ -19,7 +19,13 @@ The dashboard can be run locally with the `hamcontestanalysis dashboard` command
 There is currently one single dashboard (`contest-analysis`), but the package is
 prepared to easily add more if needed.
 
-To run the contest analysis dashboard locally, type
+Previous to run it for the first time, the download directory needs to be specified via environment variable:
+
+```bash
+export HAMCONTESTANALYSISSTORAGE=/Users/my/folder/for/this/app
+```
+
+After this is done, the tool is ready to run. To run the contest analysis dashboard, please type
 
 ```
 hamcontestanalysis dashboard contest-analysis

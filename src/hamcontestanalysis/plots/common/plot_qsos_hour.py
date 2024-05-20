@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -15,6 +16,9 @@ from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
 from hamcontestanalysis.utils import CONTINENTS
 from hamcontestanalysis.utils.calculations import custom_floor
+
+
+logger = getLogger(__name__)
 
 
 class PlotQsosHour(PlotBase):
@@ -53,6 +57,7 @@ class PlotQsosHour(PlotBase):
         Returns:
             Optional[Figure]: _description_
         """
+        logger.info(f"Plot {self.name}")
         # Groupby data
         grp = (
             self.data.assign(

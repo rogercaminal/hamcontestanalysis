@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 
@@ -14,6 +15,9 @@ from plotly.subplots import make_subplots
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_rbn_base import PlotReverseBeaconBase
 from hamcontestanalysis.utils import BANDMAP
+
+
+logger = getLogger(__name__)
 
 
 class PlotBandConditions(PlotReverseBeaconBase):
@@ -54,6 +58,7 @@ class PlotBandConditions(PlotReverseBeaconBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
         bands = list(BANDMAP.keys())
         grp = (
             self.data.query(

@@ -2,7 +2,6 @@
 
 from abc import ABC
 from abc import abstractmethod
-from typing import Dict
 from typing import List
 from typing import Optional
 
@@ -55,7 +54,7 @@ class PlotReverseBeaconBase(ABC):
             raise TypeError("data must be a Pandas DataFrame")
         self._data = value
 
-    def _get_inputs(self) -> Dict[str, DataFrame]:
+    def _get_inputs(self) -> DataFrame:
         """Get downloaded inputs needed for the plot."""
         data = []
         for year in self.years:

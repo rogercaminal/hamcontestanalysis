@@ -6,16 +6,28 @@ from typing import List
 from typer import Option
 from typer import Typer
 
+from hamcontestanalysis.plots.arrldx.plot_contest_evolution import (
+    PlotContestEvolution as PlotARRLDXContestEvolution,
+)
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
     PlotMinutesPreviousCall,
 )
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
+from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
 from hamcontestanalysis.plots.common.plot_rate import PlotRate
 from hamcontestanalysis.plots.common.plot_rolling_rate import PlotRollingRate
-from hamcontestanalysis.plots.cqww.plot_contest_evolution import PlotContestEvolution
+from hamcontestanalysis.plots.cqwpx.plot_contest_evolution import (
+    PlotContestEvolution as PlotCQWPXContestEvolution,
+)
+from hamcontestanalysis.plots.cqww.plot_contest_evolution import (
+    PlotContestEvolution as PlotCQWWContestEvolution,
+)
+from hamcontestanalysis.plots.iaru.plot_contest_evolution import (
+    PlotContestEvolution as PlotIARUContestEvolution,
+)
 from hamcontestanalysis.plots.rbn.plot_band_conditions import PlotBandConditions
 from hamcontestanalysis.plots.rbn.plot_cw_speed import PlotCwSpeed
 from hamcontestanalysis.plots.rbn.plot_number_rbn_spots import PlotNumberRbnSpots
@@ -37,7 +49,7 @@ def frequency(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -60,7 +72,7 @@ def log_heatmap(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -99,7 +111,7 @@ def qso_direction(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -132,14 +144,14 @@ def qsos_hour(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
         ),
     ),
 ):
-    """Qso's per hour plot."""
+    """QSO per hour plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
     plot = PlotQsosHour(contest=contest, mode=mode, callsigns_years=callsigns_years)
     plot.plot(save=True)
@@ -155,7 +167,7 @@ def rate(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -174,6 +186,45 @@ def rate(
 
 
 @app.command()
+def qso_overlap(
+    contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
+    mode: str = Option(
+        ...,
+        "--mode",
+        help="Mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+    ),
+    callsigns_years: List[str] = Option(
+        ...,
+        "--callsigns-years",
+        help=(
+            "Callsign,year to be considered. Can be specified multiple times for "
+            "multiple callsigns and year pairs."
+        ),
+    ),
+    continents: List[str] = Option(
+        ["EU", "NA", "AS", "SA", "OC"],
+        "--continents",
+        help=("Continents to plot"),
+    ),
+    bands: List[int] = Option(
+        [10, 15, 20, 40, 80, 160],
+        "--bands",
+        help=("Bands to plot"),
+    ),
+):
+    """QSO overlap plot."""
+    callsigns_years = [pair.split(",") for pair in callsigns_years]
+    plot = PlotQsoOverlap(
+        contest=contest,
+        mode=mode,
+        callsigns_years=callsigns_years,
+        continents=continents,
+        bands=bands,
+    )
+    plot.plot(save=True)
+
+
+@app.command()
 def rolling_rate(
     contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
     mode: str = Option(
@@ -183,7 +234,7 @@ def rolling_rate(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "Callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -202,7 +253,8 @@ def rolling_rate(
 
 
 @app.command()
-def cqww_evolution(
+def contest_evolution(
+    contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
     mode: str = Option(
         ...,
         "--mode",
@@ -210,7 +262,7 @@ def cqww_evolution(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -224,9 +276,18 @@ def cqww_evolution(
 ):
     """CQ WW feature evolution plot."""
     callsigns_years = [pair.split(",") for pair in callsigns_years]
-    plot = PlotContestEvolution(
-        mode=mode, callsigns_years=callsigns_years, feature=feature
-    )
+
+    if contest.lower() == "arrldx":
+        ContestEvolution = PlotARRLDXContestEvolution
+    elif contest.lower() == "cqwpx":
+        ContestEvolution = PlotCQWPXContestEvolution
+    elif contest.lower() == "cqww":
+        ContestEvolution = PlotCQWWContestEvolution
+    elif contest.lower() == "iaru":
+        ContestEvolution = PlotIARUContestEvolution
+    else:
+        raise ValueError("contest not recognized.")
+    plot = ContestEvolution(mode=mode, callsigns_years=callsigns_years, feature=feature)
     plot.plot(save=True)
 
 
@@ -239,7 +300,7 @@ def cqww_minutes_from_previous_call(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -269,7 +330,7 @@ def band_conditions(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -314,7 +375,7 @@ def cw_speed(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -347,7 +408,7 @@ def number_rbn_spots(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."
@@ -386,7 +447,7 @@ def snr(
     ),
     callsigns_years: List[str] = Option(
         ...,
-        "--callsigns_years",
+        "--callsigns-years",
         help=(
             "callsign,year to be considered. Can be specified multiple times for "
             "multiple callsigns and year pairs."

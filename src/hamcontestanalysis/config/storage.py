@@ -12,6 +12,12 @@ class StoragePathsSettings(BaseSettings):
     plots: str
     temporary: str
 
+    # pylint: disable=too-few-public-methods
+    class Config:
+        """Pydantic model config."""
+
+        env_prefix = "HCA_STORAGE_PATHS__"
+
 
 class StorageSettings(BaseSettings):
     """Storage Settings model."""

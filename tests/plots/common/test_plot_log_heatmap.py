@@ -11,7 +11,7 @@ from hamcontestanalysis.utils import CONTINENTS
 @pytest.fixture
 def input_data():
     return read_parquet(
-        "tests/resources/plots/common/plot_base__get_inputs__ef6t_2022_cr6k_2022.parquet"
+        "tests/resources/plots/common/plot_base__get_inputs__cqww__ef6t_2022_cr6k_2022.parquet"
     )
 
 

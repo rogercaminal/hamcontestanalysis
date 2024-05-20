@@ -11,16 +11,16 @@ from hamcontestanalysis.utils.dashboards.callbacks_manager import CallbackManage
 callback_manager = CallbackManager()
 settings = get_settings()
 
-contest_metadata = html.Div(html.P(), id="contest_metadata")
+table_metadata = html.Div(html.P(), id="table_metadata")
 table_summary = html.Div(html.Div(id="table_summary"))
 tab_summary = dbc.Tab(
     [
         dbc.Container(
             dcc.Loading(
-                contest_metadata,
+                table_metadata,
                 type="dot",
             ),
-            # class_name="mt-5 p-5 hca_table",
+            class_name="mt-5 p-5 hca_table",
         ),
         dbc.Container(
             dcc.Loading(

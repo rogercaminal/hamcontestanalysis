@@ -1,6 +1,7 @@
 """Plot QSO rate."""
 
 import os
+from logging import getLogger
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -13,6 +14,9 @@ from plotly.offline import plot as po_plot
 
 from hamcontestanalysis.plots import PLOT_TEMPLATE
 from hamcontestanalysis.plots.plot_base import PlotBase
+
+
+logger = getLogger(__name__)
 
 
 class PlotQsoDirection(PlotBase):
@@ -47,6 +51,8 @@ class PlotQsoDirection(PlotBase):
         Returns:
             Optional[Figure]: Plotly figure
         """
+        logger.info(f"Plot {self.name}")
+
         bin_width = 10
         grp = (
             self.data.assign(

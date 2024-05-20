@@ -28,6 +28,8 @@ pyhamtools = "0.8.7"
 python-dotenv = "1.0.1"
 typer = "0.9.0"
 sphinxcontrib-typer = "0.2.1"
+werkzeug = "2.2.3"
+snakeviz = "^2.2.0"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
