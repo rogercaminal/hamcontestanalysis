@@ -2,7 +2,7 @@ default:
   contest:
     cqww:
       attributes:
-        name: "CQ WW DX"
+        name: "CQ WW"
       modes:
         cw:
           month: 11

@@ -14,6 +14,7 @@ from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
 from hamcontestanalysis.plots.common.plot_minutes_from_previous_call import (
     PlotMinutesPreviousCall,
 )
+from hamcontestanalysis.plots.common.plot_pie_summary import PlotPieSummary
 from hamcontestanalysis.plots.common.plot_qso_direction import PlotQsoDirection
 from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
 from hamcontestanalysis.plots.common.plot_qsos_hour import PlotQsosHour
@@ -130,6 +131,39 @@ def qso_direction(
         mode=mode,
         callsigns_years=callsigns_years,
         contest_hours=contest_hours,
+    )
+    plot.plot(save=True)
+
+
+@app.command()
+def pie_summary(
+    contest: str = Option(..., "--contest", help="Name of the contest, e.g. cqww."),
+    mode: str = Option(
+        ...,
+        "--mode",
+        help="mode of the contest. Only available options: cw, " "ssb, rrty, mixed.",
+    ),
+    callsigns_years: List[str] = Option(
+        ...,
+        "--callsigns-years",
+        help=(
+            "callsign,year to be considered. Can be specified multiple times for "
+            "multiple callsigns and year pairs."
+        ),
+    ),
+    groupby: str = Option(
+        "band",
+        "--groupby",
+        help=("Feature to groupby. Options: band, continent"),
+    ),
+):
+    """Summary pie chart."""
+    callsigns_years = [pair.split(",") for pair in callsigns_years]
+    plot = PlotPieSummary(
+        contest=contest,
+        mode=mode,
+        callsigns_years=callsigns_years,
+        groupby=groupby,
     )
     plot.plot(save=True)
 

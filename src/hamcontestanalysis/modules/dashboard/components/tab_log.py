@@ -23,6 +23,7 @@ graph_qso_overlap = html.Div(
     ]
 )
 graph_frequency = html.Div(html.Div(id="frequency"))
+graph_pie_summary = html.Div(html.Div(id="contest_pie_summary"))
 
 tab_log = dbc.Tab(
     [
@@ -50,6 +51,13 @@ tab_log = dbc.Tab(
         dbc.Container(
             dcc.Loading(
                 graph_frequency,
+                type="dot",
+            ),
+            class_name="mt-5 p-5 hca_plot",
+        ),
+        dbc.Container(
+            dcc.Loading(
+                graph_pie_summary,
                 type="dot",
             ),
             class_name="mt-5 p-5 hca_plot",

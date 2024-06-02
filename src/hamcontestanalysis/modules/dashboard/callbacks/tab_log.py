@@ -15,6 +15,7 @@ from hamcontestanalysis.config import get_settings
 from hamcontestanalysis.modules.download.main import exists
 from hamcontestanalysis.plots.common.plot_frequency import PlotFrequency
 from hamcontestanalysis.plots.common.plot_log_heatmap import PlotLogHeatmap
+from hamcontestanalysis.plots.common.plot_pie_summary import PlotPieSummary
 from hamcontestanalysis.plots.common.plot_qso_overlap import PlotQsoOverlap
 from hamcontestanalysis.utils import BANDMAP
 from hamcontestanalysis.utils import CONTINENTS
@@ -217,3 +218,35 @@ def plot_frequency(signal, contest, mode, callsigns_years):
     data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
     plot.data = data
     return dcc.Graph(figure=plot.plot(), style={"height": "80vh"})
+
+
+@callback_manager.callback(
+    Output("contest_pie_summary", "children"),
+    [
+        Input("signal", "data"),
+    ],
+    [
+        State("contest", "value"),
+        State("mode", "value"),
+        State("callsigns_years", "value"),
+    ],
+)
+def plot_contest_pie_summary(signal, contest, mode, callsigns_years):
+    """Generate Dash plot of contest QSO overlap."""
+    f_callsigns_years = []
+    if not signal:
+        raise dash.exceptions.PreventUpdate
+    for callsign_year in callsigns_years:
+        callsign = callsign_year.split(",")[0]
+        year = int(callsign_year.split(",")[1])
+        f_callsigns_years.append((callsign, year))
+        if not exists(callsign=callsign, year=year, contest=contest, mode=mode):
+            raise dash.exceptions.PreventUpdate
+    plot = PlotPieSummary(
+        contest=contest, mode=mode, callsigns_years=f_callsigns_years, groupby="band"
+    )
+    data = fix_types_data_contest(data=DataFrame(signal["data_contest"]))
+    plot.data = data
+    return dcc.Graph(
+        figure=plot.plot(), style={"height": f"{50 * len(f_callsigns_years)}vh"}
+    )
